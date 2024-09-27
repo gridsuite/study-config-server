@@ -76,6 +76,21 @@ class SpreadsheetConfigControllerTest {
     }
 
     @Test
+    void testCreateWithInvalidData() throws Exception {
+        SpreadsheetConfigDto invalidConfig = SpreadsheetConfigDto.builder()
+                .sheetType(null)  // SheetType is required
+                .customColumns(createCustomColumns())
+                .build();
+
+        String invalidConfigJson = mapper.writeValueAsString(invalidConfig);
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE)
+                        .content(invalidConfigJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testRead() throws Exception {
         SpreadsheetConfigDto configToRead = SpreadsheetConfigDto.builder()
                 .sheetType(SheetType.BUSES)
@@ -92,6 +107,37 @@ class SpreadsheetConfigControllerTest {
                 .isEqualTo(configToRead);
         assertThat(receivedConfig.getId()).isEqualTo(configUuid);
         assertThat(receivedConfig.getCustomColumns()).allMatch(column -> column.getId() != null);
+    }
+
+    @Test
+    void testReadNonExistent() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+
+        mockMvc.perform(get(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testUpdateWithInvalidData() throws Exception {
+        SpreadsheetConfigDto configToUpdate = SpreadsheetConfigDto.builder()
+                .sheetType(SheetType.BATTERIES)
+                .customColumns(createCustomColumns())
+                .build();
+
+        UUID configUuid = saveAndReturnId(configToUpdate);
+
+        SpreadsheetConfigDto invalidUpdate = SpreadsheetConfigDto.builder()
+                .id(configUuid)
+                .sheetType(null)  // SheetType is required
+                .customColumns(createUpdatedCustomColumns())
+                .build();
+
+        String invalidUpdateJson = mapper.writeValueAsString(invalidUpdate);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid)
+                        .content(invalidUpdateJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -142,6 +188,14 @@ class SpreadsheetConfigControllerTest {
     }
 
     @Test
+    void testDeleteNonExistent() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+
+        mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetAll() throws Exception {
         SpreadsheetConfigDto config1 = SpreadsheetConfigDto.builder()
                 .sheetType(SheetType.BATTERIES)
@@ -180,6 +234,15 @@ class SpreadsheetConfigControllerTest {
                 .ignoringFields("id", "customColumns.id")
                 .isEqualTo(configToCreate);
         assertThat(duplicatedConfig.getId()).isNotEqualTo(configUuid);
+    }
+
+    @Test
+    void testDuplicateNonExistent() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE + "/duplicate")
+                        .queryParam("duplicateFrom", nonExistentUuid.toString()))
+                .andExpect(status().isNotFound());
     }
 
     private List<CustomColumnDto> createCustomColumns() {
