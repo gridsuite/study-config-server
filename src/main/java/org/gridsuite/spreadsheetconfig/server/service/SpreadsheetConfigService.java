@@ -38,8 +38,7 @@ public class SpreadsheetConfigService {
 
     @Transactional
     public UUID duplicateSpreadsheetConfig(UUID id) {
-        SpreadsheetConfigEntity entity = spreadsheetConfigRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
+        SpreadsheetConfigEntity entity = findEntityById(id);
 
         SpreadsheetConfigEntity duplicate = SpreadsheetConfigEntity.builder()
                 .sheetType(entity.getSheetType())
@@ -59,9 +58,7 @@ public class SpreadsheetConfigService {
 
     @Transactional(readOnly = true)
     public SpreadsheetConfigInfos getSpreadsheetConfig(UUID id) {
-        return spreadsheetConfigRepository.findById(id)
-                .map(SpreadsheetConfigMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
+        return SpreadsheetConfigMapper.toDto(findEntityById(id));
     }
 
     @Transactional(readOnly = true)
@@ -83,8 +80,7 @@ public class SpreadsheetConfigService {
 
     @Transactional
     public void updateSpreadsheetConfig(UUID id, SpreadsheetConfigInfos dto) {
-        SpreadsheetConfigEntity entity = spreadsheetConfigRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
+        SpreadsheetConfigEntity entity = findEntityById(id);
 
         entity.setSheetType(dto.sheetType());
         entity.getCustomColumns().clear();
@@ -98,9 +94,18 @@ public class SpreadsheetConfigService {
     @Transactional
     public void deleteSpreadsheetConfig(UUID id) {
         if (!spreadsheetConfigRepository.existsById(id)) {
-            throw new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
+            throw entityNotFoundException(id);
         }
         spreadsheetConfigRepository.deleteById(id);
+    }
+
+    private SpreadsheetConfigEntity findEntityById(UUID id) {
+        return spreadsheetConfigRepository.findById(id)
+                .orElseThrow(() -> entityNotFoundException(id));
+    }
+
+    private EntityNotFoundException entityNotFoundException(UUID id) {
+        return new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
     }
 
 }
