@@ -233,7 +233,7 @@ class SpreadsheetConfigControllerTest {
     private List<CustomColumnInfos> createCustomColumns() {
         return Arrays.asList(
                 new CustomColumnInfos("cust_a", "cust_b + cust_c"),
-                new CustomColumnInfos( "cust_b", "var_minP + 1"),
+                new CustomColumnInfos("cust_b", "var_minP + 1"),
                 new CustomColumnInfos("cust_c", "cust_b + 1"),
                 new CustomColumnInfos("cust_d", "5 + 2")
         );
