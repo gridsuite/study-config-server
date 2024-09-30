@@ -9,8 +9,9 @@ package org.gridsuite.spreadsheetconfig.server;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.spreadsheetconfig.server.constants.SheetType;
-import org.gridsuite.spreadsheetconfig.server.dto.CustomColumnDto;
-import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigDto;
+import org.gridsuite.spreadsheetconfig.server.dto.CustomColumnInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.MetadataInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.spreadsheetconfig.server.repositories.SpreadsheetConfigRepository;
 import org.gridsuite.spreadsheetconfig.server.service.SpreadsheetConfigService;
 import org.junit.jupiter.api.AfterEach;
@@ -59,28 +60,21 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testCreate() throws Exception {
-        SpreadsheetConfigDto configToCreate = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
 
         UUID configUuid = postSpreadsheetConfig(configToCreate);
-        SpreadsheetConfigDto createdConfig = getSpreadsheetConfig(configUuid);
+        SpreadsheetConfigInfos createdConfig = getSpreadsheetConfig(configUuid);
 
         assertThat(createdConfig)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "customColumns.id")
                 .isEqualTo(configToCreate);
-        assertThat(createdConfig.getId()).isNotNull();
-        assertThat(createdConfig.getCustomColumns()).allMatch(column -> column.getId() != null);
+        assertThat(createdConfig.id()).isNotNull();
     }
 
     @Test
     void testCreateWithInvalidData() throws Exception {
-        SpreadsheetConfigDto invalidConfig = SpreadsheetConfigDto.builder()
-                .sheetType(null)  // SheetType is required
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos invalidConfig = new SpreadsheetConfigInfos(null, null, createCustomColumns());
 
         String invalidConfigJson = mapper.writeValueAsString(invalidConfig);
 
@@ -92,21 +86,38 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testRead() throws Exception {
-        SpreadsheetConfigDto configToRead = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BUSES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUSES, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToRead);
 
-        SpreadsheetConfigDto receivedConfig = getSpreadsheetConfig(configUuid);
+        SpreadsheetConfigInfos receivedConfig = getSpreadsheetConfig(configUuid);
 
         assertThat(receivedConfig)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "customColumns.id")
                 .isEqualTo(configToRead);
-        assertThat(receivedConfig.getId()).isEqualTo(configUuid);
-        assertThat(receivedConfig.getCustomColumns()).allMatch(column -> column.getId() != null);
+        assertThat(receivedConfig.id()).isEqualTo(configUuid);
+    }
+
+    @Test
+    void testGetMetadata() throws Exception {
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUSES, createCustomColumns());
+
+        UUID configUuid = saveAndReturnId(configToRead);
+
+        MvcResult receivedMetadata = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_BASE + "/metadata")
+                        .queryParam("ids", configUuid.toString()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<MetadataInfos> metadata = mapper.readValue(
+                receivedMetadata.getResponse().getContentAsString(),
+                new TypeReference<List<MetadataInfos>>() { });
+
+        assertThat(metadata).hasSize(1);
+        assertThat(metadata.get(0).id()).isEqualTo(configUuid);
+        assertThat(metadata.get(0).sheetType()).isEqualTo(SheetType.BUSES);
+
     }
 
     @Test
@@ -119,18 +130,11 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testUpdateWithInvalidData() throws Exception {
-        SpreadsheetConfigDto configToUpdate = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigDto invalidUpdate = SpreadsheetConfigDto.builder()
-                .id(configUuid)
-                .sheetType(null)  // SheetType is required
-                .customColumns(createUpdatedCustomColumns())
-                .build();
+        SpreadsheetConfigInfos invalidUpdate = new SpreadsheetConfigInfos(configUuid, null, createUpdatedCustomColumns());
 
         String invalidUpdateJson = mapper.writeValueAsString(invalidUpdate);
 
@@ -142,18 +146,11 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        SpreadsheetConfigDto configToUpdate = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigDto updatedConfig = SpreadsheetConfigDto.builder()
-                .id(configUuid)
-                .sheetType(SheetType.BUSES)
-                .customColumns(createUpdatedCustomColumns())
-                .build();
+        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, SheetType.BUSES, createUpdatedCustomColumns());
 
         String updatedConfigJson = mapper.writeValueAsString(updatedConfig);
 
@@ -162,7 +159,7 @@ class SpreadsheetConfigControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        SpreadsheetConfigDto retrievedConfig = getSpreadsheetConfig(configUuid);
+        SpreadsheetConfigInfos retrievedConfig = getSpreadsheetConfig(configUuid);
 
         assertThat(retrievedConfig)
                 .usingRecursiveComparison()
@@ -172,17 +169,14 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testDelete() throws Exception {
-        SpreadsheetConfigDto configToDelete = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToDelete);
 
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid))
                 .andExpect(status().isNoContent());
 
-        List<SpreadsheetConfigDto> storedConfigs = getAllSpreadsheetConfigs();
+        List<SpreadsheetConfigInfos> storedConfigs = getAllSpreadsheetConfigs();
 
         assertThat(storedConfigs).isEmpty();
     }
@@ -197,29 +191,20 @@ class SpreadsheetConfigControllerTest {
 
     @Test
     void testGetAll() throws Exception {
-        SpreadsheetConfigDto config1 = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
-        SpreadsheetConfigDto config2 = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BUSES)
-                .customColumns(createUpdatedCustomColumns())
-                .build();
+        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, SheetType.BUSES, createUpdatedCustomColumns());
 
         saveAndReturnId(config1);
         saveAndReturnId(config2);
 
-        List<SpreadsheetConfigDto> receivedConfigs = getAllSpreadsheetConfigs();
+        List<SpreadsheetConfigInfos> receivedConfigs = getAllSpreadsheetConfigs();
 
         assertThat(receivedConfigs).hasSize(2);
     }
 
     @Test
     void testDuplicate() throws Exception {
-        SpreadsheetConfigDto configToCreate = SpreadsheetConfigDto.builder()
-                .sheetType(SheetType.BATTERIES)
-                .customColumns(createCustomColumns())
-                .build();
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
         UUID configUuid = postSpreadsheetConfig(configToCreate);
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE + "/duplicate")
@@ -228,12 +213,12 @@ class SpreadsheetConfigControllerTest {
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);
 
-        SpreadsheetConfigDto duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
+        SpreadsheetConfigInfos duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
         assertThat(duplicatedConfig)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "customColumns.id")
                 .isEqualTo(configToCreate);
-        assertThat(duplicatedConfig.getId()).isNotEqualTo(configUuid);
+        assertThat(duplicatedConfig.id()).isNotEqualTo(configUuid);
     }
 
     @Test
@@ -245,34 +230,34 @@ class SpreadsheetConfigControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private List<CustomColumnDto> createCustomColumns() {
+    private List<CustomColumnInfos> createCustomColumns() {
         return Arrays.asList(
-                new CustomColumnDto(null, "cust_a", "cust_b + cust_c"),
-                new CustomColumnDto(null, "cust_b", "var_minP + 1"),
-                new CustomColumnDto(null, "cust_c", "cust_b + 1"),
-                new CustomColumnDto(null, "cust_d", "5 + 2")
+                new CustomColumnInfos("cust_a", "cust_b + cust_c"),
+                new CustomColumnInfos( "cust_b", "var_minP + 1"),
+                new CustomColumnInfos("cust_c", "cust_b + 1"),
+                new CustomColumnInfos("cust_d", "5 + 2")
         );
     }
 
-    private List<CustomColumnDto> createUpdatedCustomColumns() {
+    private List<CustomColumnInfos> createUpdatedCustomColumns() {
         return Arrays.asList(
-                new CustomColumnDto(null, "cust_x", "cust_y * 2"),
-                new CustomColumnDto(null, "cust_y", "var_maxP - 1"),
-                new CustomColumnDto(null, "cust_z", "cust_x / 2")
+                new CustomColumnInfos("cust_x", "cust_y * 2"),
+                new CustomColumnInfos("cust_y", "var_maxP - 1"),
+                new CustomColumnInfos("cust_z", "cust_x / 2")
         );
     }
 
-    private SpreadsheetConfigDto getSpreadsheetConfig(UUID configUuid) throws Exception {
+    private SpreadsheetConfigInfos getSpreadsheetConfig(UUID configUuid) throws Exception {
         MvcResult mvcGetResult = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid))
                 .andExpect(status().isOk())
                 .andReturn();
 
         return mapper.readValue(
                 mvcGetResult.getResponse().getContentAsString(),
-                SpreadsheetConfigDto.class);
+                SpreadsheetConfigInfos.class);
     }
 
-    private UUID postSpreadsheetConfig(SpreadsheetConfigDto configToCreate) throws Exception {
+    private UUID postSpreadsheetConfig(SpreadsheetConfigInfos configToCreate) throws Exception {
         String configToCreateJson = mapper.writeValueAsString(configToCreate);
 
         MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE)
@@ -293,17 +278,17 @@ class SpreadsheetConfigControllerTest {
         return mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
     }
 
-    private List<SpreadsheetConfigDto> getAllSpreadsheetConfigs() throws Exception {
+    private List<SpreadsheetConfigInfos> getAllSpreadsheetConfigs() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_BASE))
                 .andExpect(status().isOk())
                 .andReturn();
 
         return mapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<SpreadsheetConfigDto>>() { });
+                new TypeReference<List<SpreadsheetConfigInfos>>() { });
     }
 
-    private UUID saveAndReturnId(SpreadsheetConfigDto config) {
+    private UUID saveAndReturnId(SpreadsheetConfigInfos config) {
         return spreadsheetConfigService.createSpreadsheetConfig(config);
     }
 }

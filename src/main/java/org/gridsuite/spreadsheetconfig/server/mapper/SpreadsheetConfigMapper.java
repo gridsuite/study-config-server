@@ -6,57 +6,54 @@
  */
 package org.gridsuite.spreadsheetconfig.server.mapper;
 
-import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigDto;
-import org.gridsuite.spreadsheetconfig.server.dto.CustomColumnDto;
+import org.gridsuite.spreadsheetconfig.server.dto.MetadataInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.CustomColumnInfos;
+import org.gridsuite.spreadsheetconfig.server.entities.CustomColumnEmbeddable;
 import org.gridsuite.spreadsheetconfig.server.entities.SpreadsheetConfigEntity;
-import org.gridsuite.spreadsheetconfig.server.entities.CustomColumnEntity;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
-@Component
-public class SpreadsheetConfigMapper {
+public final class SpreadsheetConfigMapper {
 
-    public SpreadsheetConfigDto toDto(SpreadsheetConfigEntity entity) {
-        return SpreadsheetConfigDto.builder()
-                .id(entity.getId())
-                .sheetType(entity.getSheetType())
-                .customColumns(entity.getCustomColumns().stream()
-                        .map(this::toCustomColumnDto)
-                        .toList())
-                .build();
+    private SpreadsheetConfigMapper() {
     }
 
-    public SpreadsheetConfigEntity toEntity(SpreadsheetConfigDto dto) {
+    public static SpreadsheetConfigInfos toDto(SpreadsheetConfigEntity entity) {
+        return new SpreadsheetConfigInfos(
+                entity.getId(),
+                entity.getSheetType(),
+                entity.getCustomColumns().stream()
+                    .map(SpreadsheetConfigMapper::toCustomColumnDto)
+                    .toList()
+        );
+    }
+
+    public static MetadataInfos toMetadataDto(SpreadsheetConfigEntity entity) {
+        return new MetadataInfos(entity.getId(), entity.getSheetType());
+    }
+
+    public static SpreadsheetConfigEntity toEntity(SpreadsheetConfigInfos dto) {
         SpreadsheetConfigEntity entity = SpreadsheetConfigEntity.builder()
-                .id(dto.getId())
-                .sheetType(dto.getSheetType())
+                .id(dto.id())
+                .sheetType(dto.sheetType())
                 .build();
 
-        if (dto.getCustomColumns() != null) {
-            entity.setCustomColumns(dto.getCustomColumns().stream()
-                    .map(columnDto -> toCustomColumnEntity(columnDto, entity))
+        if (dto.customColumns() != null) {
+            entity.setCustomColumns(dto.customColumns().stream()
+                    .map(SpreadsheetConfigMapper::toCustomColumnEmbeddable)
                     .toList());
         }
 
         return entity;
     }
 
-    public CustomColumnDto toCustomColumnDto(CustomColumnEntity entity) {
-        return CustomColumnDto.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .formula(entity.getFormula())
-                .build();
+    public static CustomColumnInfos toCustomColumnDto(CustomColumnEmbeddable entity) {
+        return new CustomColumnInfos(entity.getName(), entity.getFormula());
     }
 
-    public CustomColumnEntity toCustomColumnEntity(CustomColumnDto dto, SpreadsheetConfigEntity spreadsheetConfig) {
-        return CustomColumnEntity.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .formula(dto.getFormula())
-                .spreadsheetConfig(spreadsheetConfig)
-                .build();
+    public static CustomColumnEmbeddable toCustomColumnEmbeddable(CustomColumnInfos dto) {
+        return new CustomColumnEmbeddable(dto.name(), dto.formula());
     }
 }

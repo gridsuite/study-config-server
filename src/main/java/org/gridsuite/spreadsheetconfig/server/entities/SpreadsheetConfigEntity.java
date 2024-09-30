@@ -35,8 +35,12 @@ public class SpreadsheetConfigEntity {
     @Enumerated(EnumType.STRING)
     private SheetType sheetType;
 
-    @OneToMany(mappedBy = "spreadsheetConfig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ElementCollection
+    @CollectionTable(
+            name = "spreadsheet_custom_column",
+            joinColumns = @JoinColumn(name = "spreadsheet_config_id")
+    )
     @Builder.Default
-    private List<CustomColumnEntity> customColumns = new ArrayList<>();
+    private List<CustomColumnEmbeddable> customColumns = new ArrayList<>();
 
 }

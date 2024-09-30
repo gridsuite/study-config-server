@@ -8,8 +8,9 @@ package org.gridsuite.spreadsheetconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigDto;
-import org.gridsuite.spreadsheetconfig.server.entities.CustomColumnEntity;
+import org.gridsuite.spreadsheetconfig.server.dto.MetadataInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.spreadsheetconfig.server.entities.CustomColumnEmbeddable;
 import org.gridsuite.spreadsheetconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.spreadsheetconfig.server.mapper.SpreadsheetConfigMapper;
 import org.gridsuite.spreadsheetconfig.server.repositories.SpreadsheetConfigRepository;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -29,60 +30,67 @@ public class SpreadsheetConfigService {
 
     private final SpreadsheetConfigRepository spreadsheetConfigRepository;
 
-    private final SpreadsheetConfigMapper spreadsheetConfigMapper;
-
     @Transactional
-    public UUID createSpreadsheetConfig(SpreadsheetConfigDto dto) {
-        SpreadsheetConfigEntity entity = spreadsheetConfigMapper.toEntity(dto);
+    public UUID createSpreadsheetConfig(SpreadsheetConfigInfos dto) {
+        SpreadsheetConfigEntity entity = SpreadsheetConfigMapper.toEntity(dto);
         return spreadsheetConfigRepository.save(entity).getId();
     }
 
     @Transactional
-    public Optional<UUID> duplicateSpreadsheetConfig(UUID id) {
-        return spreadsheetConfigRepository.findById(id)
-                .map(entity -> {
-                    SpreadsheetConfigEntity duplicate = SpreadsheetConfigEntity.builder()
-                            .sheetType(entity.getSheetType())
-                            .build();
+    public UUID duplicateSpreadsheetConfig(UUID id) {
+        SpreadsheetConfigEntity entity = spreadsheetConfigRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
 
-                    List<CustomColumnEntity> customColumns = entity.getCustomColumns().stream()
-                            .map(column -> CustomColumnEntity.builder()
-                                    .name(column.getName())
-                                    .formula(column.getFormula())
-                                    .spreadsheetConfig(duplicate)
-                                    .build())
-                            .toList();
+        SpreadsheetConfigEntity duplicate = SpreadsheetConfigEntity.builder()
+                .sheetType(entity.getSheetType())
+                .build();
 
-                    duplicate.setCustomColumns(customColumns);
+        List<CustomColumnEmbeddable> customColumns = entity.getCustomColumns().stream()
+                .map(column -> CustomColumnEmbeddable.builder()
+                        .name(column.getName())
+                        .formula(column.getFormula())
+                        .build())
+                .toList();
 
-                    return spreadsheetConfigRepository.save(duplicate).getId();
-                });
+        duplicate.setCustomColumns(customColumns);
+
+        return spreadsheetConfigRepository.save(duplicate).getId();
     }
 
     @Transactional(readOnly = true)
-    public Optional<SpreadsheetConfigDto> getSpreadsheetConfig(UUID id) {
+    public SpreadsheetConfigInfos getSpreadsheetConfig(UUID id) {
         return spreadsheetConfigRepository.findById(id)
-                .map(spreadsheetConfigMapper::toDto);
+                .map(SpreadsheetConfigMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
     }
 
     @Transactional(readOnly = true)
-    public List<SpreadsheetConfigDto> getAllSpreadsheetConfigs() {
+    public List<SpreadsheetConfigInfos> getAllSpreadsheetConfigs() {
         return spreadsheetConfigRepository.findAll()
                 .stream()
-                .map(spreadsheetConfigMapper::toDto)
+                .map(SpreadsheetConfigMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MetadataInfos> getSpreadsheetConfigsMetadata(List<UUID> ids) {
+        Objects.requireNonNull(ids);
+        return spreadsheetConfigRepository.findAllById(ids)
+                .stream()
+                .map(SpreadsheetConfigMapper::toMetadataDto)
                 .toList();
     }
 
     @Transactional
-    public void updateSpreadsheetConfig(UUID id, SpreadsheetConfigDto dto) {
+    public void updateSpreadsheetConfig(UUID id, SpreadsheetConfigInfos dto) {
         SpreadsheetConfigEntity entity = spreadsheetConfigRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("SpreadsheetConfig not found with id: " + id));
 
-        entity.setSheetType(dto.getSheetType());
+        entity.setSheetType(dto.sheetType());
         entity.getCustomColumns().clear();
-        if (dto.getCustomColumns() != null) {
-            entity.getCustomColumns().addAll(dto.getCustomColumns().stream()
-                    .map(columnDto -> spreadsheetConfigMapper.toCustomColumnEntity(columnDto, entity))
+        if (dto.customColumns() != null) {
+            entity.getCustomColumns().addAll(dto.customColumns().stream()
+                    .map(SpreadsheetConfigMapper::toCustomColumnEmbeddable)
                     .toList());
         }
     }

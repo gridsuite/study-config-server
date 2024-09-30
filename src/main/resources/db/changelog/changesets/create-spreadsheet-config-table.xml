@@ -13,19 +13,22 @@
 
     <changeSet id="202409191-2" author="achour.berrahma">
         <createTable tableName="spreadsheet_custom_column">
-            <column name="id" type="uuid">
-                <constraints primaryKey="true" nullable="false" primaryKeyName="spreadsheet_custom_column_pk"/>
-            </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="formula" type="varchar(255)"/>
             <column name="spreadsheet_config_id" type="uuid">
                 <constraints nullable="false"
                              foreignKeyName="spreadsheet_config_id_fk_constraint"
                              referencedTableName="spreadsheet_config"
                              referencedColumnNames="id"/>
             </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="formula" type="CLOB"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="202409191-3" author="achour.berrahma">
+        <addPrimaryKey tableName="spreadsheet_custom_column"
+                       columnNames="spreadsheet_config_id,name"
+                       constraintName="spreadsheet_custom_column_pk"/>
     </changeSet>
 </databaseChangeLog>

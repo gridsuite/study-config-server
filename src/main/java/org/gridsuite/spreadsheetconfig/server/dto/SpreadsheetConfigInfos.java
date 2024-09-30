@@ -8,9 +8,6 @@ package org.gridsuite.spreadsheetconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import org.gridsuite.spreadsheetconfig.server.constants.SheetType;
 
 import java.util.List;
@@ -19,19 +16,16 @@ import java.util.UUID;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
-@Value
-@Builder
-@Jacksonized
 @Schema(name = "SpreadsheetConfigDto", description = "Spreadsheet configuration")
-public class SpreadsheetConfigDto {
+public record SpreadsheetConfigInfos(
 
     @Schema(description = "Spreadsheet configuration ID")
-    UUID id;
+    UUID id,
 
     @NotNull(message = "Sheet type is mandatory")
     @Schema(description = "Spreadsheet type")
-    SheetType sheetType;
+    SheetType sheetType,
 
     @Schema(description = "Custom columns")
-    List<CustomColumnDto> customColumns;
-}
+    List<CustomColumnInfos> customColumns
+) { }

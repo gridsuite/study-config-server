@@ -15,7 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.spreadsheetconfig.server.SpreadsheetConfigApi;
-import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigDto;
+import org.gridsuite.spreadsheetconfig.server.dto.MetadataInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.spreadsheetconfig.server.service.SpreadsheetConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class SpreadsheetConfigController {
             description = "Creates a new spreadsheet configuration and returns its ID")
     @ApiResponse(responseCode = "201", description = "Configuration created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
-    public ResponseEntity<UUID> createSpreadsheetConfig(@Parameter(description = "Configuration to save") @Valid @RequestBody SpreadsheetConfigDto dto) {
+    public ResponseEntity<UUID> createSpreadsheetConfig(@Parameter(description = "Configuration to save") @Valid @RequestBody SpreadsheetConfigInfos dto) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfig(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
@@ -56,28 +57,36 @@ public class SpreadsheetConfigController {
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Configuration not found")
     public ResponseEntity<UUID> duplicateSpreadsheetConfig(@Parameter(description = "UUID of the configuration to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
-        return spreadsheetConfigService.duplicateSpreadsheetConfig(id)
-                .map(newId -> ResponseEntity.status(HttpStatus.CREATED).body(newId))
-                .orElse(ResponseEntity.notFound().build());
+        UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfig(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a spreadsheet configuration",
             description = "Retrieves a spreadsheet configuration by its ID")
     @ApiResponse(responseCode = "200", description = "Configuration found",
-            content = @Content(schema = @Schema(implementation = SpreadsheetConfigDto.class)))
+            content = @Content(schema = @Schema(implementation = SpreadsheetConfigInfos.class)))
     @ApiResponse(responseCode = "404", description = "Configuration not found")
-    public ResponseEntity<SpreadsheetConfigDto> getSpreadsheetConfig(
+    public ResponseEntity<SpreadsheetConfigInfos> getSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to retrieve") @PathVariable UUID id) {
-        return ResponseEntity.of(spreadsheetConfigService.getSpreadsheetConfig(id));
+        return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfig(id));
+    }
+
+    @GetMapping("/metadata")
+    @Operation(summary = "Get spreadsheet configurations metadata",
+            description = "Retrieves metadata of spreadsheet configurations by their IDs")
+    @ApiResponse(responseCode = "200", description = "Metadata found",
+            content = @Content(schema = @Schema(implementation = MetadataInfos.class)))
+    public ResponseEntity<List<MetadataInfos>> getSpreadsheetConfigsMetadata(@RequestParam List<UUID> ids) {
+        return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfigsMetadata(ids));
     }
 
     @GetMapping
     @Operation(summary = "Get all spreadsheet configurations",
             description = "Retrieves all spreadsheet configurations")
     @ApiResponse(responseCode = "200", description = "List of configurations",
-            content = @Content(schema = @Schema(implementation = SpreadsheetConfigDto.class)))
-    public ResponseEntity<List<SpreadsheetConfigDto>> getAllSpreadsheetConfigs() {
+            content = @Content(schema = @Schema(implementation = SpreadsheetConfigInfos.class)))
+    public ResponseEntity<List<SpreadsheetConfigInfos>> getAllSpreadsheetConfigs() {
         return ResponseEntity.ok(spreadsheetConfigService.getAllSpreadsheetConfigs());
     }
 
@@ -88,7 +97,7 @@ public class SpreadsheetConfigController {
     @ApiResponse(responseCode = "404", description = "Configuration not found")
     public ResponseEntity<Void> updateSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to update") @PathVariable UUID id,
-            @Valid @RequestBody SpreadsheetConfigDto dto) {
+            @Valid @RequestBody SpreadsheetConfigInfos dto) {
         spreadsheetConfigService.updateSpreadsheetConfig(id, dto);
         return ResponseEntity.noContent().build();
     }

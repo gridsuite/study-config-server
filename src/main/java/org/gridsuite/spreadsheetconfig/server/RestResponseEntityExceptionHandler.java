@@ -20,8 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 public class RestResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound(
-            EntityNotFoundException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.NOT_FOUND);
     }
