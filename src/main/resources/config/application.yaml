@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: spreadsheet-config
+
+powsybl-ws:
+  database:
+    name: spreadsheetconfig

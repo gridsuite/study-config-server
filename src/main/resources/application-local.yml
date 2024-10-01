@@ -1,0 +1,6 @@
+server:
+  port: 5035
+
+powsybl-ws:
+  database:
+    host: localhost
