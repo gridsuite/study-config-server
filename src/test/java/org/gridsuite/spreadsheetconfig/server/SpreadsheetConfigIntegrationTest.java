@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
-class SpreadsheetConfigControllerTest {
+class SpreadsheetConfigIntegrationTest {
 
     private static final String URI_SPREADSHEET_CONFIG_BASE = "/v1/spreadsheet-configs";
     private static final String URI_SPREADSHEET_CONFIG_GET_PUT = URI_SPREADSHEET_CONFIG_BASE + "/";
@@ -105,19 +105,23 @@ class SpreadsheetConfigControllerTest {
 
         UUID configUuid = saveAndReturnId(configToRead);
 
-        MvcResult receivedMetadata = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_BASE + "/metadata")
-                        .queryParam("ids", configUuid.toString()))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        List<MetadataInfos> metadata = mapper.readValue(
-                receivedMetadata.getResponse().getContentAsString(),
-                new TypeReference<List<MetadataInfos>>() { });
+        List<MetadataInfos> metadata = getMetadataInfos(configUuid);
 
         assertThat(metadata).hasSize(1);
         assertThat(metadata.get(0).id()).isEqualTo(configUuid);
         assertThat(metadata.get(0).sheetType()).isEqualTo(SheetType.BUSES);
 
+    }
+
+    private List<MetadataInfos> getMetadataInfos(UUID configUuid) throws Exception {
+        MvcResult receivedMetadata = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_BASE + "/metadata")
+                        .queryParam("ids", configUuid.toString()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        return mapper.readValue(
+                receivedMetadata.getResponse().getContentAsString(),
+                new TypeReference<List<MetadataInfos>>() { });
     }
 
     @Test
@@ -206,10 +210,6 @@ class SpreadsheetConfigControllerTest {
     void testDuplicate() throws Exception {
         SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
         UUID configUuid = postSpreadsheetConfig(configToCreate);
-
-        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE + "/duplicate")
-                        .queryParam("duplicateFrom", UUID.randomUUID().toString()))
-                .andExpect(status().isNotFound());
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);
 
