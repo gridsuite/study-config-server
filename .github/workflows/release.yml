@@ -17,13 +17,12 @@ jobs:
           java-version: 17
 
       - name: Checkout sources
-        uses: actions/checkout@v1
-
-      - name: Remove original tag
-        run: >
-          gh release delete ${{ github.ref_name }} --yes --cleanup-tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        run: |
+          git tag -d ${{ github.ref_name }}
+          git push origin :refs/tags/${{ github.ref_name }}
 
       - name: Extract tag versions
         run: |
