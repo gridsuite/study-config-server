@@ -1,0 +1,125 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: Release version (vX.X)
+        required: true
+      commitSha:
+        description: SHA of the commit from where to release
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        name: Generate app token
+        with:
+          app-id: ${{ vars.GRIDSUITE_ACTIONS_APPID }}
+          private-key: ${{ secrets.GRIDSUITE_ACTIONS_SECRET }}
+
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Extract tag versions
+        run: |
+          regex="^v([0-9]+)\.([0-9]+)$"
+          if [[ ${{ github.event.inputs.releaseVersion }} =~ $regex ]]
+          then
+            echo "GITHUB_MAJOR_VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+            echo "GITHUB_MINOR_VERSION=${BASH_REMATCH[2]}" >> $GITHUB_ENV
+            echo "GITHUB_SHORT_VERSION=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.0" >> $GITHUB_ENV
+          else 
+            echo ERROR: release version should match the format vX.X
+            exit 1
+          fi
+
+      - name: Check if release already exists
+        run: |
+          if git ls-remote --quiet --exit-code origin refs/heads/release-${{ github.event.inputs.releaseVersion }} >/dev/null 2>&1
+          then
+            echo "ERROR: Release ${{ github.event.inputs.releaseVersion }} already exists"
+            exit 1
+          else
+            echo "Release ${{ github.event.inputs.releaseVersion }} doesn't exist, it will be performed"
+          fi
+
+      - name: Checkout with new branch
+        run: |
+          git checkout -b release-v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }} ${{ github.event.inputs.commitSha }}
+
+      - name: Change Maven version to release version
+        run: mvn --batch-mode versions:set -DgenerateBackupPoms=false -DnewVersion=${{ env.GITHUB_SHORT_VERSION }}
+
+      - name: Build with Maven
+        run: mvn --batch-mode -Pjacoco verify
+
+      - name: Run SonarCloud analysis
+        run: >
+          mvn --batch-mode -DskipTests sonar:sonar
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.organization=gridsuite
+          -Dsonar.projectKey=gridsuite_spreadsheet-config-server
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Build Docker image
+        run: >
+          mvn --batch-mode deploy -DskipTests -Dmaven.install.skip -Dmaven.deploy.skip -Dpowsybl.docker.deploy
+          -Djib.httpTimeout=60000
+          -Djib.to.image=docker.io/gridsuite/spreadsheet-config-server:${{ env.GITHUB_SHORT_VERSION }}
+          -Djib.to.auth.username=gridsuiteci
+          -Djib.to.auth.password=${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Commit and tag release version
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Release v${{ env.GITHUB_SHORT_VERSION }}"
+          git tag v${{ env.GITHUB_SHORT_VERSION }}
+          git push origin release-v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}
+          git push origin v${{ env.GITHUB_SHORT_VERSION }}
+
+      - name: Checkout main
+        run: |
+          git checkout main
+          git pull
+
+      - name: Get current maven version
+        run: |
+          echo "CURRENT_MAVEN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Extract tag versions
+        run: |
+          regex="(.*)-SNAPSHOT"
+          if [[ ${{ env.CURRENT_MAVEN_VERSION }} =~ $regex ]]
+          then
+            echo "CURRENT_RELEASE_VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          fi
+
+      - name: Increment minor version
+        run: |
+          minor=${{ env.GITHUB_MINOR_VERSION }}
+          ((minor++))
+          echo "GITHUB_MINOR_VERSION=${minor}" >> $GITHUB_ENV
+
+      - name: Update SNAPSHOT version on main
+        if: env.CURRENT_RELEASE_VERSION == env.GITHUB_SHORT_VERSION
+        run: |
+          mvn --batch-mode versions:set -DgenerateBackupPoms=false -DnewVersion=${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}.0-SNAPSHOT
+          git add .
+          git commit -m "Update SNAPSHOT version to v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}.0"
+          git push
