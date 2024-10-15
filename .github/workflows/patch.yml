@@ -52,16 +52,6 @@ jobs:
       - name: Change Maven version to release version
         run: mvn --batch-mode versions:set -DgenerateBackupPoms=false -DnewVersion=${{ env.GITHUB_SHORT_VERSION }}
 
-      - name: Commit and tag release version
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Patched release v${{ env.GITHUB_SHORT_VERSION }}"
-          git tag v${{ env.GITHUB_SHORT_VERSION }}
-          git push origin release/v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}
-          git push origin v${{ env.GITHUB_SHORT_VERSION }}
-
       - name: Build with Maven
         run: mvn --batch-mode -Pjacoco verify
 
@@ -82,3 +72,19 @@ jobs:
           -Djib.to.image=docker.io/gridsuite/spreadsheet-config-server:${{ env.GITHUB_SHORT_VERSION }}
           -Djib.to.auth.username=gridsuiteci
           -Djib.to.auth.password=${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Commit and tag release version
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Patched release v${{ env.GITHUB_SHORT_VERSION }}"
+          git tag v${{ env.GITHUB_SHORT_VERSION }}
+          git push origin release/v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}
+          git push origin v${{ env.GITHUB_SHORT_VERSION }}
+
+      - name: Create GitHub release
+        run: |
+          gh release create v${{ env.GITHUB_SHORT_VERSION }} --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
