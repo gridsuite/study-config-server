@@ -40,6 +40,7 @@ public class SpreadsheetConfigEntity {
             name = "spreadsheet_custom_column",
             joinColumns = @JoinColumn(name = "spreadsheet_config_id")
     )
+    @OrderColumn(name = "column_order")
     @Builder.Default
     private List<CustomColumnEmbeddable> customColumns = new ArrayList<>();
 
