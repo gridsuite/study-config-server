@@ -82,9 +82,3 @@ jobs:
           git tag v${{ env.GITHUB_SHORT_VERSION }}
           git push origin release/v${{ env.GITHUB_MAJOR_VERSION }}.${{ env.GITHUB_MINOR_VERSION }}
           git push origin v${{ env.GITHUB_SHORT_VERSION }}
-
-      - name: Create GitHub release
-        run: |
-          gh release create v${{ env.GITHUB_SHORT_VERSION }} --generate-notes
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
