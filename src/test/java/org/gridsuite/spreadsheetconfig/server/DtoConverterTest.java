@@ -32,7 +32,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID id = UUID.randomUUID();
             SpreadsheetConfigEntity entity = SpreadsheetConfigEntity.builder()
                     .id(id)
-                    .sheetType(SheetType.BATTERIES)
+                    .sheetType(SheetType.BATTERY)
                     .customColumns(Arrays.asList(
                             CustomColumnEmbeddable.builder().name("Column1").formula("A+B").build(),
                             CustomColumnEmbeddable.builder().name("Column2").formula("C*D").build()
@@ -45,7 +45,7 @@ public class DtoConverterTest implements WithAssertions {
                     .as("DTO conversion result")
                     .satisfies(d -> {
                         assertThat(d.id()).isEqualTo(id);
-                        assertThat(d.sheetType()).isEqualTo(SheetType.BATTERIES);
+                        assertThat(d.sheetType()).isEqualTo(SheetType.BATTERY);
                         assertThat(d.customColumns()).hasSize(2);
                         assertThat(d.customColumns().get(0).name()).isEqualTo("Column1");
                         assertThat(d.customColumns().get(0).formula()).isEqualTo("A+B");
@@ -59,7 +59,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID id = UUID.randomUUID();
             SpreadsheetConfigInfos dto = new SpreadsheetConfigInfos(
                     id,
-                    SheetType.BUSES,
+                    SheetType.BUS,
                     Arrays.asList(
                             new CustomColumnInfos("Column1", "X+Y"),
                             new CustomColumnInfos("Column2", "Z*W")
@@ -72,7 +72,7 @@ public class DtoConverterTest implements WithAssertions {
                     .as("Entity conversion result")
                     .satisfies(e -> {
                         assertThat(e.getId()).isEqualTo(id);
-                        assertThat(e.getSheetType()).isEqualTo(SheetType.BUSES);
+                        assertThat(e.getSheetType()).isEqualTo(SheetType.BUS);
                         assertThat(e.getCustomColumns()).hasSize(2);
                         assertThat(e.getCustomColumns().get(0).getName()).isEqualTo("Column1");
                         assertThat(e.getCustomColumns().get(0).getFormula()).isEqualTo("X+Y");

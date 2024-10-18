@@ -9,21 +9,24 @@ package org.gridsuite.spreadsheetconfig.server.constants;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
+
+// Must be in-sync with EQUIPMENT_TYPES in spreadsheet front component
 public enum SheetType {
-    SUBSTATIONS,
-    VOLTAGE_LEVELS,
-    LINES,
-    TWO_WINDINGS_TRANSFORMERS,
-    THREE_WINDINGS_TRANSFORMERS,
-    GENERATORS,
-    LOADS,
-    SHUNT_COMPENSATORS,
-    STATIC_VAR_COMPENSATORS,
-    BATTERIES,
-    HVDC_LINES,
-    LCC_CONVERTER_STATIONS,
-    VSC_CONVERTER_STATIONS,
-    DANGLING_LINES,
-    BUSES,
-    TIE_LINES
+    SUBSTATION,
+    VOLTAGE_LEVEL,
+    LINE,
+    TWO_WINDINGS_TRANSFORMER,
+    THREE_WINDINGS_TRANSFORMER,
+    GENERATOR,
+    LOAD,
+    SHUNT_COMPENSATOR,
+    STATIC_VAR_COMPENSATOR,
+    BATTERY,
+    HVDC_LINE,
+    LCC_CONVERTER_STATION,
+    VSC_CONVERTER_STATION,
+    DANGLING_LINE,
+    BUS,
+    TIE_LINE
 }
+

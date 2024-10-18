@@ -60,7 +60,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testCreate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
 
         UUID configUuid = postSpreadsheetConfig(configToCreate);
         SpreadsheetConfigInfos createdConfig = getSpreadsheetConfig(configUuid);
@@ -86,7 +86,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testRead() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUSES, createCustomColumns());
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -101,7 +101,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetMetadata() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUSES, createCustomColumns());
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -109,7 +109,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(metadata).hasSize(1);
         assertThat(metadata.get(0).id()).isEqualTo(configUuid);
-        assertThat(metadata.get(0).sheetType()).isEqualTo(SheetType.BUSES);
+        assertThat(metadata.get(0).sheetType()).isEqualTo(SheetType.BUS);
 
     }
 
@@ -121,7 +121,7 @@ class SpreadsheetConfigIntegrationTest {
 
         return mapper.readValue(
                 receivedMetadata.getResponse().getContentAsString(),
-                new TypeReference<List<MetadataInfos>>() { });
+                new TypeReference<>() { });
     }
 
     @Test
@@ -134,7 +134,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
@@ -150,11 +150,11 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdate() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, SheetType.BUSES, createUpdatedCustomColumns());
+        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, SheetType.BUS, createUpdatedCustomColumns());
 
         String updatedConfigJson = mapper.writeValueAsString(updatedConfig);
 
@@ -173,7 +173,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDelete() throws Exception {
-        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
 
         UUID configUuid = saveAndReturnId(configToDelete);
 
@@ -195,8 +195,8 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetAll() throws Exception {
-        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
-        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, SheetType.BUSES, createUpdatedCustomColumns());
+        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, SheetType.BUS, createUpdatedCustomColumns());
 
         saveAndReturnId(config1);
         saveAndReturnId(config2);
@@ -208,7 +208,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDuplicate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERIES, createCustomColumns());
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
         UUID configUuid = postSpreadsheetConfig(configToCreate);
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);
@@ -285,7 +285,7 @@ class SpreadsheetConfigIntegrationTest {
 
         return mapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<SpreadsheetConfigInfos>>() { });
+                new TypeReference<>() { });
     }
 
     private UUID saveAndReturnId(SpreadsheetConfigInfos config) {

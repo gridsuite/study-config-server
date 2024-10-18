@@ -38,8 +38,12 @@ public class SpreadsheetConfigEntity {
     @ElementCollection
     @CollectionTable(
             name = "spreadsheet_custom_column",
-            joinColumns = @JoinColumn(name = "spreadsheet_config_id")
+            joinColumns = @JoinColumn(name = "spreadsheet_config_id"),
+            uniqueConstraints = {
+                @UniqueConstraint(name = "UK_config_id_name", columnNames = {"spreadsheet_config_id", "name"})
+            }
     )
+    @OrderColumn(name = "column_order")
     @Builder.Default
     private List<CustomColumnEmbeddable> customColumns = new ArrayList<>();
 

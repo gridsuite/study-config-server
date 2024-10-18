@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="braquartdav (generated)" id="1729252344073-1">
+        <dropPrimaryKey tableName="spreadsheet_custom_column"/>
+    </changeSet>
+    <changeSet author="braquartdav (generated)" id="1729252344073-3">
+        <addColumn tableName="spreadsheet_custom_column">
+            <column name="column_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="braquartdav (generated)" id="1729252344073-4">
+        <addUniqueConstraint columnNames="spreadsheet_config_id, name" constraintName="UK_config_id_name" tableName="spreadsheet_custom_column"/>
+    </changeSet>
+    <changeSet author="braquartdav (generated)" id="1729252344073-5">
+        <createIndex indexName="IX_spreadsheet_custom_columnPK" tableName="spreadsheet_custom_column" unique="true">
+            <column name="spreadsheet_config_id"/>
+            <column name="column_order"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="braquartdav (generated)" id="1729252344073-2">
+        <addPrimaryKey columnNames="spreadsheet_config_id, column_order" constraintName="spreadsheet_custom_columnPK" tableName="spreadsheet_custom_column"/>
+    </changeSet>
+</databaseChangeLog>
