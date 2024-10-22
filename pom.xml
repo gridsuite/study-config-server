@@ -19,7 +19,7 @@
 
     <groupId>org.gridsuite</groupId>
     <artifactId>gridsuite-spreadsheet-config-server</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.7.0</version>
 
     <packaging>jar</packaging>
     <name>Spreadsheet config server</name>
