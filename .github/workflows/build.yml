@@ -11,7 +11,7 @@ jobs:
     uses: powsybl/github-ci/.github/workflows/build-generic.yml@baf0d2ed84b70d359132693880d5e530cd93f168
     with:
       sonarOrganization: gridsuite
-      sonarProjectKey: gridsuite_spreadsheet-config-server
+      sonarProjectKey: org.gridsuite:gridsuite-spreadsheet-config-server
       dockerImage: docker.io/gridsuite/spreadsheet-config-server
       dockerUsername: gridsuiteci
       eventType: spreadsheet_config_server_updated
