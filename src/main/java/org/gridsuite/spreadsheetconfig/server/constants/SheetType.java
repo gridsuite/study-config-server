@@ -27,6 +27,7 @@ public enum SheetType {
     VSC_CONVERTER_STATION,
     DANGLING_LINE,
     BUS,
-    TIE_LINE
+    TIE_LINE,
+    BUSBAR_SECTION
 }
 
