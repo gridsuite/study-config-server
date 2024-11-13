@@ -31,6 +31,7 @@ public final class SpreadsheetConfigMapper {
     }
 
     public static MetadataInfos toMetadataDto(SpreadsheetConfigEntity entity) {
+        // MetadataInfos is a simple DTO with only two fields
         return new MetadataInfos(entity.getId(), entity.getSheetType());
     }
 
