@@ -62,7 +62,7 @@ public class NetworkVisualizationParamEntity {
     private String substationLayout = "horizontal";
 
     @Column(name = "component_library")
-    private String componentLibrary;
+    private String componentLibrary = "";
 
     @Column(name = "init_nad_with_geo_data")
     private Boolean initNadWithGeoData = true;

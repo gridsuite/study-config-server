@@ -20,11 +20,11 @@ public record NetworkVisualizationParamInfos(
     UUID id,
 
     @Schema(description = "Map parameters")
-    MapParamInfos mapParamInfos,
+    MapParamInfos mapParameters,
 
     @Schema(description = "Single line diagram parameters")
-    SingleLineDiagramParamInfos singleLineDiagramParamInfos,
+    SingleLineDiagramParamInfos singleLineDiagramParameters,
 
     @Schema(description = "Network area diagram parameters")
-    NetworkAreaDiagramParamInfos networkAreaDiagramParamInfos
+    NetworkAreaDiagramParamInfos networkAreaDiagramParameters
 ) { }

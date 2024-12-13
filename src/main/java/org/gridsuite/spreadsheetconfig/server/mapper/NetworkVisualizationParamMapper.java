@@ -49,19 +49,19 @@ public final class NetworkVisualizationParamMapper {
 
     public static void updateEntity(NetworkVisualizationParamEntity entity, NetworkVisualizationParamInfos dto) {
         // Map
-        entity.setLineFullPath(dto.mapParamInfos().lineFullPath());
-        entity.setLineParallelPath(dto.mapParamInfos().lineParallelPath());
-        entity.setLineFlowMode(dto.mapParamInfos().lineFlowMode());
-        entity.setLineFlowColorMode(dto.mapParamInfos().lineFlowColorMode());
-        entity.setLineFlowAlertThreshold(dto.mapParamInfos().lineFlowAlertThreshold());
-        entity.setMapManualRefresh(dto.mapParamInfos().mapManualRefresh());
-        entity.setMapBaseMap(dto.mapParamInfos().mapBaseMap());
+        entity.setLineFullPath(dto.mapParameters().lineFullPath());
+        entity.setLineParallelPath(dto.mapParameters().lineParallelPath());
+        entity.setLineFlowMode(dto.mapParameters().lineFlowMode());
+        entity.setLineFlowColorMode(dto.mapParameters().lineFlowColorMode());
+        entity.setLineFlowAlertThreshold(dto.mapParameters().lineFlowAlertThreshold());
+        entity.setMapManualRefresh(dto.mapParameters().mapManualRefresh());
+        entity.setMapBaseMap(dto.mapParameters().mapBaseMap());
         // SLD
-        entity.setDiagonalLabel(dto.singleLineDiagramParamInfos().diagonalLabel());
-        entity.setCenterLabel(dto.singleLineDiagramParamInfos().centerLabel());
-        entity.setSubstationLayout(dto.singleLineDiagramParamInfos().substationLayout());
-        entity.setComponentLibrary(dto.singleLineDiagramParamInfos().componentLibrary());
+        entity.setDiagonalLabel(dto.singleLineDiagramParameters().diagonalLabel());
+        entity.setCenterLabel(dto.singleLineDiagramParameters().centerLabel());
+        entity.setSubstationLayout(dto.singleLineDiagramParameters().substationLayout());
+        entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         // NAD
-        entity.setInitNadWithGeoData(dto.networkAreaDiagramParamInfos().initNadWithGeoData());
+        entity.setInitNadWithGeoData(dto.networkAreaDiagramParameters().initNadWithGeoData());
     }
 }

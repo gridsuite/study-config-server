@@ -25,6 +25,5 @@ public record SingleLineDiagramParamInfos(
     String substationLayout,
 
     @Schema(description = "Component library selection")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     String componentLibrary
 ) { }
