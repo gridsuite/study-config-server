@@ -71,7 +71,6 @@ public class DtoConverterTest implements WithAssertions {
             assertThat(entity)
                     .as("Entity conversion result")
                     .satisfies(e -> {
-                        assertThat(e.getId()).isEqualTo(id);
                         assertThat(e.getSheetType()).isEqualTo(SheetType.BUS);
                         assertThat(e.getCustomColumns()).hasSize(2);
                         assertThat(e.getCustomColumns().get(0).getName()).isEqualTo("Column1");

@@ -36,7 +36,6 @@ public final class SpreadsheetConfigMapper {
 
     public static SpreadsheetConfigEntity toEntity(SpreadsheetConfigInfos dto) {
         SpreadsheetConfigEntity entity = SpreadsheetConfigEntity.builder()
-                .id(dto.id())
                 .sheetType(dto.sheetType())
                 .build();
 
