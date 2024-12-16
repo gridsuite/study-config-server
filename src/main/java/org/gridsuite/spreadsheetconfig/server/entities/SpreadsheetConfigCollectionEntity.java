@@ -31,7 +31,7 @@ public class SpreadsheetConfigCollectionEntity {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "collection_id")
+    @JoinColumn(name = "collection_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_collection"))
     @Builder.Default
     private List<SpreadsheetConfigEntity> spreadsheetConfigs = new ArrayList<>();
 }

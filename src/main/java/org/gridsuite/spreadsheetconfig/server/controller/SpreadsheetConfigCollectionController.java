@@ -36,8 +36,6 @@ public class SpreadsheetConfigCollectionController {
 
     private final SpreadsheetConfigService spreadsheetConfigService;
 
-    public static final String DUPLICATE_FROM = "duplicateFrom";
-
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new spreadsheet configuration collection",
             description = "Creates a new spreadsheet configuration collection and returns its ID")

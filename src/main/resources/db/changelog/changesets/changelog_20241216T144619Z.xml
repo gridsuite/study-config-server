@@ -1,18 +1,18 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="labidiayo (generated)" id="1733499086090-1">
+    <changeSet author="labidiayo (generated)" id="1734360388052-1">
         <createTable tableName="spreadsheet_config_collection">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="spreadsheet_config_collectionPK"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1733499086090-2">
+    <changeSet author="labidiayo (generated)" id="1734360388052-2">
         <addColumn tableName="spreadsheet_config">
             <column name="collection_id" type="uuid"/>
         </addColumn>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1733499086090-3">
-        <addForeignKeyConstraint baseColumnNames="collection_id" baseTableName="spreadsheet_config" constraintName="FKl7p4nqyu9p8j8m6e81pqtv0y6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="spreadsheet_config_collection" validate="true"/>
+    <changeSet author="labidiayo (generated)" id="1734360388052-3">
+        <addForeignKeyConstraint baseColumnNames="collection_id" baseTableName="spreadsheet_config" constraintName="fk_spreadsheet_config_collection" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="spreadsheet_config_collection" validate="true"/>
     </changeSet>
 </databaseChangeLog>
