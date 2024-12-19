@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.controller;
+package org.gridsuite.spreadsheetconfig.server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,9 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.StudyConfigApi;
-import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.studyconfig.server.service.NetworkVisualizationsParamService;
+import org.gridsuite.spreadsheetconfig.server.SpreadsheetConfigApi;
+import org.gridsuite.spreadsheetconfig.server.dto.NetworkVisualizationParamInfos;
+import org.gridsuite.spreadsheetconfig.server.service.NetworkVisualizationsParamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @author David BRAQUART <david.braquart at rte-france.com>
  */
 @RestController
-@RequestMapping(value = "/" + StudyConfigApi.API_VERSION + "/network-visualizations-params")
+@RequestMapping(value = "/" + SpreadsheetConfigApi.API_VERSION + "/network-visualizations-params")
 @RequiredArgsConstructor
 @Tag(name = "Network Visualizations Params", description = "Network Visualizations Parameters API")
 public class NetworkVisualizationsParamController {

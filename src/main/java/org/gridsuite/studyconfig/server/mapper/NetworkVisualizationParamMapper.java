@@ -4,13 +4,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.mapper;
+package org.gridsuite.spreadsheetconfig.server.mapper;
 
-import org.gridsuite.studyconfig.server.dto.MapParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkAreaDiagramParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.studyconfig.server.dto.SingleLineDiagramParamInfos;
-import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
+import org.gridsuite.spreadsheetconfig.server.dto.MapParamInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.NetworkAreaDiagramParamInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.NetworkVisualizationParamInfos;
+import org.gridsuite.spreadsheetconfig.server.dto.SingleLineDiagramParamInfos;
+import org.gridsuite.spreadsheetconfig.server.entities.NetworkVisualizationParamEntity;
 
 /**
  * @author David BRAQUART <david.braquart at rte-france.com>
