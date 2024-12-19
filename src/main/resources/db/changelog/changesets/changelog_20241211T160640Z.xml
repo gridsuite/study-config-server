@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="braquartdav (generated)" id="1733933213842-1">
+        <createTable tableName="network_visualization_params">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="network_visualization_paramsPK"/>
+            </column>
+            <column name="center_label" type="BOOLEAN"/>
+            <column name="component_library" type="VARCHAR(255)"/>
+            <column name="diagonal_label" type="BOOLEAN"/>
+            <column name="init_nad_with_geo_data" type="BOOLEAN"/>
+            <column name="line_flow_alert_threshold" type="INT"/>
+            <column name="line_flow_color_mode" type="VARCHAR(255)"/>
+            <column name="line_flow_mode" type="VARCHAR(255)"/>
+            <column name="line_full_path" type="BOOLEAN"/>
+            <column name="line_parallel_path" type="BOOLEAN"/>
+            <column name="map_basemap" type="VARCHAR(255)"/>
+            <column name="map_manual_refresh" type="BOOLEAN"/>
+            <column name="substation_layout" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
