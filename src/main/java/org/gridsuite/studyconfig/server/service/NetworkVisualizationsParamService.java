@@ -4,14 +4,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.spreadsheetconfig.server.service;
+package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.spreadsheetconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.spreadsheetconfig.server.entities.NetworkVisualizationParamEntity;
-import org.gridsuite.spreadsheetconfig.server.mapper.NetworkVisualizationParamMapper;
-import org.gridsuite.spreadsheetconfig.server.repositories.NetworkVisualizationParamRepository;
+import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
+import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
+import org.gridsuite.studyconfig.server.mapper.NetworkVisualizationParamMapper;
+import org.gridsuite.studyconfig.server.repositories.NetworkVisualizationParamRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

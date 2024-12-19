@@ -4,15 +4,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.spreadsheetconfig.server;
+package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gridsuite.spreadsheetconfig.server.dto.MapParamInfos;
-import org.gridsuite.spreadsheetconfig.server.dto.NetworkAreaDiagramParamInfos;
-import org.gridsuite.spreadsheetconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.spreadsheetconfig.server.dto.SingleLineDiagramParamInfos;
-import org.gridsuite.spreadsheetconfig.server.repositories.NetworkVisualizationParamRepository;
-import org.gridsuite.spreadsheetconfig.server.service.NetworkVisualizationsParamService;
+import org.gridsuite.studyconfig.server.dto.MapParamInfos;
+import org.gridsuite.studyconfig.server.dto.NetworkAreaDiagramParamInfos;
+import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
+import org.gridsuite.studyconfig.server.dto.SingleLineDiagramParamInfos;
+import org.gridsuite.studyconfig.server.repositories.NetworkVisualizationParamRepository;
+import org.gridsuite.studyconfig.server.service.NetworkVisualizationsParamService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
