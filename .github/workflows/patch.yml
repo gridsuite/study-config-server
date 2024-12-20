@@ -13,8 +13,8 @@ jobs:
     with:
       githubappId: ${{ vars.GRIDSUITE_ACTIONS_APPID }}
       sonarOrganization: gridsuite
-      sonarProjectKey: org.gridsuite:spreadsheet-config-server
-      dockerImage: docker.io/gridsuite/spreadsheet-config-server
+      sonarProjectKey: org.gridsuite:study-config-server
+      dockerImage: docker.io/gridsuite/study-config-server
       dockerUsername: gridsuiteci
       releaseVersion: ${{ github.event.inputs.releaseVersion }}
     secrets:

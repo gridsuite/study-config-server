@@ -37,6 +37,6 @@
     <!--
         our logs
     -->
-    <logger name="org.gridsuite.spreadsheetconfig.server" level="trace"/>
+    <logger name="org.gridsuite.studyconfig.server" level="trace"/>
 
 </configuration>

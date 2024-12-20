@@ -1,7 +1,7 @@
 spring:
   application:
-    name: spreadsheet-config
+    name: study-config
 
 powsybl-ws:
   database:
-    name: spreadsheetconfig
+    name: studyconfig

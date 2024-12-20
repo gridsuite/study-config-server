@@ -1,1 +1,1 @@
-# spreadsheet-config-server
+# study-config-server
