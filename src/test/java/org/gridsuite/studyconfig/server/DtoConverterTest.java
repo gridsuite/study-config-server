@@ -61,8 +61,8 @@ public class DtoConverterTest implements WithAssertions {
                     id,
                     SheetType.BUS,
                     Arrays.asList(
-                            new CustomColumnInfos("Column1", "X+Y"),
-                            new CustomColumnInfos("Column2", "Z*W")
+                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]"),
+                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]")
                     )
             );
 
@@ -75,8 +75,10 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getCustomColumns()).hasSize(2);
                         assertThat(e.getCustomColumns().get(0).getName()).isEqualTo("Column1");
                         assertThat(e.getCustomColumns().get(0).getFormula()).isEqualTo("X+Y");
+                        assertThat(e.getCustomColumns().get(0).getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                         assertThat(e.getCustomColumns().get(1).getName()).isEqualTo("Column2");
                         assertThat(e.getCustomColumns().get(1).getFormula()).isEqualTo("Z*W");
+                        assertThat(e.getCustomColumns().get(1).getDependencies()).isEqualTo("[\"col1\"]");
                     });
         }
     }
@@ -102,7 +104,7 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEmbeddableOfCustomColumn() {
-            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z");
+            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]");
 
             CustomColumnEmbeddable customColumnEmbeddable = SpreadsheetConfigMapper.toCustomColumnEmbeddable(dto);
 
@@ -111,6 +113,7 @@ public class DtoConverterTest implements WithAssertions {
                     .satisfies(e -> {
                         assertThat(e.getName()).isEqualTo("TestColumn");
                         assertThat(e.getFormula()).isEqualTo("X*Y*Z");
+                        assertThat(e.getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                     });
         }
     }

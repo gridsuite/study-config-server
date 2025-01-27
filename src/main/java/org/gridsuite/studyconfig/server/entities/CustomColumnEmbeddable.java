@@ -26,4 +26,6 @@ public class CustomColumnEmbeddable {
     @Column(name = "formula", columnDefinition = "CLOB")
     private String formula;
 
+    @Column(name = "dependencies", columnDefinition = "CLOB")
+    private String dependencies;
 }

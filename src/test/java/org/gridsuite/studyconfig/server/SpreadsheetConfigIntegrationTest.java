@@ -232,18 +232,18 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<CustomColumnInfos> createCustomColumns() {
         return Arrays.asList(
-                new CustomColumnInfos("cust_a", "cust_b + cust_c"),
-                new CustomColumnInfos("cust_b", "var_minP + 1"),
-                new CustomColumnInfos("cust_c", "cust_b + 1"),
-                new CustomColumnInfos("cust_d", "5 + 2")
+                new CustomColumnInfos("cust_a", "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]"),
+                new CustomColumnInfos("cust_b", "var_minP + 1", null),
+                new CustomColumnInfos("cust_c", "cust_b + 1", "[\"cust_b\"]"),
+                new CustomColumnInfos("cust_d", "5 + 2", null)
         );
     }
 
     private List<CustomColumnInfos> createUpdatedCustomColumns() {
         return Arrays.asList(
-                new CustomColumnInfos("cust_x", "cust_y * 2"),
-                new CustomColumnInfos("cust_y", "var_maxP - 1"),
-                new CustomColumnInfos("cust_z", "cust_x / 2")
+                new CustomColumnInfos("cust_x", "cust_y * 2", "[\"cust_y\"]"),
+                new CustomColumnInfos("cust_y", "var_maxP - 1", null),
+                new CustomColumnInfos("cust_z", "cust_x / 2", "[\"cust_x\"]")
         );
     }
 

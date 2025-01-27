@@ -54,6 +54,7 @@ public class SpreadsheetConfigService {
                 .map(column -> CustomColumnEmbeddable.builder()
                         .name(column.getName())
                         .formula(column.getFormula())
+                        .dependencies(column.getDependencies())
                         .build())
                 .toList();
 
@@ -166,6 +167,7 @@ public class SpreadsheetConfigService {
                             .map(column -> CustomColumnEmbeddable.builder()
                                     .name(column.getName())
                                     .formula(column.getFormula())
+                                    .dependencies(column.getDependencies())
                                     .build())
                             .toList());
                     return configDuplicate;
