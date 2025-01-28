@@ -49,10 +49,10 @@ public final class SpreadsheetConfigMapper {
     }
 
     public static CustomColumnInfos toCustomColumnDto(CustomColumnEmbeddable entity) {
-        return new CustomColumnInfos(entity.getName(), entity.getFormula(), entity.getDependencies());
+        return new CustomColumnInfos(entity.getName(), entity.getFormula(), entity.getDependencies(), entity.getId());
     }
 
     public static CustomColumnEmbeddable toCustomColumnEmbeddable(CustomColumnInfos dto) {
-        return new CustomColumnEmbeddable(dto.name(), dto.formula(), dto.dependencies());
+        return new CustomColumnEmbeddable(dto.name(), dto.formula(), dto.dependencies(), dto.id());
     }
 }

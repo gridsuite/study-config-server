@@ -55,6 +55,7 @@ public class SpreadsheetConfigService {
                         .name(column.getName())
                         .formula(column.getFormula())
                         .dependencies(column.getDependencies())
+                        .id(column.getId())
                         .build())
                 .toList();
 
@@ -168,6 +169,7 @@ public class SpreadsheetConfigService {
                                     .name(column.getName())
                                     .formula(column.getFormula())
                                     .dependencies(column.getDependencies())
+                                    .id(column.getId())
                                     .build())
                             .toList());
                     return configDuplicate;

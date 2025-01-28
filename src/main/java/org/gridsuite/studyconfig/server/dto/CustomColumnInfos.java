@@ -23,5 +23,8 @@ public record CustomColumnInfos(
     String formula,
 
     @Schema(description = "Column dependencies")
-    String dependencies
+    String dependencies,
+
+    @Schema(description = "Column id")
+    String id
 ) { }

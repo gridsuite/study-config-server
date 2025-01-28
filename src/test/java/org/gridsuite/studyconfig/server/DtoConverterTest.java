@@ -34,8 +34,8 @@ public class DtoConverterTest implements WithAssertions {
                     .id(id)
                     .sheetType(SheetType.BATTERY)
                     .customColumns(Arrays.asList(
-                            CustomColumnEmbeddable.builder().name("Column1").formula("A+B").build(),
-                            CustomColumnEmbeddable.builder().name("Column2").formula("C*D").build()
+                            CustomColumnEmbeddable.builder().name("Column1").formula("A+B").id("id1").build(),
+                            CustomColumnEmbeddable.builder().name("Column2").formula("C*D").id("id2").build()
                     ))
                     .build();
 
@@ -49,8 +49,10 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.customColumns()).hasSize(2);
                         assertThat(d.customColumns().get(0).name()).isEqualTo("Column1");
                         assertThat(d.customColumns().get(0).formula()).isEqualTo("A+B");
+                        assertThat(d.customColumns().get(0).id()).isEqualTo("id1");
                         assertThat(d.customColumns().get(1).name()).isEqualTo("Column2");
                         assertThat(d.customColumns().get(1).formula()).isEqualTo("C*D");
+                        assertThat(d.customColumns().get(1).id()).isEqualTo("id2");
                     });
         }
 
@@ -61,8 +63,8 @@ public class DtoConverterTest implements WithAssertions {
                     id,
                     SheetType.BUS,
                     Arrays.asList(
-                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]"),
-                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]")
+                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]", "id1"),
+                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]", "id2")
                     )
             );
 
@@ -75,9 +77,11 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getCustomColumns()).hasSize(2);
                         assertThat(e.getCustomColumns().get(0).getName()).isEqualTo("Column1");
                         assertThat(e.getCustomColumns().get(0).getFormula()).isEqualTo("X+Y");
+                        assertThat(e.getCustomColumns().get(0).getId()).isEqualTo("id1");
                         assertThat(e.getCustomColumns().get(0).getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                         assertThat(e.getCustomColumns().get(1).getName()).isEqualTo("Column2");
                         assertThat(e.getCustomColumns().get(1).getFormula()).isEqualTo("Z*W");
+                        assertThat(e.getCustomColumns().get(1).getId()).isEqualTo("id2");
                         assertThat(e.getCustomColumns().get(1).getDependencies()).isEqualTo("[\"col1\"]");
                     });
         }
@@ -90,6 +94,7 @@ public class DtoConverterTest implements WithAssertions {
             CustomColumnEmbeddable entity = CustomColumnEmbeddable.builder()
                     .name("TestColumn")
                     .formula("A+B+C")
+                    .id("idTest")
                     .build();
 
             CustomColumnInfos dto = SpreadsheetConfigMapper.toCustomColumnDto(entity);
@@ -99,13 +104,13 @@ public class DtoConverterTest implements WithAssertions {
                     .satisfies(d -> {
                         assertThat(d.name()).isEqualTo("TestColumn");
                         assertThat(d.formula()).isEqualTo("A+B+C");
+                        assertThat(d.id()).isEqualTo("idTest");
                     });
         }
 
         @Test
         void testConversionToEmbeddableOfCustomColumn() {
-            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]");
-
+            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]", "idTest");
             CustomColumnEmbeddable customColumnEmbeddable = SpreadsheetConfigMapper.toCustomColumnEmbeddable(dto);
 
             assertThat(customColumnEmbeddable)
@@ -114,6 +119,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getName()).isEqualTo("TestColumn");
                         assertThat(e.getFormula()).isEqualTo("X*Y*Z");
                         assertThat(e.getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
+                        assertThat(e.getId()).isEqualTo("idTest");
                     });
         }
     }
