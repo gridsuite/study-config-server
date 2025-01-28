@@ -66,7 +66,7 @@ public class NetworkVisualizationsParamController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @PostMapping(value = "/duplicate", params = { DUPLICATE_FROM })
+    @PostMapping(value = "", params = { DUPLICATE_FROM }, produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Duplicate parameters",
             description = "Creates a copy of existing network visualizations parameters")
     @ApiResponse(responseCode = "201", description = "Parameters duplicated",
