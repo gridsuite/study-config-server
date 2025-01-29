@@ -40,7 +40,7 @@ public class SpreadsheetConfigEntity {
             name = "spreadsheet_custom_column",
             joinColumns = @JoinColumn(name = "spreadsheet_config_id"),
             uniqueConstraints = {
-                @UniqueConstraint(name = "UK_config_id_name", columnNames = {"spreadsheet_config_id", "name"})
+                @UniqueConstraint(name = "UK_config_id_column_id", columnNames = {"spreadsheet_config_id", "column_id"})
             }
     )
     @OrderColumn(name = "column_order")

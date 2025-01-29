@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="lecuyerfra (generated)" id="1737731735521-1">
+        <sql dbms="postgresql">
+            TRUNCATE TABLE spreadsheet_config CASCADE;
+        </sql>
+    </changeSet>
+    <changeSet author="lecuyerfra (generated)" id="1737731735521-2">
+        <sql dbms="postgresql">
+            TRUNCATE TABLE spreadsheet_config_collection CASCADE;
+        </sql>
+    </changeSet>
+    <changeSet author="lecuyerfra (generated)" id="1737731735521-3">
+        <addColumn tableName="spreadsheet_custom_column">
+            <column name="column_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lecuyerfra (generated)" id="1737731735521-4">
+        <addUniqueConstraint columnNames="spreadsheet_config_id, column_id" constraintName="UK_config_id_column_id" tableName="spreadsheet_custom_column"/>
+    </changeSet>
+    <changeSet author="lecuyerfra (generated)" id="1737731735521-5">
+        <dropUniqueConstraint constraintName="UK_config_id_name" tableName="spreadsheet_custom_column"/>
+    </changeSet>
+    <changeSet author="mancinijor (generated)" id="1737731735521-6">
+        <addColumn tableName="spreadsheet_custom_column">
+            <column name="dependencies" type="CLOB"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
