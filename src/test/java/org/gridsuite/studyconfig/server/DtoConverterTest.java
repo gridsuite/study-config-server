@@ -63,8 +63,8 @@ public class DtoConverterTest implements WithAssertions {
                     id,
                     SheetType.BUS,
                     Arrays.asList(
-                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]", "id1"),
-                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]", "id2")
+                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]", "id1", 0),
+                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]", "id2", 1)
                     )
             );
 
@@ -110,7 +110,7 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEmbeddableOfCustomColumn() {
-            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]", "idTest");
+            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]", "idTest", 5);
             CustomColumnEmbeddable customColumnEmbeddable = SpreadsheetConfigMapper.toCustomColumnEmbeddable(dto);
 
             assertThat(customColumnEmbeddable)
@@ -120,6 +120,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getFormula()).isEqualTo("X*Y*Z");
                         assertThat(e.getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                         assertThat(e.getId()).isEqualTo("idTest");
+                        assertThat(e.getPosition()).isEqualTo(5);
                     });
         }
     }
