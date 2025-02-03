@@ -6,6 +6,8 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,6 +20,12 @@ public record CustomColumnInfos(
     @NotNull(message = "Column name is mandatory")
     @Schema(description = "Column name")
     String name,
+
+    @Schema(description = "Column type")
+    ColumnType type,
+
+    @Schema(description = "Column precision")
+    Integer precision,
 
     @Schema(description = "Column formula")
     String formula,
