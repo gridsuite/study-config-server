@@ -31,4 +31,7 @@ public class CustomColumnEmbeddable {
 
     @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
     private String id;
+
+    @Column(name = "position", nullable = false)
+    private Integer position;
 }

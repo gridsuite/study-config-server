@@ -56,6 +56,7 @@ public class SpreadsheetConfigService {
                         .formula(column.getFormula())
                         .dependencies(column.getDependencies())
                         .id(column.getId())
+                        .position(column.getPosition())
                         .build())
                 .toList();
 
@@ -170,6 +171,7 @@ public class SpreadsheetConfigService {
                                     .formula(column.getFormula())
                                     .dependencies(column.getDependencies())
                                     .id(column.getId())
+                                    .position(column.getPosition())
                                     .build())
                             .toList());
                     return configDuplicate;

@@ -26,5 +26,8 @@ public record CustomColumnInfos(
     String dependencies,
 
     @Schema(description = "Column id")
-    String id
+    String id,
+
+    @Schema(description = "Column position")
+    Integer position
 ) { }
