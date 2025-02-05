@@ -6,6 +6,8 @@
  */
 package org.gridsuite.studyconfig.server.entities;
 
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,13 @@ public class CustomColumnEmbeddable {
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     private String name;
+
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ColumnType type;
+
+    @Column(name = "precision", columnDefinition = "integer")
+    private Integer precision;
 
     @Column(name = "formula", columnDefinition = "CLOB")
     private String formula;

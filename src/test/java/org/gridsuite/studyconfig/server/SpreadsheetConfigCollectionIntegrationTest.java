@@ -8,6 +8,7 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.dto.CustomColumnInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
@@ -136,8 +137,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<CustomColumnInfos> customColumnInfos = Arrays.asList(
-            new CustomColumnInfos("cust_a", "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new CustomColumnInfos("cust_b", "var_minP + 1", null, "idB")
+            new CustomColumnInfos("cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
+            new CustomColumnInfos("cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB")
         );
 
         return List.of(
@@ -148,10 +149,10 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigs() {
         List<CustomColumnInfos> customColumnInfos = Arrays.asList(
-            new CustomColumnInfos("cust_a", "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new CustomColumnInfos("cust_b", "var_minP + 2", null, "idB"),
-            new CustomColumnInfos("cust_c", "cust_b + 2", "[\"cust_b\"]", "idC"),
-            new CustomColumnInfos("cust_d", "5 + 1", null, "idD")
+            new CustomColumnInfos("cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
+            new CustomColumnInfos("cust_b", ColumnType.TEXT, null, "var_minP + 2", null, "idB"),
+            new CustomColumnInfos("cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]", "idC"),
+            new CustomColumnInfos("cust_d", ColumnType.NUMBER, 0, "5 + 1", null, "idD")
         );
 
         return List.of(

@@ -7,6 +7,7 @@
 package org.gridsuite.studyconfig.server;
 
 import org.assertj.core.api.WithAssertions;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.dto.CustomColumnInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
@@ -63,8 +64,8 @@ public class DtoConverterTest implements WithAssertions {
                     id,
                     SheetType.BUS,
                     Arrays.asList(
-                            new CustomColumnInfos("Column1", "X+Y", "[\"col1\", \"col2\"]", "id1"),
-                            new CustomColumnInfos("Column2", "Z*W", "[\"col1\"]", "id2")
+                            new CustomColumnInfos("Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1"),
+                            new CustomColumnInfos("Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2")
                     )
             );
 
@@ -110,7 +111,7 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEmbeddableOfCustomColumn() {
-            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", "X*Y*Z", "[\"col1\", \"col2\"]", "idTest");
+            CustomColumnInfos dto = new CustomColumnInfos("TestColumn", ColumnType.NUMBER, 3, "X*Y*Z", "[\"col1\", \"col2\"]", "idTest");
             CustomColumnEmbeddable customColumnEmbeddable = SpreadsheetConfigMapper.toCustomColumnEmbeddable(dto);
 
             assertThat(customColumnEmbeddable)
