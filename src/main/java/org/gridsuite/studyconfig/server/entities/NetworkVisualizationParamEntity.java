@@ -61,8 +61,10 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "substation_layout")
     private String substationLayout = "horizontal";
 
+    // see : https://github.com/powsybl/powsybl-single-line-diagram-server/blob/main/src/main/java/com/powsybl/sld/server/GridSuiteAndConvergenceComponentLibrary.java#L18
+    // default value for API using it
     @Column(name = "component_library")
-    private String componentLibrary = "";
+    private String componentLibrary = "GridSuiteAndConvergence";
 
     @Column(name = "init_nad_with_geo_data")
     private Boolean initNadWithGeoData = true;
