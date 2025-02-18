@@ -42,6 +42,7 @@ class SpreadsheetConfigIntegrationTest {
 
     private static final String URI_SPREADSHEET_CONFIG_BASE = "/v1/spreadsheet-configs";
     private static final String URI_SPREADSHEET_CONFIG_GET_PUT = URI_SPREADSHEET_CONFIG_BASE + "/";
+    private static final String URI_COLUMN_BASE = "/columns";
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +57,7 @@ class SpreadsheetConfigIntegrationTest {
     private SpreadsheetConfigRepository spreadsheetConfigRepository;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         spreadsheetConfigRepository.deleteAll();
     }
 
@@ -232,6 +233,78 @@ class SpreadsheetConfigIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testCreateColumn() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, SheetType.BATTERY, List.of());
+        UUID configId = saveAndReturnId(config);
+
+        ColumnInfos columnToCreate = new ColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId");
+
+        MvcResult result = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
+                .content(mapper.writeValueAsString(columnToCreate))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UUID columnId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
+
+        ColumnInfos createdColumn = getColumn(configId, columnId);
+        assertThat(createdColumn)
+                .usingRecursiveComparison()
+                .ignoringFields("uuid")
+                .isEqualTo(columnToCreate);
+    }
+
+    @Test
+    void testUpdateColumn() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
+        UUID configId = saveAndReturnId(config);
+
+        SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
+        UUID columnId = savedConfig.columns().get(0).uuid();
+
+        ColumnInfos columnUpdate = new ColumnInfos(columnId, "updated_column", ColumnType.TEXT, null, "new_formula", "[]", "updatedId");
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId)
+                .content(mapper.writeValueAsString(columnUpdate))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        ColumnInfos updatedColumn = getColumn(configId, columnId);
+        assertThat(updatedColumn).isEqualTo(columnUpdate);
+    }
+
+    @Test
+    void testDeleteColumn() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
+        UUID configId = saveAndReturnId(config);
+
+        SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
+        UUID columnId = savedConfig.columns().get(0).uuid();
+
+        mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigInfos configAfterDelete = getSpreadsheetConfig(configId);
+        assertThat(configAfterDelete.columns())
+                .extracting(ColumnInfos::uuid)
+                .isNotEmpty()
+                .doesNotContain(columnId);
+    }
+
+    @Test
+    void testGetColumn() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
+        UUID configId = saveAndReturnId(config);
+
+        SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
+        UUID columnId = savedConfig.columns().get(0).uuid();
+
+        ColumnInfos column = getColumn(configId, columnId);
+        assertThat(column).isNotNull();
+        assertThat(column.uuid()).isEqualTo(columnId);
+    }
+
     private List<ColumnInfos> createColumns() {
         return Arrays.asList(
                 new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
@@ -292,5 +365,13 @@ class SpreadsheetConfigIntegrationTest {
 
     private UUID saveAndReturnId(SpreadsheetConfigInfos config) {
         return spreadsheetConfigService.createSpreadsheetConfig(config);
+    }
+
+    private ColumnInfos getColumn(UUID configId, UUID columnId) throws Exception {
+        MvcResult result = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        return mapper.readValue(result.getResponse().getContentAsString(), ColumnInfos.class);
     }
 }

@@ -36,6 +36,7 @@ public class SpreadsheetConfigService {
     private final SpreadsheetConfigCollectionRepository spreadsheetConfigCollectionRepository;
 
     private static final String SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND = "SpreadsheetConfigCollection not found with id: ";
+    private static final String COLUMN_NOT_FOUND = "Column not found with id: ";
 
     @Transactional
     public UUID createSpreadsheetConfig(SpreadsheetConfigInfos dto) {
@@ -190,7 +191,7 @@ public class SpreadsheetConfigService {
             .filter(column -> column.getUuid().equals(columnId))
             .findFirst()
             .map(SpreadsheetConfigMapper::toColumnDto)
-            .orElseThrow(() -> new EntityNotFoundException("Column not found with id: " + columnId));
+            .orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
     }
 
     @Transactional
@@ -198,7 +199,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
         ColumnEntity columnEntity = SpreadsheetConfigMapper.toColumnEntity(dto);
         entity.getColumns().add(columnEntity);
-        spreadsheetConfigRepository.save(entity);
+        spreadsheetConfigRepository.flush();
         return columnEntity.getUuid();
     }
 
@@ -208,7 +209,7 @@ public class SpreadsheetConfigService {
         ColumnEntity columnEntity = entity.getColumns().stream()
             .filter(column -> column.getUuid().equals(columnId))
             .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("Column not found with id: " + columnId));
+            .orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
 
         columnEntity.setName(dto.name());
         columnEntity.setType(dto.type());
@@ -225,7 +226,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
         boolean removed = entity.getColumns().removeIf(column -> column.getUuid().equals(columnId));
         if (!removed) {
-            throw new EntityNotFoundException("Column not found with id: " + columnId);
+            throw new EntityNotFoundException(COLUMN_NOT_FOUND + columnId);
         }
         spreadsheetConfigRepository.save(entity);
     }
