@@ -47,12 +47,12 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @PostMapping(value = "/collect", consumes = APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create a new spreadsheet configuration collection collecting and duplicating a list of existing configurations",
+    @PostMapping(value = "/merge", consumes = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create a new spreadsheet configuration collection duplicating and merging a list of existing configurations",
             description = "Creates a new spreadsheet configuration collection and returns its ID")
     @ApiResponse(responseCode = "201", description = "Configuration collection created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
-    public ResponseEntity<UUID> createSpreadsheetConfigCollectionFromConfigs(@Parameter(description = "Configurations to duplicate and collect") @Valid @RequestBody List<UUID> configUuids) {
+    public ResponseEntity<UUID> createSpreadsheetConfigCollectionFromConfigs(@Parameter(description = "Configurations to duplicate and merge") @Valid @RequestBody List<UUID> configUuids) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfigCollectionFromConfigs(configUuids);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
