@@ -26,6 +26,6 @@ public record SpreadsheetConfigInfos(
     @Schema(description = "Spreadsheet type")
     SheetType sheetType,
 
-    @Schema(description = "Custom columns")
-    List<CustomColumnInfos> customColumns
+    @Schema(description = "Columns")
+    List<ColumnInfos> columns
 ) { }

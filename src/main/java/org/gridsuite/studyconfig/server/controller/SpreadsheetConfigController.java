@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
@@ -112,4 +113,47 @@ public class SpreadsheetConfigController {
         spreadsheetConfigService.deleteSpreadsheetConfig(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/columns/{columnId}")
+    @Operation(summary = "Get a column", description = "Retrieves a column by its ID")
+    @ApiResponse(responseCode = "200", description = "Column found")
+    @ApiResponse(responseCode = "404", description = "Column not found")
+    public ResponseEntity<ColumnInfos> getColumn(
+                    @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+                    @Parameter(description = "ID of the column to retrieve") @PathVariable UUID columnId) {
+        return ResponseEntity.ok(spreadsheetConfigService.getColumn(id, columnId));
+    }
+
+    @PostMapping("/{id}/columns")
+    @Operation(summary = "Create a column", description = "Creates a new column")
+    @ApiResponse(responseCode = "201", description = "Column created")
+    public ResponseEntity<UUID> createColumn(
+                    @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+                    @Valid @RequestBody ColumnInfos dto) {
+        UUID columnId = spreadsheetConfigService.createColumn(id, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(columnId);
+    }
+
+    @PutMapping("/{id}/columns/{columnId}")
+    @Operation(summary = "Update a column", description = "Updates an existing column")
+    @ApiResponse(responseCode = "204", description = "Column updated")
+    public ResponseEntity<Void> updateColumn(
+                    @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+                    @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
+                    @Valid @RequestBody ColumnInfos dto) {
+        spreadsheetConfigService.updateColumn(id, columnId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/columns/{columnId}")
+    @Operation(summary = "Delete a column", description = "Deletes an existing column")
+    @ApiResponse(responseCode = "204", description = "Column deleted")
+    @ApiResponse(responseCode = "404", description = "Column not found")
+    public ResponseEntity<Void> deleteColumn(
+                    @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+                    @Parameter(description = "ID of the column to delete") @PathVariable UUID columnId) {
+        spreadsheetConfigService.deleteColumn(id, columnId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
