@@ -8,10 +8,11 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.entities.CustomColumnEmbeddable;
+import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigCollectionEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
@@ -50,8 +51,8 @@ public class SpreadsheetConfigService {
                 .sheetType(entity.getSheetType())
                 .build();
 
-        List<CustomColumnEmbeddable> customColumns = entity.getCustomColumns().stream()
-                .map(column -> CustomColumnEmbeddable.builder()
+        List<ColumnEntity> columns = entity.getColumns().stream()
+                .map(column -> ColumnEntity.builder()
                         .name(column.getName())
                         .type(column.getType())
                         .precision(column.getPrecision())
@@ -61,7 +62,7 @@ public class SpreadsheetConfigService {
                         .build())
                 .toList();
 
-        duplicate.setCustomColumns(customColumns);
+        duplicate.setColumns(columns);
 
         return spreadsheetConfigRepository.save(duplicate).getId();
     }
@@ -93,10 +94,10 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
 
         entity.setSheetType(dto.sheetType());
-        entity.getCustomColumns().clear();
-        if (dto.customColumns() != null) {
-            entity.getCustomColumns().addAll(dto.customColumns().stream()
-                    .map(SpreadsheetConfigMapper::toCustomColumnEmbeddable)
+        entity.getColumns().clear();
+        if (dto.columns() != null) {
+            entity.getColumns().addAll(dto.columns().stream()
+                    .map(SpreadsheetConfigMapper::toColumnEntity)
                     .toList());
         }
     }
@@ -166,8 +167,8 @@ public class SpreadsheetConfigService {
                     SpreadsheetConfigEntity configDuplicate = SpreadsheetConfigEntity.builder()
                             .sheetType(config.getSheetType())
                             .build();
-                    configDuplicate.setCustomColumns(config.getCustomColumns().stream()
-                            .map(column -> CustomColumnEmbeddable.builder()
+                    configDuplicate.setColumns(config.getColumns().stream()
+                            .map(column -> ColumnEntity.builder()
                                     .name(column.getName())
                                     .type(column.getType())
                                     .precision(column.getPrecision())
@@ -180,6 +181,53 @@ public class SpreadsheetConfigService {
                 })
                 .toList());
         return spreadsheetConfigCollectionRepository.save(duplicate).getId();
+    }
+
+    @Transactional(readOnly = true)
+    public ColumnInfos getColumn(UUID id, UUID columnId) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        return entity.getColumns().stream()
+            .filter(column -> column.getUuid().equals(columnId))
+            .findFirst()
+            .map(SpreadsheetConfigMapper::toColumnDto)
+            .orElseThrow(() -> new EntityNotFoundException("Column not found with id: " + columnId));
+    }
+
+    @Transactional
+    public UUID createColumn(UUID id, ColumnInfos dto) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        ColumnEntity columnEntity = SpreadsheetConfigMapper.toColumnEntity(dto);
+        entity.getColumns().add(columnEntity);
+        spreadsheetConfigRepository.save(entity);
+        return columnEntity.getUuid();
+    }
+
+    @Transactional
+    public void updateColumn(UUID id, UUID columnId, ColumnInfos dto) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        ColumnEntity columnEntity = entity.getColumns().stream()
+            .filter(column -> column.getUuid().equals(columnId))
+            .findFirst()
+            .orElseThrow(() -> new EntityNotFoundException("Column not found with id: " + columnId));
+
+        columnEntity.setName(dto.name());
+        columnEntity.setType(dto.type());
+        columnEntity.setPrecision(dto.precision());
+        columnEntity.setFormula(dto.formula());
+        columnEntity.setDependencies(dto.dependencies());
+        columnEntity.setId(dto.id());
+
+        spreadsheetConfigRepository.save(entity);
+    }
+
+    @Transactional
+    public void deleteColumn(UUID id, UUID columnId) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        boolean removed = entity.getColumns().removeIf(column -> column.getUuid().equals(columnId));
+        if (!removed) {
+            throw new EntityNotFoundException("Column not found with id: " + columnId);
+        }
+        spreadsheetConfigRepository.save(entity);
     }
 
 }

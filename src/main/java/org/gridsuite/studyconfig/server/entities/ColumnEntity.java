@@ -6,6 +6,8 @@
  */
 package org.gridsuite.studyconfig.server.entities;
 
+import java.util.UUID;
+
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 
 import jakarta.persistence.*;
@@ -14,13 +16,19 @@ import lombok.*;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
-@Embeddable
+@Entity
+@Table(name = "spreadsheet_column")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomColumnEmbeddable {
+public class ColumnEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     private String name;

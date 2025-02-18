@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
-import org.gridsuite.studyconfig.server.dto.CustomColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
@@ -62,21 +62,21 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testCreate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
 
         UUID configUuid = postSpreadsheetConfig(configToCreate);
         SpreadsheetConfigInfos createdConfig = getSpreadsheetConfig(configUuid);
 
         assertThat(createdConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "customColumns.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToCreate);
         assertThat(createdConfig.id()).isNotNull();
     }
 
     @Test
     void testCreateWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos invalidConfig = new SpreadsheetConfigInfos(null, null, createCustomColumns());
+        SpreadsheetConfigInfos invalidConfig = new SpreadsheetConfigInfos(null, null, createColumns());
 
         String invalidConfigJson = mapper.writeValueAsString(invalidConfig);
 
@@ -88,7 +88,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testRead() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createCustomColumns());
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createColumns());
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -96,14 +96,14 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(receivedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "customColumns.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToRead);
         assertThat(receivedConfig.id()).isEqualTo(configUuid);
     }
 
     @Test
     void testGetMetadata() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createCustomColumns());
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, SheetType.BUS, createColumns());
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -136,11 +136,11 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigInfos invalidUpdate = new SpreadsheetConfigInfos(configUuid, null, createUpdatedCustomColumns());
+        SpreadsheetConfigInfos invalidUpdate = new SpreadsheetConfigInfos(configUuid, null, createUpdatedColumns());
 
         String invalidUpdateJson = mapper.writeValueAsString(invalidUpdate);
 
@@ -152,11 +152,11 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdate() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, SheetType.BUS, createUpdatedCustomColumns());
+        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, SheetType.BUS, createUpdatedColumns());
 
         String updatedConfigJson = mapper.writeValueAsString(updatedConfig);
 
@@ -169,13 +169,13 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(retrievedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("customColumns.id")
+                .ignoringFields("columns.uuid", "columns.id")
                 .isEqualTo(updatedConfig);
     }
 
     @Test
     void testDelete() throws Exception {
-        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
 
         UUID configUuid = saveAndReturnId(configToDelete);
 
@@ -197,8 +197,8 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetAll() throws Exception {
-        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
-        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, SheetType.BUS, createUpdatedCustomColumns());
+        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
+        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, SheetType.BUS, createUpdatedColumns());
 
         saveAndReturnId(config1);
         saveAndReturnId(config2);
@@ -210,7 +210,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDuplicate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createCustomColumns());
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, SheetType.BATTERY, createColumns());
         UUID configUuid = postSpreadsheetConfig(configToCreate);
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);
@@ -218,7 +218,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
         assertThat(duplicatedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "customColumns.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToCreate);
         assertThat(duplicatedConfig.id()).isNotEqualTo(configUuid);
     }
@@ -232,20 +232,20 @@ class SpreadsheetConfigIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private List<CustomColumnInfos> createCustomColumns() {
+    private List<ColumnInfos> createColumns() {
         return Arrays.asList(
-                new CustomColumnInfos("cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-                new CustomColumnInfos("cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB"),
-                new CustomColumnInfos("cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC"),
-                new CustomColumnInfos("cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD")
+                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
+                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB"),
+                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC"),
+                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD")
         );
     }
 
-    private List<CustomColumnInfos> createUpdatedCustomColumns() {
+    private List<ColumnInfos> createUpdatedColumns() {
         return Arrays.asList(
-                new CustomColumnInfos("cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX"),
-                new CustomColumnInfos("cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY"),
-                new CustomColumnInfos("cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ")
+                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX"),
+                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY"),
+                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ")
         );
     }
 
