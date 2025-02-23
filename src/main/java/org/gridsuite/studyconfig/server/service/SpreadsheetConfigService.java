@@ -18,9 +18,15 @@ import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +40,10 @@ public class SpreadsheetConfigService {
 
     private final SpreadsheetConfigRepository spreadsheetConfigRepository;
     private final SpreadsheetConfigCollectionRepository spreadsheetConfigCollectionRepository;
+    private final ObjectMapper objectMapper;
+
+    @Value("classpath:default-spreadsheet-config-collection.json")
+    private Resource defaultSpreadsheetConfigCollectionResource;
 
     private static final String SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND = "SpreadsheetConfigCollection not found with id: ";
     private static final String COLUMN_NOT_FOUND = "Column not found with id: ";
@@ -229,6 +239,45 @@ public class SpreadsheetConfigService {
             throw new EntityNotFoundException(COLUMN_NOT_FOUND + columnId);
         }
         spreadsheetConfigRepository.save(entity);
+    }
+
+    private SpreadsheetConfigCollectionInfos readDefaultSpreadsheetConfigCollection() throws IOException {
+        try (InputStream inputStream = defaultSpreadsheetConfigCollectionResource.getInputStream()) {
+            return objectMapper.readValue(inputStream, SpreadsheetConfigCollectionInfos.class);
+        }
+    }
+
+    @Transactional
+    public UUID createDefaultSpreadsheetConfigCollection() {
+        try {
+            SpreadsheetConfigCollectionInfos defaultCollection = readDefaultSpreadsheetConfigCollection();
+            return createSpreadsheetConfigCollection(defaultCollection);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read default spreadsheet config collection", e);
+        }
+    }
+
+    @Transactional
+    public UUID addSpreadsheetConfigToCollection(UUID collectionId, SpreadsheetConfigInfos dto) {
+        SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
+            .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+
+        SpreadsheetConfigEntity newConfig = SpreadsheetConfigMapper.toEntity(dto);
+        collection.getSpreadsheetConfigs().add(newConfig);
+        spreadsheetConfigCollectionRepository.flush();
+        return newConfig.getId();
+    }
+
+    @Transactional
+    public void removeSpreadsheetConfigFromCollection(UUID collectionId, UUID configId) {
+        SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
+            .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+
+        boolean removed = collection.getSpreadsheetConfigs().removeIf(config -> config.getId().equals(configId));
+        if (!removed) {
+            throw new EntityNotFoundException("Spreadsheet configuration not found in collection");
+        }
+        spreadsheetConfigCollectionRepository.save(collection);
     }
 
 }

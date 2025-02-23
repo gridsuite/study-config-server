@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
+import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,4 +91,39 @@ public class SpreadsheetConfigCollectionController {
         UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfigCollection(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }
+
+    @PostMapping(value = "/default")
+    @Operation(summary = "Create a default spreadsheet configuration collection",
+            description = "Creates a default spreadsheet configuration collection")
+    @ApiResponse(responseCode = "201", description = "Default configuration collection created",
+            content = @Content(schema = @Schema(implementation = UUID.class)))
+    public ResponseEntity<UUID> createDefaultSpreadsheetConfigCollection() {
+        UUID id = spreadsheetConfigService.createDefaultSpreadsheetConfigCollection();
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
+    }
+
+    // spreadsheet-configs endpoints
+    @PostMapping("/{id}/spreadsheet-configs")
+    @Operation(summary = "Add a spreadsheet configuration to a collection",
+            description = "Adds a new spreadsheet configuration to a collection")
+    @ApiResponse(responseCode = "204", description = "Configuration added")
+    @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    public ResponseEntity<UUID> addSpreadsheetConfigToCollection(
+            @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
+            @Parameter(description = "Configuration to add") @Valid @RequestBody SpreadsheetConfigInfos dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(spreadsheetConfigService.addSpreadsheetConfigToCollection(id, dto));
+    }
+
+    @DeleteMapping("/{id}/spreadsheet-configs/{configId}")
+    @Operation(summary = "Remove a spreadsheet configuration from a collection",
+            description = "Removes an existing spreadsheet configuration from a collection")
+    @ApiResponse(responseCode = "204", description = "Configuration removed")
+    @ApiResponse(responseCode = "404", description = "Configuration collection or configuration not found")
+    public ResponseEntity<Void> removeSpreadsheetConfigFromCollection(
+            @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
+            @Parameter(description = "ID of the configuration to remove") @PathVariable UUID configId) {
+        spreadsheetConfigService.removeSpreadsheetConfigFromCollection(id, configId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

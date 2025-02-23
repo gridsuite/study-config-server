@@ -135,6 +135,18 @@ class SpreadsheetConfigCollectionIntegrationTest {
         assertThat(duplicatedCollection.id()).isNotEqualTo(collectionUuid);
     }
 
+    @Test
+    void testCreateDefaultCollection() throws Exception {
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/default"))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UUID defaultCollectionUuid = mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
+
+        SpreadsheetConfigCollectionInfos defaultCollection = getSpreadsheetConfigCollection(defaultCollectionUuid);
+        assertThat(defaultCollection.id()).isEqualTo(defaultCollectionUuid);
+    }
+
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
             new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
@@ -142,8 +154,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos)
         );
     }
 
@@ -156,9 +168,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.BATTERY, columnInfos)
+                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "Generator1", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, columnInfos)
         );
     }
 
