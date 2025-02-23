@@ -132,7 +132,6 @@ public class SpreadsheetConfigService {
         return new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
     }
 
-    @Transactional
     public UUID createSpreadsheetConfigCollection(SpreadsheetConfigCollectionInfos dto) {
         SpreadsheetConfigCollectionEntity entity = new SpreadsheetConfigCollectionEntity();
         entity.setSpreadsheetConfigs(dto.spreadsheetConfigs().stream()
@@ -250,7 +249,6 @@ public class SpreadsheetConfigService {
         }
     }
 
-    @Transactional
     public UUID createDefaultSpreadsheetConfigCollection() {
         try {
             SpreadsheetConfigCollectionInfos defaultCollection = readDefaultSpreadsheetConfigCollection();
