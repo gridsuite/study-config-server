@@ -59,6 +59,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
 
         SpreadsheetConfigEntity duplicate = SpreadsheetConfigEntity.builder()
+                .name(entity.getName())
                 .sheetType(entity.getSheetType())
                 .build();
 
@@ -105,6 +106,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
 
         entity.setSheetType(dto.sheetType());
+        entity.setName(dto.name());
         entity.getColumns().clear();
         if (dto.columns() != null) {
             entity.getColumns().addAll(dto.columns().stream()
@@ -176,6 +178,7 @@ public class SpreadsheetConfigService {
         duplicate.setSpreadsheetConfigs(entity.getSpreadsheetConfigs().stream()
                 .map(config -> {
                     SpreadsheetConfigEntity configDuplicate = SpreadsheetConfigEntity.builder()
+                            .name(config.getName())
                             .sheetType(config.getSheetType())
                             .build();
                     configDuplicate.setColumns(config.getColumns().stream()
