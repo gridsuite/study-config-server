@@ -1,0 +1,1922 @@
+{
+  "spreadsheetConfigs": [
+    {
+      "name": "Substations",
+      "sheetType": "SUBSTATION",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        }
+      ]
+    },
+    {
+      "name": "Voltage Levels",
+      "sheetType": "VOLTAGE_LEVEL",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Substation ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "substationId",
+          "dependencies": null,
+          "id": "substationId"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV",
+          "dependencies": null,
+          "id": "nominalV"
+        },
+        {
+          "name": "Low voltage limit (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "lowVoltageLimit",
+          "dependencies": null,
+          "id": "lowVoltageLimit"
+        },
+        {
+          "name": "High voltage limit (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "highVoltageLimit",
+          "dependencies": null,
+          "id": "highVoltageLimit"
+        },
+        {
+          "name": "ISC min (kA)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "identifiableShortCircuit.ipMin",
+          "dependencies": null,
+          "id": "identifiableShortCircuit.ipMin"
+        },
+        {
+          "name": "ISC max (kA)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "identifiableShortCircuit.ipMax",
+          "dependencies": null,
+          "id": "identifiableShortCircuit.ipMax"
+        }
+      ]
+    },
+    {
+      "name": "Lines",
+      "sheetType": "LINE",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country 1",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country1",
+          "dependencies": null,
+          "id": "country1"
+        },
+        {
+          "name": "Country 2",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country2",
+          "dependencies": null,
+          "id": "country2"
+        },
+        {
+          "name": "Voltage level ID 1",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId1",
+          "dependencies": null,
+          "id": "voltageLevelId1"
+        },
+        {
+          "name": "Voltage level ID 2",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId2",
+          "dependencies": null,
+          "id": "voltageLevelId2"
+        },
+        {
+          "name": "Nominal voltage 1 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage1",
+          "dependencies": null,
+          "id": "nominalVoltage1"
+        },
+        {
+          "name": "Nominal voltage 2 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage2",
+          "dependencies": null,
+          "id": "nominalVoltage2"
+        },
+        {
+          "name": "Connected 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal1Connected",
+          "dependencies": null,
+          "id": "terminal1Connected"
+        },
+        {
+          "name": "Connected 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal2Connected",
+          "dependencies": null,
+          "id": "terminal2Connected"
+        },
+        {
+          "name": "p1 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p1",
+          "dependencies": null,
+          "id": "p1"
+        },
+        {
+          "name": "p2 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p2",
+          "dependencies": null,
+          "id": "p2"
+        },
+        {
+          "name": "q1 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q1",
+          "dependencies": null,
+          "id": "q1"
+        },
+        {
+          "name": "q2 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q2",
+          "dependencies": null,
+          "id": "q2"
+        },
+        {
+          "name": "Series resistance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "r",
+          "dependencies": null,
+          "id": "r"
+        },
+        {
+          "name": "Series reactance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "x",
+          "dependencies": null,
+          "id": "x"
+        },
+        {
+          "name": "Shunt conductance 1 (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "g1",
+          "dependencies": null,
+          "id": "g1"
+        },
+        {
+          "name": "Shunt conductance 2 (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "g2",
+          "dependencies": null,
+          "id": "g2"
+        },
+        {
+          "name": "Shunt susceptance 1 (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "b1",
+          "dependencies": null,
+          "id": "b1"
+        },
+        {
+          "name": "Shunt susceptance 2 (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "b2",
+          "dependencies": null,
+          "id": "b2"
+        }
+      ]
+    },
+    {
+      "name": "Two Windings Transformers",
+      "sheetType": "TWO_WINDINGS_TRANSFORMER",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID 1",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId1",
+          "dependencies": null,
+          "id": "voltageLevelId1"
+        },
+        {
+          "name": "Voltage level ID 2",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId2",
+          "dependencies": null,
+          "id": "voltageLevelId2"
+        },
+        {
+          "name": "Nominal voltage 1 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage1",
+          "dependencies": null,
+          "id": "nominalVoltage1"
+        },
+        {
+          "name": "Nominal voltage 2 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage2",
+          "dependencies": null,
+          "id": "nominalVoltage2"
+        },
+        {
+          "name": "Rated voltage 1 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratedU1",
+          "dependencies": null,
+          "id": "ratedU1"
+        },
+        {
+          "name": "Rated voltage 2 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratedU2",
+          "dependencies": null,
+          "id": "ratedU2"
+        },
+        {
+          "name": "Connected 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal1Connected",
+          "dependencies": null,
+          "id": "terminal1Connected"
+        },
+        {
+          "name": "Connected 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal2Connected",
+          "dependencies": null,
+          "id": "terminal2Connected"
+        },
+        {
+          "name": "p1 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p1",
+          "dependencies": null,
+          "id": "p1"
+        },
+        {
+          "name": "p2 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p2",
+          "dependencies": null,
+          "id": "p2"
+        },
+        {
+          "name": "q1 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q1",
+          "dependencies": null,
+          "id": "q1"
+        },
+        {
+          "name": "q2 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q2",
+          "dependencies": null,
+          "id": "q2"
+        },
+        {
+          "name": "Ratio on-load",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "ratioTapChanger.hasLoadTapChangingCapabilities",
+          "dependencies": null,
+          "id": "ratioTapChanger.hasLoadTapChangingCapabilities"
+        },
+        {
+          "name": "Ratio regulation mode",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "ratioTapChanger.regulationMode",
+          "dependencies": null,
+          "id": "ratioTapChanger.regulationMode"
+        },
+        {
+          "name": "Ratio low tap position",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger.lowTapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger.lowTapPosition"
+        },
+        {
+          "name": "Ratio high tap position",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger.highTapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger.highTapPosition"
+        },
+        {
+          "name": "Ratio tap",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger.tapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger.tapPosition"
+        },
+        {
+          "name": "Voltage set point (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "ratioTapChanger.targetV",
+          "dependencies": null,
+          "id": "ratioTapChanger.targetV"
+        },
+        {
+          "name": "Ratio deadband",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "ratioTapChanger.targetDeadband",
+          "dependencies": null,
+          "id": "ratioTapChanger.targetDeadband"
+        },
+        {
+          "name": "Ratio regulation",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "ratioTapChanger.regulationType",
+          "dependencies": null,
+          "id": "ratioTapChanger.regulationType"
+        },
+        {
+          "name": "Ratio regulated side",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "ratioTapChanger.regulationSide",
+          "dependencies": null,
+          "id": "ratioTapChanger.regulationSide"
+        },
+        {
+          "name": "Ratio regulated terminal",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "ratioTapChanger.ratioRegulatingTerminal",
+          "dependencies": null,
+          "id": "ratioTapChanger.ratioRegulatingTerminal"
+        },
+        {
+          "name": "Phase regulation mode",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "phaseTapChanger.regulationMode",
+          "dependencies": null,
+          "id": "phaseTapChanger.regulationMode"
+        },
+        {
+          "name": "Phase low tap position",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger.lowTapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger.lowTapPosition"
+        },
+        {
+          "name": "Phase high tap position",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger.highTapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger.highTapPosition"
+        },
+        {
+          "name": "Phase tap",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger.tapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger.tapPosition"
+        },
+        {
+          "name": "Current (A) or flow set point (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "phaseTapChanger.regulationValue",
+          "dependencies": null,
+          "id": "phaseTapChanger.regulationValue"
+        },
+        {
+          "name": "Phase deadband",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "phaseTapChanger.targetDeadband",
+          "dependencies": null,
+          "id": "phaseTapChanger.targetDeadband"
+        },
+        {
+          "name": "Phase regulation",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "phaseTapChanger.regulationType",
+          "dependencies": null,
+          "id": "phaseTapChanger.regulationType"
+        },
+        {
+          "name": "Phase regulated side",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "phaseTapChanger.regulationSide",
+          "dependencies": null,
+          "id": "phaseTapChanger.regulationSide"
+        },
+        {
+          "name": "Phase regulated terminal",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "phaseTapChanger.phaseRegulatingTerminal",
+          "dependencies": null,
+          "id": "phaseTapChanger.phaseRegulatingTerminal"
+        },
+        {
+          "name": "Series resistance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "r",
+          "dependencies": null,
+          "id": "r"
+        },
+        {
+          "name": "Series reactance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "x",
+          "dependencies": null,
+          "id": "x"
+        },
+        {
+          "name": "Magnetizing conductance (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "g",
+          "dependencies": null,
+          "id": "g"
+        },
+        {
+          "name": "Magnetizing susceptance (μS)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "b",
+          "dependencies": null,
+          "id": "b"
+        },
+        {
+          "name": "Rated nominal power (MVA)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "ratedS",
+          "dependencies": null,
+          "id": "ratedS"
+        }
+      ]
+    },
+    {
+      "name": "Three Windings Transformers",
+      "sheetType": "THREE_WINDINGS_TRANSFORMER",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID 1",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId1",
+          "dependencies": null,
+          "id": "voltageLevelId1"
+        },
+        {
+          "name": "Voltage level ID 2",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId2",
+          "dependencies": null,
+          "id": "voltageLevelId2"
+        },
+        {
+          "name": "Voltage level ID 3",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId3",
+          "dependencies": null,
+          "id": "voltageLevelId3"
+        },
+        {
+          "name": "Nominal voltage 1 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV1",
+          "dependencies": null,
+          "id": "nominalV1"
+        },
+        {
+          "name": "Nominal voltage 2 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV2",
+          "dependencies": null,
+          "id": "nominalV2"
+        },
+        {
+          "name": "Nominal voltage 3 (kV)",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV3",
+          "dependencies": null,
+          "id": "nominalV3"
+        },
+        {
+          "name": "Connected 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal1Connected",
+          "dependencies": null,
+          "id": "terminal1Connected"
+        },
+        {
+          "name": "Connected 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal2Connected",
+          "dependencies": null,
+          "id": "terminal2Connected"
+        },
+        {
+          "name": "Connected 3",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminal3Connected",
+          "dependencies": null,
+          "id": "terminal3Connected"
+        },
+        {
+          "name": "p1 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p1",
+          "dependencies": null,
+          "id": "p1"
+        },
+        {
+          "name": "p2 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p2",
+          "dependencies": null,
+          "id": "p2"
+        },
+        {
+          "name": "p3 (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p3",
+          "dependencies": null,
+          "id": "p3"
+        },
+        {
+          "name": "q1 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q1",
+          "dependencies": null,
+          "id": "q1"
+        },
+        {
+          "name": "q2 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q2",
+          "dependencies": null,
+          "id": "q2"
+        },
+        {
+          "name": "q3 (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q3",
+          "dependencies": null,
+          "id": "q3"
+        },
+        {
+          "name": "Ratio on-load 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "hasLoadTapChanging1Capabilities",
+          "dependencies": null,
+          "id": "hasLoadTapChanging1Capabilities"
+        },
+        {
+          "name": "Ratio regulating 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingRatio1",
+          "dependencies": null,
+          "id": "isRegulatingRatio1"
+        },
+        {
+          "name": "Voltage set point (kV) 1",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV1",
+          "dependencies": null,
+          "id": "targetV1"
+        },
+        {
+          "name": "Ratio tap 1",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger1.tapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger1.tapPosition"
+        },
+        {
+          "name": "Ratio on-load 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "hasLoadTapChanging2Capabilities",
+          "dependencies": null,
+          "id": "hasLoadTapChanging2Capabilities"
+        },
+        {
+          "name": "Ratio regulating 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingRatio2",
+          "dependencies": null,
+          "id": "isRegulatingRatio2"
+        },
+        {
+          "name": "Voltage set point (kV) 2",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV2",
+          "dependencies": null,
+          "id": "targetV2"
+        },
+        {
+          "name": "Ratio tap 2",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger2.tapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger2.tapPosition"
+        },
+        {
+          "name": "Ratio on-load 3",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "hasLoadTapChanging3Capabilities",
+          "dependencies": null,
+          "id": "hasLoadTapChanging3Capabilities"
+        },
+        {
+          "name": "Ratio regulating 3",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingRatio3",
+          "dependencies": null,
+          "id": "isRegulatingRatio3"
+        },
+        {
+          "name": "Voltage set point (kV) 3",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV3",
+          "dependencies": null,
+          "id": "targetV3"
+        },
+        {
+          "name": "Ratio tap 3",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "ratioTapChanger3.tapPosition",
+          "dependencies": null,
+          "id": "ratioTapChanger3.tapPosition"
+        },
+        {
+          "name": "Phase regulation mode 1",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "regulationModeName1",
+          "dependencies": null,
+          "id": "regulationModeName1"
+        },
+        {
+          "name": "Phase regulating 1",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingPhase1",
+          "dependencies": null,
+          "id": "isRegulatingPhase1"
+        },
+        {
+          "name": "Phase tap 1",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger1.tapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger1.tapPosition"
+        },
+        {
+          "name": "Current (A) or flow set point (MW) 1",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "regulatingValue1",
+          "dependencies": null,
+          "id": "regulatingValue1"
+        },
+        {
+          "name": "Phase regulation mode 2",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "regulationModeName2",
+          "dependencies": null,
+          "id": "regulationModeName2"
+        },
+        {
+          "name": "Phase regulating 2",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingPhase2",
+          "dependencies": null,
+          "id": "isRegulatingPhase2"
+        },
+        {
+          "name": "Phase tap 2",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger2.tapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger2.tapPosition"
+        },
+        {
+          "name": "Current (A) or flow set point (MW) 2",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "regulatingValue2",
+          "dependencies": null,
+          "id": "regulatingValue2"
+        },
+        {
+          "name": "Phase regulation mode 3",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "regulationModeName3",
+          "dependencies": null,
+          "id": "regulationModeName3"
+        },
+        {
+          "name": "Phase regulating 3",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "isRegulatingPhase3",
+          "dependencies": null,
+          "id": "isRegulatingPhase3"
+        },
+        {
+          "name": "Phase tap 3",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "phaseTapChanger3.tapPosition",
+          "dependencies": null,
+          "id": "phaseTapChanger3.tapPosition"
+        },
+        {
+          "name": "Current (A) or flow set point (MW) 3",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "regulatingValue3",
+          "dependencies": null,
+          "id": "regulatingValue3"
+        }
+      ]
+    },
+    {
+      "name": "Generators",
+      "sheetType": "GENERATOR",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Energy Source",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "energySource",
+          "dependencies": null,
+          "id": "energySource"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage",
+          "dependencies": null,
+          "id": "nominalVoltage"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "Min P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "minP",
+          "dependencies": null,
+          "id": "minP"
+        },
+        {
+          "name": "Max P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "maxP",
+          "dependencies": null,
+          "id": "maxP"
+        },
+        {
+          "name": "Target P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetP",
+          "dependencies": null,
+          "id": "targetP"
+        },
+        {
+          "name": "Voltage regulation",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "voltageRegulatorOn",
+          "dependencies": null,
+          "id": "voltageRegulatorOn"
+        },
+        {
+          "name": "Target V (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV",
+          "dependencies": null,
+          "id": "targetV"
+        },
+        {
+          "name": "Target Q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetQ",
+          "dependencies": null,
+          "id": "targetQ"
+        },
+        {
+          "name": "Regulation type",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "RegulationTypeText",
+          "dependencies": null,
+          "id": "RegulationTypeText"
+        },
+        {
+          "name": "Regulated terminal",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "regulatingTerminalConnectableId",
+          "dependencies": null,
+          "id": "regulatingTerminalConnectableId"
+        },
+        {
+          "name": "Active power control",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "activePowerControl.participate",
+          "dependencies": null,
+          "id": "activePowerControl.participate"
+        },
+        {
+          "name": "Active power regulation droop",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "activePowerControl.droop",
+          "dependencies": null,
+          "id": "activePowerControl.droop"
+        },
+        {
+          "name": "Reactive percentage",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "coordinatedReactiveControl.qPercent",
+          "dependencies": null,
+          "id": "coordinatedReactiveControl.qPercent"
+        },
+        {
+          "name": "Transient reactance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "generatorShortCircuit.directTransX",
+          "dependencies": null,
+          "id": "generatorShortCircuit.directTransX"
+        },
+        {
+          "name": "Transformer reactance (Ω)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "generatorShortCircuit.stepUpTransformerX",
+          "dependencies": null,
+          "id": "generatorShortCircuit.stepUpTransformerX"
+        },
+        {
+          "name": "Planning P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "generatorStartup.plannedActivePowerSetPoint",
+          "dependencies": null,
+          "id": "generatorStartup.plannedActivePowerSetPoint"
+        },
+        {
+          "name": "Startup Cost",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "generatorStartup.marginalCost",
+          "dependencies": null,
+          "id": "generatorStartup.marginalCost"
+        },
+        {
+          "name": "Planning outage rate",
+          "type": "NUMBER",
+          "precision": 2,
+          "formula": "generatorStartup.plannedOutageRate",
+          "dependencies": null,
+          "id": "generatorStartup.plannedOutageRate"
+        },
+        {
+          "name": "Forced outage rate",
+          "type": "NUMBER",
+          "precision": 2,
+          "formula": "generatorStartup.forcedOutageRate",
+          "dependencies": null,
+          "id": "generatorStartup.forcedOutageRate"
+        }
+      ]
+    },
+    {
+      "name": "Loads",
+      "sheetType": "LOAD",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Type",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "type",
+          "dependencies": null,
+          "id": "type"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage",
+          "dependencies": null,
+          "id": "nominalVoltage"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "Constant P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p0",
+          "dependencies": null,
+          "id": "p0"
+        },
+        {
+          "name": "Constant Q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q0",
+          "dependencies": null,
+          "id": "q0"
+        }
+      ]
+    },
+    {
+      "name": "Shunt Compensators",
+      "sheetType": "SHUNT_COMPENSATOR",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Type",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "type",
+          "dependencies": null,
+          "id": "type"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage",
+          "dependencies": null,
+          "id": "nominalVoltage"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "Maximum number of sections",
+          "type": "NUMBER",
+          "precision": null,
+          "formula": "maximumSectionCount",
+          "dependencies": null,
+          "id": "maximumSectionCount"
+        },
+        {
+          "name": "Current number of sections",
+          "type": "NUMBER",
+          "precision": null,
+          "formula": "sectionCount",
+          "dependencies": null,
+          "id": "sectionCount"
+        },
+        {
+          "name": "Qmax available at nominal voltage",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "maxQAtNominalV",
+          "dependencies": null,
+          "id": "maxQAtNominalV"
+        },
+        {
+          "name": "Switch-on Q at nominal voltage",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "switchedOnQAtNominalV",
+          "dependencies": null,
+          "id": "switchedOnQAtNominalV"
+        },
+        {
+          "name": "Maximal susceptance available",
+          "type": "NUMBER",
+          "precision": 5,
+          "formula": "maxSusceptance",
+          "dependencies": null,
+          "id": "maxSusceptance"
+        },
+        {
+          "name": "Switch-on susceptance",
+          "type": "NUMBER",
+          "precision": 5,
+          "formula": "switchedOnSusceptance",
+          "dependencies": null,
+          "id": "switchedOnSusceptance"
+        },
+        {
+          "name": "Target V (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV",
+          "dependencies": null,
+          "id": "targetV"
+        }
+      ]
+    },
+    {
+      "name": "Static Var Compensators",
+      "sheetType": "STATIC_VAR_COMPENSATOR",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV",
+          "dependencies": null,
+          "id": "nominalV"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "Voltage set point (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "voltageSetpoint",
+          "dependencies": null,
+          "id": "voltageSetpoint"
+        },
+        {
+          "name": "Reactive power set point (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "reactivePowerSetpoint",
+          "dependencies": null,
+          "id": "reactivePowerSetpoint"
+        }
+      ]
+    },
+    {
+      "name": "Batteries",
+      "sheetType": "BATTERY",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalVoltage",
+          "dependencies": null,
+          "id": "nominalVoltage"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "Min P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "minP",
+          "dependencies": null,
+          "id": "minP"
+        },
+        {
+          "name": "Max P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "maxP",
+          "dependencies": null,
+          "id": "maxP"
+        },
+        {
+          "name": "Target P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetP",
+          "dependencies": null,
+          "id": "targetP"
+        },
+        {
+          "name": "Target Q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetQ",
+          "dependencies": null,
+          "id": "targetQ"
+        },
+        {
+          "name": "Active power control",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "activePowerControl.participate",
+          "dependencies": null,
+          "id": "activePowerControl.participate"
+        },
+        {
+          "name": "Droop (%)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "activePowerControl.droop",
+          "dependencies": null,
+          "id": "activePowerControl.droop"
+        }
+      ]
+    },
+    {
+      "name": "HVDC Lines",
+      "sheetType": "HVDC_LINE",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country 1",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country1",
+          "dependencies": null,
+          "id": "country1"
+        },
+        {
+          "name": "Country 2",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country2",
+          "dependencies": null,
+          "id": "country2"
+        },
+        {
+          "name": "Voltage level ID 1",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId1",
+          "dependencies": null,
+          "id": "voltageLevelId1"
+        },
+        {
+          "name": "Voltage level ID 2",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId2",
+          "dependencies": null,
+          "id": "voltageLevelId2"
+        },
+        {
+          "name": "Converters mode",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "convertersMode",
+          "dependencies": null,
+          "id": "convertersMode"
+        },
+        {
+          "name": "Converter station ID 1",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "converterStationId1",
+          "dependencies": null,
+          "id": "converterStationId1"
+        },
+        {
+          "name": "Converter station ID 2",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "converterStationId2",
+          "dependencies": null,
+          "id": "converterStationId2"
+        },
+        {
+          "name": "Resistance",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "r",
+          "dependencies": null,
+          "id": "r"
+        },
+        {
+          "name": "Active power set point (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "activePowerSetpoint",
+          "dependencies": null,
+          "id": "activePowerSetpoint"
+        },
+        {
+          "name": "Max P (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "maxP",
+          "dependencies": null,
+          "id": "maxP"
+        },
+        {
+          "name": "Operational limit (side_1 to side_2) (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "hvdcOperatorActivePowerRange.oprFromCS1toCS2",
+          "dependencies": null,
+          "id": "hvdcOperatorActivePowerRange.oprFromCS1toCS2"
+        },
+        {
+          "name": "Operational limit (side_2 to side_1) (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "hvdcOperatorActivePowerRange.oprFromCS2toCS1",
+          "dependencies": null,
+          "id": "hvdcOperatorActivePowerRange.oprFromCS2toCS1"
+        },
+        {
+          "name": "AC emulation",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "hvdcAngleDroopActivePowerControl.isEnabled",
+          "dependencies": null,
+          "id": "hvdcAngleDroopActivePowerControl.isEnabled"
+        },
+        {
+          "name": "K (MW/Deg)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "hvdcAngleDroopActivePowerControl.droop",
+          "dependencies": null,
+          "id": "hvdcAngleDroopActivePowerControl.droop"
+        },
+        {
+          "name": "P0 (side_1 to side_2) (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "hvdcAngleDroopActivePowerControl.p0",
+          "dependencies": null,
+          "id": "hvdcAngleDroopActivePowerControl.p0"
+        }
+      ]
+    },
+    {
+      "name": "LCC Converter Stations",
+      "sheetType": "LCC_CONVERTER_STATION",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV",
+          "dependencies": null,
+          "id": "nominalV"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "HVDC Line ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "hvdcLineId",
+          "dependencies": null,
+          "id": "hvdcLineId"
+        },
+        {
+          "name": "Power Factor",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "powerFactor",
+          "dependencies": null,
+          "id": "powerFactor"
+        },
+        {
+          "name": "Loss Factor",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "lossFactor",
+          "dependencies": null,
+          "id": "lossFactor"
+        }
+      ]
+    },
+    {
+      "name": "VSC Converter Stations",
+      "sheetType": "VSC_CONVERTER_STATION",
+      "columns": [
+        {
+          "name": "ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "id",
+          "dependencies": null,
+          "id": "id"
+        },
+        {
+          "name": "Name",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "name",
+          "dependencies": null,
+          "id": "name"
+        },
+        {
+          "name": "Country",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "country",
+          "dependencies": null,
+          "id": "country"
+        },
+        {
+          "name": "Voltage level ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "voltageLevelId",
+          "dependencies": null,
+          "id": "voltageLevelId"
+        },
+        {
+          "name": "Nominal V",
+          "type": "NUMBER",
+          "precision": 0,
+          "formula": "nominalV",
+          "dependencies": null,
+          "id": "nominalV"
+        },
+        {
+          "name": "Connected",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "terminalConnected",
+          "dependencies": null,
+          "id": "terminalConnected"
+        },
+        {
+          "name": "p (MW)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "p",
+          "dependencies": null,
+          "id": "p"
+        },
+        {
+          "name": "q (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "q",
+          "dependencies": null,
+          "id": "q"
+        },
+        {
+          "name": "HVDC Line ID",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "hvdcLineId",
+          "dependencies": null,
+          "id": "hvdcLineId"
+        },
+        {
+          "name": "Voltage regulation",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "voltageRegulatorOn",
+          "dependencies": null,
+          "id": "voltageRegulatorOn"
+        },
+        {
+          "name": "Voltage set point (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "voltageSetpoint",
+          "dependencies": null,
+          "id": "voltageSetpoint"
+        },
+        {
+          "name": "Reactive power set point (MVar)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "reactivePowerSetpoint",
+          "dependencies": null,
+          "id": "reactivePowerSetpoint"
+        },
+        {
+          "name": "Loss factor",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "lossFactor",
+          "dependencies": null,
+          "id": "lossFactor"
+        }
+      ]
+    }
+  ]
+}

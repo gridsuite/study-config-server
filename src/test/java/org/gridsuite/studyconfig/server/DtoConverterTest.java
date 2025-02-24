@@ -62,6 +62,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID id = UUID.randomUUID();
             SpreadsheetConfigInfos dto = new SpreadsheetConfigInfos(
                     id,
+                    "TestSheet",
                     SheetType.BUS,
                     Arrays.asList(
                             new ColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1"),

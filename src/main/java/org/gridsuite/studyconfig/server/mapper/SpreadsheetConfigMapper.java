@@ -23,6 +23,7 @@ public final class SpreadsheetConfigMapper {
     public static SpreadsheetConfigInfos toDto(SpreadsheetConfigEntity entity) {
         return new SpreadsheetConfigInfos(
                 entity.getId(),
+                entity.getName(),
                 entity.getSheetType(),
                 entity.getColumns().stream()
                     .map(SpreadsheetConfigMapper::toColumnDto)
@@ -36,6 +37,7 @@ public final class SpreadsheetConfigMapper {
 
     public static SpreadsheetConfigEntity toEntity(SpreadsheetConfigInfos dto) {
         SpreadsheetConfigEntity entity = SpreadsheetConfigEntity.builder()
+                .name(dto.name())
                 .sheetType(dto.sheetType())
                 .build();
 
