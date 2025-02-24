@@ -35,16 +35,10 @@ public class SpreadsheetConfigEntity {
     @Enumerated(EnumType.STRING)
     private SheetType sheetType;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "spreadsheet_custom_column",
-            joinColumns = @JoinColumn(name = "spreadsheet_config_id"),
-            uniqueConstraints = {
-                @UniqueConstraint(name = "UK_config_id_column_id", columnNames = {"spreadsheet_config_id", "column_id"})
-            }
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_column"))
     @OrderColumn(name = "column_order")
     @Builder.Default
-    private List<CustomColumnEmbeddable> customColumns = new ArrayList<>();
+    private List<ColumnEntity> columns = new ArrayList<>();
 
 }

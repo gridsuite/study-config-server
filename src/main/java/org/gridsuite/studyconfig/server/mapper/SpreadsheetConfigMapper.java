@@ -8,8 +8,8 @@ package org.gridsuite.studyconfig.server.mapper;
 
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.dto.CustomColumnInfos;
-import org.gridsuite.studyconfig.server.entities.CustomColumnEmbeddable;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
 /**
@@ -24,8 +24,8 @@ public final class SpreadsheetConfigMapper {
         return new SpreadsheetConfigInfos(
                 entity.getId(),
                 entity.getSheetType(),
-                entity.getCustomColumns().stream()
-                    .map(SpreadsheetConfigMapper::toCustomColumnDto)
+                entity.getColumns().stream()
+                    .map(SpreadsheetConfigMapper::toColumnDto)
                     .toList()
         );
     }
@@ -39,20 +39,27 @@ public final class SpreadsheetConfigMapper {
                 .sheetType(dto.sheetType())
                 .build();
 
-        if (dto.customColumns() != null) {
-            entity.setCustomColumns(dto.customColumns().stream()
-                    .map(SpreadsheetConfigMapper::toCustomColumnEmbeddable)
+        if (dto.columns() != null) {
+            entity.setColumns(dto.columns().stream()
+                    .map(SpreadsheetConfigMapper::toColumnEntity)
                     .toList());
         }
 
         return entity;
     }
 
-    public static CustomColumnInfos toCustomColumnDto(CustomColumnEmbeddable entity) {
-        return new CustomColumnInfos(entity.getName(), entity.getType(), entity.getPrecision(), entity.getFormula(), entity.getDependencies(), entity.getId());
+    public static ColumnInfos toColumnDto(ColumnEntity entity) {
+        return new ColumnInfos(entity.getUuid(), entity.getName(), entity.getType(), entity.getPrecision(), entity.getFormula(), entity.getDependencies(), entity.getId());
     }
 
-    public static CustomColumnEmbeddable toCustomColumnEmbeddable(CustomColumnInfos dto) {
-        return new CustomColumnEmbeddable(dto.name(), dto.type(), dto.precision(), dto.formula(), dto.dependencies(), dto.id());
+    public static ColumnEntity toColumnEntity(ColumnInfos dto) {
+        return ColumnEntity.builder()
+                .name(dto.name())
+                .type(dto.type())
+                .precision(dto.precision())
+                .formula(dto.formula())
+                .dependencies(dto.dependencies())
+                .id(dto.id())
+                .build();
     }
 }
