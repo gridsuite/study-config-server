@@ -81,7 +81,7 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/duplicate", params = { "duplicateFrom" })
+    @PostMapping(params = { "duplicateFrom" })
     @Operation(summary = "Duplicate a spreadsheet configuration collection",
             description = "Creates a copy of an existing spreadsheet configuration collection")
     @ApiResponse(responseCode = "201", description = "Configuration collection duplicated",

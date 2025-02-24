@@ -262,7 +262,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private UUID duplicateSpreadsheetConfigCollection(UUID collectionUuid) throws Exception {
-        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/duplicate")
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE)
                         .queryParam("duplicateFrom", collectionUuid.toString()))
                 .andExpect(status().isCreated())
                 .andReturn();
