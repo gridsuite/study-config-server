@@ -228,7 +228,7 @@ class SpreadsheetConfigIntegrationTest {
     void testDuplicateNonExistent() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
 
-        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE + "/duplicate")
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE)
                         .queryParam("duplicateFrom", nonExistentUuid.toString()))
                 .andExpect(status().isNotFound());
     }
@@ -345,7 +345,7 @@ class SpreadsheetConfigIntegrationTest {
     }
 
     private UUID duplicateSpreadsheetConfig(UUID configUuid) throws Exception {
-        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE + "/duplicate")
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE)
                         .queryParam("duplicateFrom", configUuid.toString()))
                 .andExpect(status().isCreated())
                 .andReturn();
