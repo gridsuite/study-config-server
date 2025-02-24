@@ -51,7 +51,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     private SpreadsheetConfigCollectionRepository spreadsheetConfigCollectionRepository;
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         spreadsheetConfigCollectionRepository.deleteAll();
     }
 
