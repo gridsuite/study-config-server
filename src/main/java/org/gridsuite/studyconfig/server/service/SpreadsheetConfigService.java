@@ -44,12 +44,15 @@ public class SpreadsheetConfigService {
 
     @Transactional
     public UUID duplicateSpreadsheetConfig(UUID id) {
-        SpreadsheetConfigEntity entity = findEntityById(id);
+        SpreadsheetConfigEntity duplicate = duplicateSpreadsheetConfigEntity(id);
+        return spreadsheetConfigRepository.save(duplicate).getId();
+    }
 
+    private SpreadsheetConfigEntity duplicateSpreadsheetConfigEntity(UUID id) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
         SpreadsheetConfigEntity duplicate = SpreadsheetConfigEntity.builder()
                 .sheetType(entity.getSheetType())
                 .build();
-
         List<CustomColumnEmbeddable> customColumns = entity.getCustomColumns().stream()
                 .map(column -> CustomColumnEmbeddable.builder()
                         .name(column.getName())
@@ -60,10 +63,8 @@ public class SpreadsheetConfigService {
                         .id(column.getId())
                         .build())
                 .toList();
-
         duplicate.setCustomColumns(customColumns);
-
-        return spreadsheetConfigRepository.save(duplicate).getId();
+        return duplicate;
     }
 
     @Transactional(readOnly = true)
@@ -123,6 +124,15 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigCollectionEntity entity = new SpreadsheetConfigCollectionEntity();
         entity.setSpreadsheetConfigs(dto.spreadsheetConfigs().stream()
                 .map(SpreadsheetConfigMapper::toEntity)
+                .toList());
+        return spreadsheetConfigCollectionRepository.save(entity).getId();
+    }
+
+    @Transactional
+    public UUID createSpreadsheetConfigCollectionFromConfigs(List<UUID> configUuids) {
+        SpreadsheetConfigCollectionEntity entity = new SpreadsheetConfigCollectionEntity();
+        entity.setSpreadsheetConfigs(configUuids.stream()
+                .map(this::duplicateSpreadsheetConfigEntity)
                 .toList());
         return spreadsheetConfigCollectionRepository.save(entity).getId();
     }
