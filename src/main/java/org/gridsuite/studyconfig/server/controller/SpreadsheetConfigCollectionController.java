@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -44,6 +45,16 @@ public class SpreadsheetConfigCollectionController {
             content = @Content(schema = @Schema(implementation = UUID.class)))
     public ResponseEntity<UUID> createSpreadsheetConfigCollection(@Parameter(description = "Configuration collection to save") @Valid @RequestBody SpreadsheetConfigCollectionInfos dto) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfigCollection(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
+    }
+
+    @PostMapping(value = "/merge", consumes = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create a new spreadsheet configuration collection duplicating and merging a list of existing configurations",
+            description = "Creates a new spreadsheet configuration collection and returns its ID")
+    @ApiResponse(responseCode = "201", description = "Configuration collection created",
+            content = @Content(schema = @Schema(implementation = UUID.class)))
+    public ResponseEntity<UUID> createSpreadsheetConfigCollectionFromConfigs(@Parameter(description = "Configurations to duplicate and merge") @Valid @RequestBody List<UUID> configUuids) {
+        UUID id = spreadsheetConfigService.createSpreadsheetConfigCollectionFromConfigs(configUuids);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 

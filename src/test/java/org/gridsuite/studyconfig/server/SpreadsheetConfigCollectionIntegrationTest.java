@@ -136,6 +136,22 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     @Test
+    void testMergeModelsIntoNewCollection() throws Exception {
+        // create a first collection with 2 configs
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
+        List<UUID> configIds = getSpreadsheetConfigCollection(collectionUuid).spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
+        assertThat(configIds).hasSize(2);
+        // create a second collection duplicating + merging these existing Configs
+        UUID mergedCollectionUuid = postMergeSpreadsheetConfigsIntoCollection(configIds);
+        List<UUID> duplicatedConfigIds = getSpreadsheetConfigCollection(mergedCollectionUuid).spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
+
+        assertThat(mergedCollectionUuid).isNotEqualTo(collectionUuid);
+        assertThat(duplicatedConfigIds).hasSameSizeAs(configIds);
+        assertThat(duplicatedConfigIds.stream().sorted().toList()).isNotEqualTo(configIds.stream().sorted().toList());
+    }
+
+    @Test
     void testCreateDefaultCollection() throws Exception {
         MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/default"))
                 .andExpect(status().isCreated())
@@ -254,6 +270,18 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE)
                         .content(collectionToCreateJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        return mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
+    }
+
+    private UUID postMergeSpreadsheetConfigsIntoCollection(List<UUID> configIds) throws Exception {
+        String configIdsJson = mapper.writeValueAsString(configIds);
+
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/merge")
+                        .content(configIdsJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
