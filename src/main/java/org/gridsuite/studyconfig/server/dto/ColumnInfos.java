@@ -6,6 +6,8 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
+import java.util.UUID;
+
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,8 +16,11 @@ import jakarta.validation.constraints.NotNull;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
-@Schema(name = "CustomColumnDto", description = "Custom column configuration")
-public record CustomColumnInfos(
+@Schema(name = "ColumnDto", description = "Column configuration")
+public record ColumnInfos(
+
+    @Schema(description = "Column UUID")
+    UUID uuid,
 
     @NotNull(message = "Column name is mandatory")
     @Schema(description = "Column name")

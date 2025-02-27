@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="labidiayo" id="1739884113021-1">
+        <sql dbms="postgresql">
+            TRUNCATE TABLE spreadsheet_config CASCADE;
+        </sql>
+    </changeSet>
+    <changeSet author="labidiayo" id="1739884113021-2">
+        <sql dbms="postgresql">
+            TRUNCATE TABLE spreadsheet_config_collection CASCADE;
+        </sql>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1739884113021-3">
+        <createTable tableName="spreadsheet_column">
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="spreadsheet_columnPK"/>
+            </column>
+            <column name="dependencies" type="CLOB"/>
+            <column name="formula" type="CLOB"/>
+            <column name="column_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="precision" type="INT"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spreadsheet_config_id" type="UUID"/>
+            <column name="column_order" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1739884113021-4">
+        <addForeignKeyConstraint baseColumnNames="spreadsheet_config_id" baseTableName="spreadsheet_column" constraintName="fk_spreadsheet_config_column" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="spreadsheet_config" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1739884113021-5">
+        <dropForeignKeyConstraint baseTableName="SPREADSHEET_CUSTOM_COLUMN" constraintName="SPREADSHEET_CONFIG_ID_FK_CONSTRAINT"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1739884113021-6">
+        <dropTable tableName="SPREADSHEET_CUSTOM_COLUMN"/>
+    </changeSet>
+</databaseChangeLog>

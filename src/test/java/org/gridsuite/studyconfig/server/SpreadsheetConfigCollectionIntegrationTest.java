@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
-import org.gridsuite.studyconfig.server.dto.CustomColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
@@ -64,7 +64,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(createdCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "spreadsheetConfigs.id")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
                 .isEqualTo(collectionToCreate);
         assertThat(createdCollection.id()).isNotNull();
     }
@@ -79,7 +79,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(receivedCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "spreadsheetConfigs.id")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
                 .isEqualTo(collectionToRead);
         assertThat(receivedCollection.id()).isEqualTo(collectionUuid);
     }
@@ -103,7 +103,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(retrievedCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.id")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
                 .isEqualTo(updatedCollection);
     }
 
@@ -130,7 +130,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos duplicatedCollection = getSpreadsheetConfigCollection(duplicatedCollectionUuid);
         assertThat(duplicatedCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "spreadsheetConfigs.id")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
                 .isEqualTo(collectionToCreate);
         assertThat(duplicatedCollection.id()).isNotEqualTo(collectionUuid);
     }
@@ -152,29 +152,29 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
-        List<CustomColumnInfos> customColumnInfos = Arrays.asList(
-            new CustomColumnInfos("cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new CustomColumnInfos("cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB")
+        List<ColumnInfos> columnInfos = Arrays.asList(
+            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
+            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB")
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, customColumnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, customColumnInfos)
+                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos)
         );
     }
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigs() {
-        List<CustomColumnInfos> customColumnInfos = Arrays.asList(
-            new CustomColumnInfos("cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new CustomColumnInfos("cust_b", ColumnType.TEXT, null, "var_minP + 2", null, "idB"),
-            new CustomColumnInfos("cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]", "idC"),
-            new CustomColumnInfos("cust_d", ColumnType.NUMBER, 0, "5 + 1", null, "idD")
+        List<ColumnInfos> columnInfos = Arrays.asList(
+            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
+            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 2", null, "idB"),
+            new ColumnInfos(null, "cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]", "idC"),
+            new ColumnInfos(null, "cust_d", ColumnType.NUMBER, 0, "5 + 1", null, "idD")
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, customColumnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, customColumnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.BATTERY, customColumnInfos)
+                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, SheetType.BATTERY, columnInfos)
         );
     }
 
