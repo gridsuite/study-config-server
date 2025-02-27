@@ -22,6 +22,9 @@ public record SpreadsheetConfigInfos(
     @Schema(description = "Spreadsheet configuration ID")
     UUID id,
 
+    @Schema(description = "Spreadsheet configuration name")
+    String name,
+
     @NotNull(message = "Sheet type is mandatory")
     @Schema(description = "Spreadsheet type")
     SheetType sheetType,

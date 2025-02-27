@@ -151,6 +151,83 @@ class SpreadsheetConfigCollectionIntegrationTest {
         assertThat(duplicatedConfigIds.stream().sorted().toList()).isNotEqualTo(configIds.stream().sorted().toList());
     }
 
+    @Test
+    void testCreateDefaultCollection() throws Exception {
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/default"))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UUID defaultCollectionUuid = mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
+
+        SpreadsheetConfigCollectionInfos defaultCollection = getSpreadsheetConfigCollection(defaultCollectionUuid);
+        assertThat(defaultCollection.id()).isEqualTo(defaultCollectionUuid);
+    }
+
+    @Test
+    void testAddSpreadsheetConfigToCollection() throws Exception {
+        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
+
+        List<ColumnInfos> columnInfos = Arrays.asList(
+            new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew")
+        );
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos);
+
+        String newConfigJson = mapper.writeValueAsString(newConfig);
+        MvcResult mvcResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs")
+                .content(newConfigJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UUID newConfigId = mapper.readValue(mvcResult.getResponse().getContentAsString(), UUID.class);
+        assertThat(newConfigId).isNotNull();
+
+        SpreadsheetConfigCollectionInfos updatedCollection = getSpreadsheetConfigCollection(collectionUuid);
+        assertThat(updatedCollection.spreadsheetConfigs()).hasSize(initialCollection.spreadsheetConfigs().size() + 1);
+        assertThat(updatedCollection.spreadsheetConfigs())
+                .anyMatch(config -> config.name().equals("NewSheet") && config.sheetType() == SheetType.BATTERY);
+    }
+
+    @Test
+    void testRemoveSpreadsheetConfigFromCollection() throws Exception {
+        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
+
+        SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
+        UUID configIdToRemove = createdCollection.spreadsheetConfigs().get(0).id();
+
+        mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + configIdToRemove))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigCollectionInfos updatedCollection = getSpreadsheetConfigCollection(collectionUuid);
+        assertThat(updatedCollection.spreadsheetConfigs()).hasSize(initialCollection.spreadsheetConfigs().size() - 1);
+        assertThat(updatedCollection.spreadsheetConfigs())
+                .noneMatch(config -> config.id().equals(configIdToRemove));
+    }
+
+    @Test
+    void testAddSpreadsheetConfigToNonExistentCollection() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of());
+
+        String newConfigJson = mapper.writeValueAsString(newConfig);
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + nonExistentUuid + "/spreadsheet-configs")
+                .content(newConfigJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testRemoveNonExistentSpreadsheetConfig() throws Exception {
+        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        UUID collectionUuid = postSpreadsheetConfigCollection(collection);
+
+        UUID nonExistentConfigId = UUID.randomUUID();
+        mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + nonExistentConfigId))
+                .andExpect(status().isNotFound());
+    }
+
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
             new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
@@ -158,8 +235,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos)
         );
     }
 
@@ -172,9 +249,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, SheetType.BATTERY, columnInfos)
+                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "Generator1", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, columnInfos)
         );
     }
 
@@ -213,7 +290,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private UUID duplicateSpreadsheetConfigCollection(UUID collectionUuid) throws Exception {
-        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/duplicate")
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE)
                         .queryParam("duplicateFrom", collectionUuid.toString()))
                 .andExpect(status().isCreated())
                 .andReturn();

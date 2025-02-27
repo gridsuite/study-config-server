@@ -51,7 +51,7 @@ public class SpreadsheetConfigController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @PostMapping(value = "/duplicate", params = { DUPLICATE_FROM })
+    @PostMapping(params = { DUPLICATE_FROM })
     @Operation(summary = "Duplicate a spreadsheet configuration",
             description = "Creates a copy of an existing spreadsheet configuration")
     @ApiResponse(responseCode = "201", description = "Configuration duplicated",

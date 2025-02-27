@@ -31,6 +31,9 @@ public class SpreadsheetConfigEntity {
     @Column(name = "id")
     private UUID id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "sheet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private SheetType sheetType;
