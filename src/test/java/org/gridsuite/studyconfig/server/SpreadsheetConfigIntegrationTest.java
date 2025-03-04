@@ -28,6 +28,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -303,6 +305,39 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos column = getColumn(configId, columnId);
         assertThat(column).isNotNull();
         assertThat(column.uuid()).isEqualTo(columnId);
+    }
+
+    @Test
+    void testReorderColumns() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "ReorderTest", SheetType.BATTERY, createColumns());
+        UUID configId = saveAndReturnId(config);
+
+        // get the saved config to retrieve column UUIDs
+        SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
+        List<ColumnInfos> originalColumns = savedConfig.columns();
+        assertThat(originalColumns).hasSize(4);
+
+        // reverse the original order
+        List<UUID> reorderedColumnIds = originalColumns.stream()
+            .map(ColumnInfos::uuid)
+            .collect(Collectors.toList());
+        Collections.reverse(reorderedColumnIds);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/reorder")
+                .content(mapper.writeValueAsString(reorderedColumnIds))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // verify the new order
+        SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
+        List<ColumnInfos> reorderedColumns = updatedConfig.columns();
+
+        assertThat(reorderedColumns).hasSize(originalColumns.size());
+
+        for (int i = 0; i < reorderedColumns.size(); i++) {
+            assertThat(reorderedColumns.get(i).uuid())
+                .isEqualTo(originalColumns.get(originalColumns.size() - 1 - i).uuid());
+        }
     }
 
     private List<ColumnInfos> createColumns() {
