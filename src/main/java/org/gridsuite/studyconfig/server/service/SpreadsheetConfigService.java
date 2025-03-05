@@ -253,6 +253,18 @@ public class SpreadsheetConfigService {
         spreadsheetConfigRepository.save(entity);
     }
 
+    @Transactional
+    public void reorderColumns(UUID id, List<UUID> columnOrder) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        List<ColumnEntity> columns = entity.getColumns();
+
+        columns.sort((c1, c2) -> {
+            int idx1 = columnOrder.indexOf(c1.getUuid());
+            int idx2 = columnOrder.indexOf(c2.getUuid());
+            return Integer.compare(idx1, idx2);
+        });
+    }
+
     private SpreadsheetConfigCollectionInfos readDefaultSpreadsheetConfigCollection() throws IOException {
         try (InputStream inputStream = defaultSpreadsheetConfigCollectionResource.getInputStream()) {
             return objectMapper.readValue(inputStream, SpreadsheetConfigCollectionInfos.class);

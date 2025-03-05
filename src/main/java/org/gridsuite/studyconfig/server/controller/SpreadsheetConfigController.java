@@ -156,4 +156,14 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/columns/reorder")
+    @Operation(summary = "Reorder columns", description = "Reorders the columns of a spreadsheet configuration")
+    @ApiResponse(responseCode = "204", description = "Columns reordered")
+    public ResponseEntity<Void> reorderColumns(
+                    @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+                    @Parameter(description = "New order of column IDs") @RequestBody List<UUID> columnOrder) {
+        spreadsheetConfigService.reorderColumns(id, columnOrder);
+        return ResponseEntity.noContent().build();
+    }
+
 }
