@@ -32,6 +32,7 @@ public class SpreadsheetConfigCollectionEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "collection_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_collection"))
+    @OrderColumn(name = "config_order")
     @Builder.Default
     private List<SpreadsheetConfigEntity> spreadsheetConfigs = new ArrayList<>();
 }
