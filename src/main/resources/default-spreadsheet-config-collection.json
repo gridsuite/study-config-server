@@ -94,7 +94,7 @@
           "name": "ISC min (kA)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "identifiableShortCircuit.ipMin",
+          "formula": "unitToKiloUnit(identifiableShortCircuit.ipMin)",
           "dependencies": null,
           "id": "identifiableShortCircuit.ipMin"
         },
@@ -102,7 +102,7 @@
           "name": "ISC max (kA)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "identifiableShortCircuit.ipMax",
+          "formula": "unitToKiloUnit(identifiableShortCircuit.ipMax)",
           "dependencies": null,
           "id": "identifiableShortCircuit.ipMax"
         }
@@ -244,7 +244,7 @@
           "name": "Shunt conductance 1 (μS)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "g1",
+          "formula": "unitToMicroUnit(g1)",
           "dependencies": null,
           "id": "g1"
         },
@@ -252,7 +252,7 @@
           "name": "Shunt conductance 2 (μS)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "g2",
+          "formula": "unitToMicroUnit(g2)",
           "dependencies": null,
           "id": "g2"
         },
@@ -260,7 +260,7 @@
           "name": "Shunt susceptance 1 (μS)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "b1",
+          "formula": "unitToMicroUnit(b1)",
           "dependencies": null,
           "id": "b1"
         },
@@ -268,7 +268,7 @@
           "name": "Shunt susceptance 2 (μS)",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "b2",
+          "formula": "unitToMicroUnit(b2)",
           "dependencies": null,
           "id": "b2"
         }
