@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="berrahmaach (generated)" id="1741095166265-1">
+        <addColumn tableName="spreadsheet_config">
+            <column name="config_order" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1741095166265-2">
+        <sql dbms="postgresql">
+            WITH ordered_configs AS (
+            SELECT id, collection_id, ROW_NUMBER() OVER (PARTITION BY collection_id ORDER BY id) - 1 as seq
+            FROM spreadsheet_config
+            WHERE collection_id IS NOT NULL
+            )
+            UPDATE spreadsheet_config sc
+            SET config_order = oc.seq
+            FROM ordered_configs oc
+            WHERE sc.id = oc.id;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

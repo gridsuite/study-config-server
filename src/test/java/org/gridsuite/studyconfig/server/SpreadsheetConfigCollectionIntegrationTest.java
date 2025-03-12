@@ -24,9 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -226,6 +224,38 @@ class SpreadsheetConfigCollectionIntegrationTest {
         UUID nonExistentConfigId = UUID.randomUUID();
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + nonExistentConfigId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testReorderSpreadsheetConfigs() throws Exception {
+        // Create a collection with multiple configs
+        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        UUID collectionId = postSpreadsheetConfigCollection(collection);
+
+        // Get the created collection to get the config IDs
+        SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionId);
+        List<UUID> configIds = createdCollection.spreadsheetConfigs().stream()
+                .map(SpreadsheetConfigInfos::id)
+                .toList();
+
+        // Create a new order (reverse the existing order)
+        List<UUID> newOrder = new ArrayList<>(configIds);
+        Collections.reverse(newOrder);
+
+        // Send the reorder request
+        String newOrderJson = mapper.writeValueAsString(newOrder);
+        mockMvc.perform(put("/v1/spreadsheet-config-collections/" + collectionId + "/reorder")
+                        .content(newOrderJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // Get the collection again and verify the order has changed
+        SpreadsheetConfigCollectionInfos updatedCollection = getSpreadsheetConfigCollection(collectionId);
+        List<UUID> updatedConfigIds = updatedCollection.spreadsheetConfigs().stream()
+                .map(SpreadsheetConfigInfos::id)
+                .toList();
+
+        assertThat(updatedConfigIds).isEqualTo(newOrder);
     }
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {

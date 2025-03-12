@@ -137,4 +137,16 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/reorder")
+    @Operation(summary = "Reorder spreadsheet configs in a collection",
+            description = "Updates the order of spreadsheet configs within a collection")
+    @ApiResponse(responseCode = "204", description = "Order updated")
+    @ApiResponse(responseCode = "404", description = "Collection not found")
+    public ResponseEntity<Void> reorderSpreadsheetConfigs(
+            @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
+            @Valid @RequestBody List<UUID> newOrder) {
+        spreadsheetConfigService.reorderSpreadsheetConfigs(id, newOrder);
+        return ResponseEntity.noContent().build();
+    }
+
 }

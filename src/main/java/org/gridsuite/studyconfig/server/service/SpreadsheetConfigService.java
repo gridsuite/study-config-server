@@ -27,9 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -301,6 +300,28 @@ public class SpreadsheetConfigService {
             throw new EntityNotFoundException("Spreadsheet configuration not found in collection");
         }
         spreadsheetConfigCollectionRepository.save(collection);
+    }
+
+    @Transactional
+    public void reorderSpreadsheetConfigs(UUID collectionId, List<UUID> newOrder) {
+        SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+
+        // Validate inputs
+        Set<UUID> existingIds = collection.getSpreadsheetConfigs().stream()
+                .map(SpreadsheetConfigEntity::getId)
+                .collect(Collectors.toSet());
+
+        if (existingIds.size() != newOrder.size() || !existingIds.containsAll(newOrder)) {
+            throw new IllegalArgumentException("New order must contain exactly the same configs as the collection");
+        }
+
+        List<SpreadsheetConfigEntity> configs = collection.getSpreadsheetConfigs();
+        configs.sort((c1, c2) -> {
+            int idx1 = newOrder.indexOf(c1.getId());
+            int idx2 = newOrder.indexOf(c2.getId());
+            return Integer.compare(idx1, idx2);
+        });
     }
 
 }
