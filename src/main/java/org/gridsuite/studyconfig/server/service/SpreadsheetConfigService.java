@@ -322,8 +322,6 @@ public class SpreadsheetConfigService {
             int idx2 = newOrder.indexOf(c2.getId());
             return Integer.compare(idx1, idx2);
         });
-
-        spreadsheetConfigCollectionRepository.save(collection);
     }
 
 }
