@@ -55,40 +55,57 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testCreateCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
         UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
         SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
 
         assertThat(createdCollection)
-                .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
-                .isEqualTo(collectionToCreate);
+            .usingRecursiveComparison()
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
+            .ignoringExpectedNullFields()
+            .isEqualTo(collectionToCreate);
+        assertThat(createdCollection.id()).isNotNull();
+    }
+
+    @Test
+    void testCreateCollectionWithAliases() throws Exception {
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), List.of("alias1", "alias2", "alias3"));
+
+        UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
+        SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
+
+        assertThat(createdCollection)
+            .usingRecursiveComparison()
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
+            .ignoringExpectedNullFields()
+            .isEqualTo(collectionToCreate);
         assertThat(createdCollection.id()).isNotNull();
     }
 
     @Test
     void testReadCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToRead = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToRead = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
         UUID collectionUuid = saveAndReturnId(collectionToRead);
 
         SpreadsheetConfigCollectionInfos receivedCollection = getSpreadsheetConfigCollection(collectionUuid);
 
         assertThat(receivedCollection)
-                .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
-                .isEqualTo(collectionToRead);
+            .usingRecursiveComparison()
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
+            .ignoringExpectedNullFields()
+            .isEqualTo(collectionToRead);
         assertThat(receivedCollection.id()).isEqualTo(collectionUuid);
     }
 
     @Test
     void testUpdateCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
         UUID collectionUuid = saveAndReturnId(collectionToUpdate);
 
-        SpreadsheetConfigCollectionInfos updatedCollection = new SpreadsheetConfigCollectionInfos(collectionUuid, createUpdatedSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos updatedCollection = new SpreadsheetConfigCollectionInfos(collectionUuid, createUpdatedSpreadsheetConfigs(), null);
 
         String updatedCollectionJson = mapper.writeValueAsString(updatedCollection);
 
@@ -100,14 +117,15 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos retrievedCollection = getSpreadsheetConfigCollection(collectionUuid);
 
         assertThat(retrievedCollection)
-                .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
-                .isEqualTo(updatedCollection);
+            .usingRecursiveComparison()
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
+            .ignoringExpectedNullFields()
+            .isEqualTo(updatedCollection);
     }
 
     @Test
     void testDeleteCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToDelete = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToDelete = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
         UUID collectionUuid = saveAndReturnId(collectionToDelete);
 
@@ -120,23 +138,24 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testDuplicateCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
 
         UUID duplicatedCollectionUuid = duplicateSpreadsheetConfigCollection(collectionUuid);
 
         SpreadsheetConfigCollectionInfos duplicatedCollection = getSpreadsheetConfigCollection(duplicatedCollectionUuid);
         assertThat(duplicatedCollection)
-                .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
-                .isEqualTo(collectionToCreate);
+            .usingRecursiveComparison()
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
+            .ignoringExpectedNullFields()
+            .isEqualTo(collectionToCreate);
         assertThat(duplicatedCollection.id()).isNotEqualTo(collectionUuid);
     }
 
     @Test
     void testMergeModelsIntoNewCollection() throws Exception {
         // create a first collection with 2 configs
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
         List<UUID> configIds = getSpreadsheetConfigCollection(collectionUuid).spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
         assertThat(configIds).hasSize(2);
@@ -163,7 +182,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testAddSpreadsheetConfigToCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
         List<ColumnInfos> columnInfos = Arrays.asList(
@@ -189,7 +208,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testRemoveSpreadsheetConfigFromCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
         SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
@@ -218,7 +237,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testRemoveNonExistentSpreadsheetConfig() throws Exception {
-        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(collection);
 
         UUID nonExistentConfigId = UUID.randomUUID();
@@ -229,7 +248,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     @Test
     void testReorderSpreadsheetConfigs() throws Exception {
         // Create a collection with multiple configs
-        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs());
+        SpreadsheetConfigCollectionInfos collection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionId = postSpreadsheetConfigCollection(collection);
 
         // Get the created collection to get the config IDs
