@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="lecuyerfra (generated)" id="1742200048214-1">
+        <createTable tableName="node_aliases">
+            <column name="spreadsheet_config_collection_entity_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="node_aliases" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="lecuyerfra (generated)" id="1742200048214-2">
+        <addForeignKeyConstraint baseColumnNames="spreadsheet_config_collection_entity_id" baseTableName="node_aliases" constraintName="fk_spreadsheet_config_collection_node_aliases" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="spreadsheet_config_collection" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
