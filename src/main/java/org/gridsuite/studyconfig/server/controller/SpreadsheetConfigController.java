@@ -103,6 +103,18 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/name")
+    @Operation(summary = "Rename a spreadsheet configuration",
+            description = "Updates the name of an existing spreadsheet configuration")
+    @ApiResponse(responseCode = "204", description = "Configuration renamed")
+    @ApiResponse(responseCode = "404", description = "Configuration not found")
+    public ResponseEntity<Void> renameSpreadsheetConfig(
+            @Parameter(description = "ID of the configuration to rename") @PathVariable UUID id,
+            @Parameter(description = "New name for the configuration") @RequestBody String name) {
+        spreadsheetConfigService.renameSpreadsheetConfig(id, name);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a spreadsheet configuration",
             description = "Deletes an existing spreadsheet configuration")

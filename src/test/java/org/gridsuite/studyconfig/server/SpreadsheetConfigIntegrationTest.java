@@ -340,6 +340,35 @@ class SpreadsheetConfigIntegrationTest {
         }
     }
 
+    @Test
+    void testRenameSpreadsheetConfig() throws Exception {
+        SpreadsheetConfigInfos configToRename = new SpreadsheetConfigInfos(null, "OriginalName", SheetType.BATTERY, createColumns());
+        UUID configUuid = saveAndReturnId(configToRename);
+
+        String newName = "RenamedConfig";
+        mockMvc.perform(patch(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/name")
+                .content(newName)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigInfos renamedConfig = getSpreadsheetConfig(configUuid);
+        assertThat(renamedConfig.name()).isEqualTo(newName);
+
+        assertThat(renamedConfig)
+                .usingRecursiveComparison()
+                .ignoringFields("name", "columns.uuid", "id", "columns.id")
+                .isEqualTo(configToRename);
+    }
+
+    @Test
+    void testRenameNonExistentSpreadsheetConfig() throws Exception {
+        UUID nonExistentUuid = UUID.randomUUID();
+        mockMvc.perform(patch(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid + "/name")
+                .content("NewName")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     private List<ColumnInfos> createColumns() {
         return Arrays.asList(
                 new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),

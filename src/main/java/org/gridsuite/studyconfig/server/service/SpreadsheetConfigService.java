@@ -327,4 +327,10 @@ public class SpreadsheetConfigService {
         });
     }
 
+    @Transactional
+    public void renameSpreadsheetConfig(UUID id, String name) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        entity.setName(name);
+    }
+
 }
