@@ -35,4 +35,8 @@ public class SpreadsheetConfigCollectionEntity {
     @OrderColumn(name = "config_order")
     @Builder.Default
     private List<SpreadsheetConfigEntity> spreadsheetConfigs = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "node_aliases", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_collection_node_aliases"))
+    private List<String> nodeAliases;
 }
