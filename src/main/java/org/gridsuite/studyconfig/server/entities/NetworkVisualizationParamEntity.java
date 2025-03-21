@@ -47,7 +47,7 @@ public class NetworkVisualizationParamEntity {
     private Integer lineFlowAlertThreshold = 100;
 
     @Column(name = "map_manual_refresh")
-    private Boolean mapManualRefresh = false;
+    private Boolean mapManualRefresh = true;
 
     @Column(name = "map_basemap")
     private String mapBaseMap = "mapbox";
