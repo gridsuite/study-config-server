@@ -178,6 +178,17 @@ public class SpreadsheetConfigService {
     }
 
     @Transactional
+    public void updateSpreadsheetConfigCollectionWithConfigs(UUID id, List<UUID> configUuids) {
+        SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+
+        entity.getSpreadsheetConfigs().clear();
+        entity.getSpreadsheetConfigs().addAll(configUuids.stream()
+                .map(this::duplicateSpreadsheetConfigEntity)
+                .toList());
+    }
+
+    @Transactional
     public UUID duplicateSpreadsheetConfigCollection(UUID id) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
