@@ -21,6 +21,9 @@ public record SpreadsheetConfigCollectionInfos(
     UUID id,
 
     @Schema(description = "List of spreadsheet configurations")
-    List<SpreadsheetConfigInfos> spreadsheetConfigs
+    List<SpreadsheetConfigInfos> spreadsheetConfigs,
+
+    @Schema(description = "List of node aliases")
+    List<String> nodeAliases
 ) {
 }
