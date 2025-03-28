@@ -46,8 +46,6 @@ public class NetworkVisualizationsParamService {
                 .lineFullPath(entity.getLineFullPath())
                 .lineParallelPath(entity.getLineParallelPath())
                 .lineFlowMode(entity.getLineFlowMode())
-                .lineFlowColorMode(entity.getLineFlowColorMode())
-                .lineFlowAlertThreshold(entity.getLineFlowAlertThreshold())
                 .mapManualRefresh(entity.getMapManualRefresh())
                 .mapBaseMap(entity.getMapBaseMap())
                 // SLD

@@ -40,12 +40,6 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "line_flow_mode")
     private String lineFlowMode = "feeders";
 
-    @Column(name = "line_flow_color_mode")
-    private String lineFlowColorMode = "nominalVoltage";
-
-    @Column(name = "line_flow_alert_threshold")
-    private Integer lineFlowAlertThreshold = 100;
-
     @Column(name = "map_manual_refresh")
     private Boolean mapManualRefresh = true;
 

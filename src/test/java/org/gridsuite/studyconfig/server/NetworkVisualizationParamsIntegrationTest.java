@@ -154,14 +154,14 @@ class NetworkVisualizationParamsIntegrationTest {
 
     private NetworkVisualizationParamInfos createDto() {
         return new NetworkVisualizationParamInfos(null,
-                new MapParamInfos(true, false, "flow", "color", 80, true, "base"),
+                new MapParamInfos(true, false, "flow", true, "base"),
                 new SingleLineDiagramParamInfos(false, false, "layout", "lib"),
                 new NetworkAreaDiagramParamInfos(true));
     }
 
     private NetworkVisualizationParamInfos createDtoForUpdate(UUID id) {
         return new NetworkVisualizationParamInfos(id,
-                new MapParamInfos(false, true, "flow2", "color2", 99, false, "base2"),
+                new MapParamInfos(false, true, "flow2", false, "base2"),
                 new SingleLineDiagramParamInfos(true, true, "layout2", "lib2"),
                 new NetworkAreaDiagramParamInfos(false));
     }
