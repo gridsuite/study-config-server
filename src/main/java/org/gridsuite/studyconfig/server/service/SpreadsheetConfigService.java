@@ -137,6 +137,7 @@ public class SpreadsheetConfigService {
         entity.setSpreadsheetConfigs(dto.spreadsheetConfigs().stream()
                 .map(SpreadsheetConfigMapper::toEntity)
                 .toList());
+        entity.setNodeAliases(dto.nodeAliases());
         return spreadsheetConfigCollectionRepository.save(entity).getId();
     }
 
@@ -155,7 +156,7 @@ public class SpreadsheetConfigService {
                 .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
         return new SpreadsheetConfigCollectionInfos(entity.getId(), entity.getSpreadsheetConfigs().stream()
                 .map(SpreadsheetConfigMapper::toDto)
-                .toList());
+                .toList(), entity.getNodeAliases());
     }
 
     @Transactional
@@ -175,6 +176,7 @@ public class SpreadsheetConfigService {
         entity.getSpreadsheetConfigs().addAll(dto.spreadsheetConfigs().stream()
                 .map(SpreadsheetConfigMapper::toEntity)
                 .toList());
+        entity.setNodeAliases(dto.nodeAliases());
     }
 
     @Transactional
@@ -213,6 +215,7 @@ public class SpreadsheetConfigService {
                     return configDuplicate;
                 })
                 .toList());
+        duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
         return spreadsheetConfigCollectionRepository.save(duplicate).getId();
     }
 
