@@ -23,12 +23,6 @@ public record MapParamInfos(
     @Schema(description = "Line flow mode")
     String lineFlowMode,
 
-    @Schema(description = "Line color mode")
-    String lineFlowColorMode,
-
-    @Schema(description = "Line overloads warning threshold")
-    Integer lineFlowAlertThreshold,
-
     @Schema(description = "Manual update of geographical view")
     Boolean mapManualRefresh,
 

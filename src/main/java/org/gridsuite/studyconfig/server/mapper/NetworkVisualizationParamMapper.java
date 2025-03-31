@@ -27,8 +27,6 @@ public final class NetworkVisualizationParamMapper {
                         entity.getLineFullPath(),
                         entity.getLineParallelPath(),
                         entity.getLineFlowMode(),
-                        entity.getLineFlowColorMode(),
-                        entity.getLineFlowAlertThreshold(),
                         entity.getMapManualRefresh(),
                         entity.getMapBaseMap()),
                 new SingleLineDiagramParamInfos(
@@ -52,8 +50,6 @@ public final class NetworkVisualizationParamMapper {
         entity.setLineFullPath(dto.mapParameters().lineFullPath());
         entity.setLineParallelPath(dto.mapParameters().lineParallelPath());
         entity.setLineFlowMode(dto.mapParameters().lineFlowMode());
-        entity.setLineFlowColorMode(dto.mapParameters().lineFlowColorMode());
-        entity.setLineFlowAlertThreshold(dto.mapParameters().lineFlowAlertThreshold());
         entity.setMapManualRefresh(dto.mapParameters().mapManualRefresh());
         entity.setMapBaseMap(dto.mapParameters().mapBaseMap());
         // SLD
