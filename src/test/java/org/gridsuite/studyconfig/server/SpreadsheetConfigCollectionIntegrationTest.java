@@ -277,6 +277,50 @@ class SpreadsheetConfigCollectionIntegrationTest {
         assertThat(updatedConfigIds).isEqualTo(newOrder);
     }
 
+    @Test
+    void testReplaceAllSpreadsheetConfigs() throws Exception {
+        // Create a first collection with initial configs
+        SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
+        UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
+
+        // Get the initial config IDs
+        List<UUID> initialConfigIds = getSpreadsheetConfigCollection(collectionUuid)
+                .spreadsheetConfigs()
+                .stream()
+                .map(SpreadsheetConfigInfos::id)
+                .toList();
+
+        // Create a second collection with different configs
+        SpreadsheetConfigCollectionInfos sourceCollection = new SpreadsheetConfigCollectionInfos(null, createUpdatedSpreadsheetConfigs(), null);
+        UUID sourceCollectionUuid = postSpreadsheetConfigCollection(sourceCollection);
+
+        // Get the config IDs from the source collection
+        List<UUID> sourceConfigIds = getSpreadsheetConfigCollection(sourceCollectionUuid)
+                .spreadsheetConfigs()
+                .stream()
+                .map(SpreadsheetConfigInfos::id)
+                .toList();
+
+        // Call the replace-all endpoint
+        String configIdsJson = mapper.writeValueAsString(sourceConfigIds);
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/replace-all")
+                .content(configIdsJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // Verify the collection now has the new configs
+        SpreadsheetConfigCollectionInfos updatedCollection = getSpreadsheetConfigCollection(collectionUuid);
+        List<UUID> updatedConfigIds = updatedCollection.spreadsheetConfigs()
+                .stream()
+                .map(SpreadsheetConfigInfos::id)
+                .toList();
+
+        // Check that the initial and updated collections have different configs
+        assertThat(updatedConfigIds)
+                .isNotEqualTo(initialConfigIds)
+                .hasSize(sourceConfigIds.size());
+    }
+
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
             new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),

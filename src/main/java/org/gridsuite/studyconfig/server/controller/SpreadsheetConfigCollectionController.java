@@ -92,6 +92,19 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/spreadsheet-configs/replace-all")
+    @Operation(summary = "Replace all spreadsheet configs in a collection",
+            description = "Updates a collection with a list of existing spreadsheet configs, replacing any previous configs")
+    @ApiResponse(responseCode = "204", description = "Collection updated with configs")
+    @ApiResponse(responseCode = "404", description = "Collection or one of the configs not found")
+    public ResponseEntity<Void> updateSpreadsheetConfigCollectionWithConfigs(
+            @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
+            @Parameter(description = "List of spreadsheet config UUIDs to replace the collection's configs")
+            @Valid @RequestBody List<UUID> configIds) {
+        spreadsheetConfigService.updateSpreadsheetConfigCollectionWithConfigs(id, configIds);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping(params = { "duplicateFrom" })
     @Operation(summary = "Duplicate a spreadsheet configuration collection",
             description = "Creates a copy of an existing spreadsheet configuration collection")
