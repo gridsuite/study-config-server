@@ -191,6 +191,40 @@ public class SpreadsheetConfigService {
     }
 
     @Transactional
+    public void appendSpreadsheetConfigCollection(UUID id, UUID sourceCollectionId) {
+        SpreadsheetConfigCollectionEntity targetEntity = spreadsheetConfigCollectionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+        SpreadsheetConfigCollectionEntity sourceEntity = spreadsheetConfigCollectionRepository.findById(sourceCollectionId)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + sourceCollectionId));
+        // Make sure names are unique in the merged collection
+        Set<String> targetNames = targetEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
+        Set<String> sourceNames = sourceEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
+        targetEntity.getSpreadsheetConfigs().addAll(sourceEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getId)
+                .map(configId -> {
+                    SpreadsheetConfigEntity clone = duplicateSpreadsheetConfigEntity(configId);
+                    clone.setName(getUniqueName(clone.getName(), targetNames, sourceNames));
+                    return clone;
+                })
+                .toList());
+        // keep only aliases of appended collection, they will be invalidated by the Front
+        targetEntity.getNodeAliases().clear();
+        targetEntity.getNodeAliases().addAll(sourceEntity.getNodeAliases());
+    }
+
+    private String getUniqueName(String name, Set<String> targetNames, Set<String> sourceNames) {
+        if (!targetNames.contains(name)) {
+            return name;
+        }
+        final String newNameFormat = name + " (%d)";
+        String nextName;
+        int x = 0;
+        do {
+            nextName = String.format(newNameFormat, ++x);
+        } while (targetNames.contains(nextName) || sourceNames.contains(nextName));
+        return nextName;
+    }
+
+    @Transactional
     public UUID duplicateSpreadsheetConfigCollection(UUID id) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
