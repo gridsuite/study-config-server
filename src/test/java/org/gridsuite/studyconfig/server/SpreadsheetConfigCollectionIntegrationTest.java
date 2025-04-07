@@ -124,6 +124,29 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     @Test
+    void testAppendCollection() throws Exception {
+        List<String> existingAliases = List.of("n1", "n2", "n3");
+        SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), existingAliases);
+        UUID collectionUuid = saveAndReturnId(collectionToUpdate);
+
+        List<String> appendedAliases = List.of("n1", "n6", "n3");
+        SpreadsheetConfigCollectionInfos appendedCollection = new SpreadsheetConfigCollectionInfos(null, createUpdatedSpreadsheetConfigs(), appendedAliases);
+        UUID appendedCollectionUuid = saveAndReturnId(appendedCollection);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/append?sourceCollection=" + appendedCollectionUuid)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigCollectionInfos mergedCollection = getSpreadsheetConfigCollection(collectionUuid);
+
+        // We have 3 new tabs coming from the appended collection, but 2 have been renamed to ensure name uniqueness.
+        assertThat(mergedCollection.spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::name).toList())
+                .isEqualTo(List.of("TestSheet", "TestSheet1", "Generator", "TestSheet (2)", "TestSheet (1)"));
+        // In the appended collection, we keep only the aliases from the appended collection
+        assertThat(mergedCollection.nodeAliases()).isEqualTo(appendedAliases);
+    }
+
+    @Test
     void testDeleteCollection() throws Exception {
         SpreadsheetConfigCollectionInfos collectionToDelete = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
@@ -185,8 +208,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
-        List<ColumnInfos> columnInfos = Arrays.asList(
-            new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew")
+        List<ColumnInfos> columnInfos = List.of(
+                new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew")
         );
         SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos);
 
@@ -212,7 +235,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
         SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
-        UUID configIdToRemove = createdCollection.spreadsheetConfigs().get(0).id();
+        UUID configIdToRemove = createdCollection.spreadsheetConfigs().getFirst().id();
 
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + configIdToRemove))
                 .andExpect(status().isNoContent());
@@ -343,8 +366,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         return List.of(
                 new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, "Generator1", SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, columnInfos)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos),
+                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos)
         );
     }
 
