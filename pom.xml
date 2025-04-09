@@ -44,6 +44,8 @@
     <properties>
         <gridsuite-dependencies.version>38.0.0</gridsuite-dependencies.version>
         <liquibase-hibernate-package>org.gridsuite.studyconfig.server</liquibase-hibernate-package>
+        <sonar.organization>gridsuite</sonar.organization>
+        <sonar.projectKey>org.gridsuite:study-config-server</sonar.projectKey>
     </properties>
 
     <build>
