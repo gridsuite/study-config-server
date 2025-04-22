@@ -44,4 +44,9 @@ public class SpreadsheetConfigEntity {
     @Builder.Default
     private List<ColumnEntity> columns = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_global_filter_spreadsheet_config"))
+    @Builder.Default
+    private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
+
 }

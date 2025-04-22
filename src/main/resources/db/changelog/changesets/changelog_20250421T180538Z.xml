@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="berrahmaach (generated)" id="1745258752443-1">
+        <createTable tableName="spreadsheet_global_filter">
+            <column name="uuid" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="spreadsheet_global_filterPK"/>
+            </column>
+            <column name="filter_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spreadsheet_config_id" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1745258752443-2">
+        <addColumn tableName="spreadsheet_column">
+            <column name="filter_data_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1745258752443-3">
+        <addColumn tableName="spreadsheet_column">
+            <column name="filter_tolerance" type="float(53)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1745258752443-4">
+        <addColumn tableName="spreadsheet_column">
+            <column name="filter_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1745258752443-5">
+        <addColumn tableName="spreadsheet_column">
+            <column name="filter_value" type="CLOB"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="berrahmaach (generated)" id="1745258752443-6">
+        <addForeignKeyConstraint baseColumnNames="spreadsheet_config_id" baseTableName="spreadsheet_global_filter" constraintName="fk_global_filter_spreadsheet_config" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="spreadsheet_config" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

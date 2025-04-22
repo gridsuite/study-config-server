@@ -39,5 +39,17 @@ public record ColumnInfos(
     String dependencies,
 
     @Schema(description = "Column id")
-    String id
+    String id,
+
+    @Schema(description = "Filter data type")
+    String filterDataType,
+
+    @Schema(description = "Filter type")
+    String filterType,
+
+    @Schema(description = "Filter value")
+    String filterValue,
+
+    @Schema(description = "Filter tolerance for numeric comparisons")
+    Double filterTolerance
 ) { }
