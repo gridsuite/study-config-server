@@ -506,7 +506,6 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
     }
 
-
     private SpreadsheetConfigCollectionInfos getSpreadsheetConfigCollection(UUID collectionUuid) throws Exception {
         MvcResult mvcGetResult = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid))
                 .andExpect(status().isOk())
