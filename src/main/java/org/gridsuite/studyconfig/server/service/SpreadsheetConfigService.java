@@ -8,10 +8,7 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
-import org.gridsuite.studyconfig.server.dto.MetadataInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigCollectionEntity;
@@ -351,6 +348,15 @@ public class SpreadsheetConfigService {
         try (InputStream inputStream = defaultSpreadsheetConfigCollectionResource.getInputStream()) {
             return objectMapper.readValue(inputStream, SpreadsheetConfigCollectionInfos.class);
         }
+    }
+
+    @Transactional
+    public void setGlobalFiltersForSpreadsheetConfig(UUID id, List<GlobalFilterInfos> globalFilters) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        entity.getGlobalFilters().clear();
+        entity.getGlobalFilters().addAll(globalFilters.stream()
+                .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
+                .toList());
     }
 
     public UUID createDefaultSpreadsheetConfigCollection() {

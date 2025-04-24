@@ -388,6 +388,49 @@ class SpreadsheetConfigIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testSetGlobalFiltersForSpreadsheetConfig() throws Exception {
+        // Create a spreadsheet config with existing global filters
+        SpreadsheetConfigInfos configWithFilters = new SpreadsheetConfigInfos(
+                null, "ConfigWithFilters", SheetType.BATTERY, createColumns(), createGlobalFilters());
+        UUID configId = saveAndReturnId(configWithFilters);
+
+        // Initial config should have two filters
+        SpreadsheetConfigInfos initialConfig = getSpreadsheetConfig(configId);
+        assertThat(initialConfig.globalFilters()).hasSize(2);
+
+        // Create new filters to set
+        List<GlobalFilterInfos> filtersToSet = List.of(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Replacement Filter")
+        );
+
+        // Call the endpoint to set the filters
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + "/global-filters")
+                        .content(mapper.writeValueAsString(filtersToSet))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // Verify the filters were replaced (not added)
+        SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
+        assertThat(updatedConfig.globalFilters()).hasSize(1);
+        assertThat(updatedConfig.globalFilters())
+                .extracting(GlobalFilterInfos::name)
+                .containsExactly("Replacement Filter");
+    }
+
+    @Test
+    void testSetGlobalFiltersToNonExistentConfig() throws Exception {
+        UUID nonExistentConfigId = UUID.randomUUID();
+        List<GlobalFilterInfos> filtersToAdd = List.of(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Test Filter")
+        );
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
+                        .content(mapper.writeValueAsString(filtersToAdd))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     private List<ColumnInfos> createColumns() {
         return Arrays.asList(
                 new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null),
