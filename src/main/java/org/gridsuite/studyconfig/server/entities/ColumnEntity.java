@@ -48,4 +48,17 @@ public class ColumnEntity {
 
     @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
     private String id;
+
+    @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
+    private String filterDataType;
+
+    @Column(name = "filter_type", columnDefinition = "varchar(255)")
+    private String filterType;
+
+    @Column(name = "filter_value", columnDefinition = "CLOB")
+    private String filterValue;
+
+    @Column(name = "filter_tolerance")
+    private Double filterTolerance;
+
 }

@@ -6,10 +6,12 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
 /**
@@ -27,6 +29,9 @@ public final class SpreadsheetConfigMapper {
                 entity.getSheetType(),
                 entity.getColumns().stream()
                     .map(SpreadsheetConfigMapper::toColumnDto)
+                    .toList(),
+                entity.getGlobalFilters().stream()
+                    .map(SpreadsheetConfigMapper::toGlobalFilterDto)
                     .toList()
         );
     }
@@ -47,11 +52,29 @@ public final class SpreadsheetConfigMapper {
                     .toList());
         }
 
+        if (dto.globalFilters() != null) {
+            entity.setGlobalFilters(dto.globalFilters().stream()
+                    .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
+                    .toList());
+        }
+
         return entity;
     }
 
     public static ColumnInfos toColumnDto(ColumnEntity entity) {
-        return new ColumnInfos(entity.getUuid(), entity.getName(), entity.getType(), entity.getPrecision(), entity.getFormula(), entity.getDependencies(), entity.getId());
+        return new ColumnInfos(
+                entity.getUuid(),
+                entity.getName(),
+                entity.getType(),
+                entity.getPrecision(),
+                entity.getFormula(),
+                entity.getDependencies(),
+                entity.getId(),
+                entity.getFilterDataType(),
+                entity.getFilterType(),
+                entity.getFilterValue(),
+                entity.getFilterTolerance()
+                );
     }
 
     public static ColumnEntity toColumnEntity(ColumnInfos dto) {
@@ -62,6 +85,25 @@ public final class SpreadsheetConfigMapper {
                 .formula(dto.formula())
                 .dependencies(dto.dependencies())
                 .id(dto.id())
+                .filterDataType(dto.filterDataType())
+                .filterType(dto.filterType())
+                .filterValue(dto.filterValue())
+                .filterTolerance(dto.filterTolerance())
+                .build();
+    }
+
+    public static GlobalFilterInfos toGlobalFilterDto(GlobalFilterEntity entity) {
+        return new GlobalFilterInfos(
+                entity.getUuid(),
+                entity.getFilterId(),
+                entity.getName()
+        );
+    }
+
+    public static GlobalFilterEntity toGlobalFilterEntity(GlobalFilterInfos dto) {
+        return GlobalFilterEntity.builder()
+                .filterId(dto.filterId())
+                .name(dto.name())
                 .build();
     }
 }
