@@ -162,8 +162,15 @@ public class SpreadsheetConfigService {
     @Transactional
     public UUID createSpreadsheetConfigCollectionFromConfigs(List<UUID> configUuids) {
         SpreadsheetConfigCollectionEntity entity = new SpreadsheetConfigCollectionEntity();
+        Set<String> targetNames = new HashSet<>();
         entity.setSpreadsheetConfigs(configUuids.stream()
-                .map(this::duplicateSpreadsheetConfigEntity)
+                .map(configId -> {
+                    SpreadsheetConfigEntity clone = duplicateSpreadsheetConfigEntity(configId);
+                    String newName = getUniqueName(clone.getName(), targetNames, Set.of());
+                    clone.setName(newName);
+                    targetNames.add(newName);
+                    return clone;
+                })
                 .toList());
         return spreadsheetConfigCollectionRepository.save(entity).getId();
     }
