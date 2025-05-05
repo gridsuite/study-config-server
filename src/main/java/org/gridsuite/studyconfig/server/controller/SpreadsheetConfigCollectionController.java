@@ -105,6 +105,18 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/append")
+    @Operation(summary = "Append a collection to another collection",
+            description = "")
+    @ApiResponse(responseCode = "204", description = "Collection updated")
+    @ApiResponse(responseCode = "404", description = "One of the collections not found")
+    public ResponseEntity<Void> appendSpreadsheetConfigCollection(
+            @Parameter(description = "ID of the configuration collection to update") @PathVariable UUID id,
+            @Parameter(description = "ID of the configuration collection to be appended") @RequestParam(name = "sourceCollection") UUID sourceCollectionId) {
+        spreadsheetConfigService.appendSpreadsheetConfigCollection(id, sourceCollectionId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping(params = { "duplicateFrom" })
     @Operation(summary = "Duplicate a spreadsheet configuration collection",
             description = "Creates a copy of an existing spreadsheet configuration collection")

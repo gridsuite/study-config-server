@@ -8,11 +8,9 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
-import org.gridsuite.studyconfig.server.dto.MetadataInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigCollectionEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
@@ -73,9 +71,23 @@ public class SpreadsheetConfigService {
                         .formula(column.getFormula())
                         .dependencies(column.getDependencies())
                         .id(column.getId())
+                        .filterDataType(column.getFilterDataType())
+                        .filterType(column.getFilterType())
+                        .filterValue(column.getFilterValue())
+                        .filterTolerance(column.getFilterTolerance())
                         .build())
                 .toList();
         duplicate.setColumns(columns);
+
+        // Copy global filters if needed
+        if (entity.getGlobalFilters() != null) {
+            duplicate.setGlobalFilters(entity.getGlobalFilters().stream()
+                    .map(globalFilter -> GlobalFilterEntity.builder()
+                            .filterId(globalFilter.getFilterId())
+                            .name(globalFilter.getName())
+                            .build())
+                    .toList());
+        }
         return duplicate;
     }
 
@@ -111,6 +123,12 @@ public class SpreadsheetConfigService {
         if (dto.columns() != null) {
             entity.getColumns().addAll(dto.columns().stream()
                     .map(SpreadsheetConfigMapper::toColumnEntity)
+                    .toList());
+        }
+        entity.getGlobalFilters().clear();
+        if (dto.globalFilters() != null) {
+            entity.getGlobalFilters().addAll(dto.globalFilters().stream()
+                    .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
                     .toList());
         }
     }
@@ -191,6 +209,40 @@ public class SpreadsheetConfigService {
     }
 
     @Transactional
+    public void appendSpreadsheetConfigCollection(UUID id, UUID sourceCollectionId) {
+        SpreadsheetConfigCollectionEntity targetEntity = spreadsheetConfigCollectionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+        SpreadsheetConfigCollectionEntity sourceEntity = spreadsheetConfigCollectionRepository.findById(sourceCollectionId)
+                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + sourceCollectionId));
+        // Make sure names are unique in the merged collection
+        Set<String> targetNames = targetEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
+        Set<String> sourceNames = sourceEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
+        targetEntity.getSpreadsheetConfigs().addAll(sourceEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getId)
+                .map(configId -> {
+                    SpreadsheetConfigEntity clone = duplicateSpreadsheetConfigEntity(configId);
+                    clone.setName(getUniqueName(clone.getName(), targetNames, sourceNames));
+                    return clone;
+                })
+                .toList());
+        // keep only aliases of appended collection, they will be invalidated by the Front
+        targetEntity.getNodeAliases().clear();
+        targetEntity.getNodeAliases().addAll(sourceEntity.getNodeAliases());
+    }
+
+    private String getUniqueName(String name, Set<String> targetNames, Set<String> sourceNames) {
+        if (!targetNames.contains(name)) {
+            return name;
+        }
+        final String newNameFormat = name + " (%d)";
+        String nextName;
+        int x = 0;
+        do {
+            nextName = String.format(newNameFormat, ++x);
+        } while (targetNames.contains(nextName) || sourceNames.contains(nextName));
+        return nextName;
+    }
+
+    @Transactional
     public UUID duplicateSpreadsheetConfigCollection(UUID id) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
@@ -210,6 +262,16 @@ public class SpreadsheetConfigService {
                                     .formula(column.getFormula())
                                     .dependencies(column.getDependencies())
                                     .id(column.getId())
+                                    .filterDataType(column.getFilterDataType())
+                                    .filterType(column.getFilterType())
+                                    .filterValue(column.getFilterValue())
+                                    .filterTolerance(column.getFilterTolerance())
+                                    .build())
+                            .toList());
+                    configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
+                            .map(globalFilter -> GlobalFilterEntity.builder()
+                                    .filterId(globalFilter.getFilterId())
+                                    .name(globalFilter.getName())
                                     .build())
                             .toList());
                     return configDuplicate;
@@ -252,6 +314,10 @@ public class SpreadsheetConfigService {
         columnEntity.setFormula(dto.formula());
         columnEntity.setDependencies(dto.dependencies());
         columnEntity.setId(dto.id());
+        columnEntity.setFilterDataType(dto.filterDataType());
+        columnEntity.setFilterType(dto.filterType());
+        columnEntity.setFilterValue(dto.filterValue());
+        columnEntity.setFilterTolerance(dto.filterTolerance());
 
         spreadsheetConfigRepository.save(entity);
     }
@@ -282,6 +348,15 @@ public class SpreadsheetConfigService {
         try (InputStream inputStream = defaultSpreadsheetConfigCollectionResource.getInputStream()) {
             return objectMapper.readValue(inputStream, SpreadsheetConfigCollectionInfos.class);
         }
+    }
+
+    @Transactional
+    public void setGlobalFiltersForSpreadsheetConfig(UUID id, List<GlobalFilterInfos> globalFilters) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        entity.getGlobalFilters().clear();
+        entity.getGlobalFilters().addAll(globalFilters.stream()
+                .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
+                .toList());
     }
 
     public UUID createDefaultSpreadsheetConfigCollection() {

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigCollectionInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
@@ -65,6 +66,27 @@ class SpreadsheetConfigCollectionIntegrationTest {
             .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToCreate);
+        assertThat(createdCollection.id()).isNotNull();
+    }
+
+    @Test
+    void testCreateCollectionWithFilteredConfigs() throws Exception {
+        // Create a collection with configs that have filters
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(
+                null,
+                createSpreadsheetConfigsWithFilters(),
+                null
+        );
+
+        UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
+        SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
+
+        assertThat(createdCollection)
+                .usingRecursiveComparison()
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
+                .ignoringExpectedNullFields()
+                .isEqualTo(collectionToCreate);
+
         assertThat(createdCollection.id()).isNotNull();
     }
 
@@ -124,6 +146,63 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     @Test
+    void testUpdateCollectionWithFilteredConfigs() throws Exception {
+        // Create a collection with configs that have filters
+        SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(
+                null,
+                createSpreadsheetConfigsWithFilters(),
+                null
+        );
+
+        UUID collectionUuid = saveAndReturnId(collectionToUpdate);
+
+        // Update the collection with new configs that also have filters
+        SpreadsheetConfigCollectionInfos updatedCollection = new SpreadsheetConfigCollectionInfos(
+                collectionUuid,
+                createUpdatedSpreadsheetConfigsWithFilters(),
+                null
+        );
+
+        String updatedCollectionJson = mapper.writeValueAsString(updatedCollection);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid)
+                        .content(updatedCollectionJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigCollectionInfos retrievedCollection = getSpreadsheetConfigCollection(collectionUuid);
+
+        assertThat(retrievedCollection)
+                .usingRecursiveComparison()
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
+                .ignoringExpectedNullFields()
+                .isEqualTo(updatedCollection);
+    }
+
+    @Test
+    void testAppendCollection() throws Exception {
+        List<String> existingAliases = List.of("n1", "n2", "n3");
+        SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), existingAliases);
+        UUID collectionUuid = saveAndReturnId(collectionToUpdate);
+
+        List<String> appendedAliases = List.of("n1", "n6", "n3");
+        SpreadsheetConfigCollectionInfos appendedCollection = new SpreadsheetConfigCollectionInfos(null, createUpdatedSpreadsheetConfigs(), appendedAliases);
+        UUID appendedCollectionUuid = saveAndReturnId(appendedCollection);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/append?sourceCollection=" + appendedCollectionUuid)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigCollectionInfos mergedCollection = getSpreadsheetConfigCollection(collectionUuid);
+
+        // We have 3 new tabs coming from the appended collection, but 2 have been renamed to ensure name uniqueness.
+        assertThat(mergedCollection.spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::name).toList())
+                .isEqualTo(List.of("TestSheet", "TestSheet1", "Generator", "TestSheet (2)", "TestSheet (1)"));
+        // In the appended collection, we keep only the aliases from the appended collection
+        assertThat(mergedCollection.nodeAliases()).isEqualTo(appendedAliases);
+    }
+
+    @Test
     void testDeleteCollection() throws Exception {
         SpreadsheetConfigCollectionInfos collectionToDelete = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
 
@@ -138,7 +217,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testDuplicateCollection() throws Exception {
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
+        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigsWithFilters(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
 
         UUID duplicatedCollectionUuid = duplicateSpreadsheetConfigCollection(collectionUuid);
@@ -146,7 +225,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos duplicatedCollection = getSpreadsheetConfigCollection(duplicatedCollectionUuid);
         assertThat(duplicatedCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToCreate);
         assertThat(duplicatedCollection.id()).isNotEqualTo(collectionUuid);
@@ -185,10 +264,10 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
-        List<ColumnInfos> columnInfos = Arrays.asList(
-            new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew")
+        List<ColumnInfos> columnInfos = List.of(
+                new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew", null, null, null, null)
         );
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos);
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null);
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         MvcResult mvcResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs")
@@ -212,7 +291,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
         SpreadsheetConfigCollectionInfos createdCollection = getSpreadsheetConfigCollection(collectionUuid);
-        UUID configIdToRemove = createdCollection.spreadsheetConfigs().get(0).id();
+        UUID configIdToRemove = createdCollection.spreadsheetConfigs().getFirst().id();
 
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + configIdToRemove))
                 .andExpect(status().isNoContent());
@@ -226,7 +305,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     @Test
     void testAddSpreadsheetConfigToNonExistentCollection() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of());
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of(), null);
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + nonExistentUuid + "/spreadsheet-configs")
@@ -323,28 +402,107 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
-            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB")
+            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null),
+            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB", null, null, null, null)
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null)
+        );
+    }
+
+    private List<SpreadsheetConfigInfos> createSpreadsheetConfigsWithFilters() {
+        List<ColumnInfos> columnsConfig1 = Arrays.asList(
+                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id",
+                        "text", "equals", "test-value", null),
+                new ColumnInfos(null, "name", ColumnType.TEXT, null, "name", "[\"name\"]", "name",
+                        "text", "contains", "name-value", null),
+                new ColumnInfos(null, "country1", ColumnType.ENUM, null, "country1", "[\"country1\"]", "country1",
+                        null, null, null, null),
+                new ColumnInfos(null, "voltage", ColumnType.NUMBER, 1, "voltage", "[\"voltage\"]", "voltage",
+                        "number", "greaterThan", "100", 0.5)
+        );
+
+        List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Global Filter 1"),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Global Filter 2")
+        );
+
+        List<ColumnInfos> columnsConfig2 = Arrays.asList(
+                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id",
+                        "text", "contains", "other-value", null),
+                new ColumnInfos(null, "type", ColumnType.ENUM, null, "type", "[\"type\"]", "type",
+                        null, null, null, null),
+                new ColumnInfos(null, "power", ColumnType.NUMBER, 1, "power", "[\"power\"]", "power",
+                        "number", "lessThan", "50", 0.1)
+        );
+
+        List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Another Global Filter")
+        );
+
+        return List.of(
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnsConfig1, globalFiltersConfig1),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.LOAD, columnsConfig2, globalFiltersConfig2)
         );
     }
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
-            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA"),
-            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 2", null, "idB"),
-            new ColumnInfos(null, "cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]", "idC"),
-            new ColumnInfos(null, "cust_d", ColumnType.NUMBER, 0, "5 + 1", null, "idD")
+            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null),
+            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 2", null, "idB", null, null, null, null),
+            new ColumnInfos(null, "cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]", "idC", null, null, null, null),
+            new ColumnInfos(null, "cust_d", ColumnType.NUMBER, 0, "5 + 1", null, "idD", null, null, null, null)
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, "Generator1", SheetType.GENERATOR, columnInfos),
-                new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, columnInfos)
+                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos, null),
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
+                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos, null)
+        );
+    }
+
+    private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigsWithFilters() {
+        List<ColumnInfos> columnsConfig1 = Arrays.asList(
+                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id",
+                        "text", "startsWith", "new-prefix", null),
+                new ColumnInfos(null, "updated", ColumnType.TEXT, null, "updated", "[\"updated\"]", "updated",
+                        null, null, null, null)
+        );
+
+        List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Updated Filter 1"),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Updated Filter 2"),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Updated Filter 3")
+        );
+
+        List<ColumnInfos> columnsConfig2 = Arrays.asList(
+                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id",
+                        "text", "endsWith", "suffix", null),
+                new ColumnInfos(null, "other", ColumnType.NUMBER, 2, "other", "[\"other\"]", "other",
+                        "number", "between", "10,20", null)
+        );
+
+        List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Updated Other Filter")
+        );
+
+        List<ColumnInfos> columnsConfig3 = Arrays.asList(
+                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id",
+                        "text", "contains", "middle", null),
+                new ColumnInfos(null, "third", ColumnType.BOOLEAN, null, "third", "[\"third\"]", "third",
+                        "boolean", "equals", "true", null)
+        );
+
+        List<GlobalFilterInfos> globalFiltersConfig3 = List.of(
+                new GlobalFilterInfos(null, UUID.randomUUID(), "Third Config Filter")
+        );
+
+        return List.of(
+                new SpreadsheetConfigInfos(null, "Updated1", SheetType.BATTERY, columnsConfig1, globalFiltersConfig1),
+                new SpreadsheetConfigInfos(null, "Updated2", SheetType.LINE, columnsConfig2, globalFiltersConfig2),
+                new SpreadsheetConfigInfos(null, "Added3", SheetType.BUS, columnsConfig3, globalFiltersConfig3)
         );
     }
 

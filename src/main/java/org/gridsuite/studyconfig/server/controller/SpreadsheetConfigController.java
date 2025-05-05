@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
@@ -175,6 +176,18 @@ public class SpreadsheetConfigController {
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "New order of column IDs") @RequestBody List<UUID> columnOrder) {
         spreadsheetConfigService.reorderColumns(id, columnOrder);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/global-filters")
+    @Operation(summary = "Set global filters",
+            description = "Replaces all existing global filters with the provided list for a spreadsheet configuration")
+    @ApiResponse(responseCode = "204", description = "Global filters set successfully")
+    @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
+    public ResponseEntity<Void> setGlobalFiltersForSpreadsheetConfig(
+            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @Valid @RequestBody List<GlobalFilterInfos> filters) {
+        spreadsheetConfigService.setGlobalFiltersForSpreadsheetConfig(id, filters);
         return ResponseEntity.noContent().build();
     }
 
