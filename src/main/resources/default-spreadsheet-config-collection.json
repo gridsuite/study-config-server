@@ -96,7 +96,7 @@
           "precision": 1,
           "formula": "unitToKiloUnit(identifiableShortCircuit.ipMin)",
           "dependencies": null,
-          "id": "identifiableShortCircuit.ipMin"
+          "id": "identifiableShortCircuitIpMin"
         },
         {
           "name": "ISC max (kA)",
@@ -104,7 +104,7 @@
           "precision": 1,
           "formula": "unitToKiloUnit(identifiableShortCircuit.ipMax)",
           "dependencies": null,
-          "id": "identifiableShortCircuit.ipMax"
+          "id": "identifiableShortCircuitIpMax"
         }
       ]
     },
@@ -404,7 +404,7 @@
           "precision": null,
           "formula": "ratioTapChanger.hasLoadTapChangingCapabilities",
           "dependencies": null,
-          "id": "ratioTapChanger.hasLoadTapChangingCapabilities"
+          "id": "ratioTapChangerHasLoadTapChangingCapabilities"
         },
         {
           "name": "Ratio regulation mode",
@@ -412,7 +412,7 @@
           "precision": null,
           "formula": "ratioTapChanger.regulationMode",
           "dependencies": null,
-          "id": "ratioTapChanger.regulationMode"
+          "id": "ratioTapChangerRegulationMode"
         },
         {
           "name": "Ratio low tap position",
@@ -420,7 +420,7 @@
           "precision": 0,
           "formula": "ratioTapChanger.lowTapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger.lowTapPosition"
+          "id": "ratioTapChangerLowTapPosition"
         },
         {
           "name": "Ratio high tap position",
@@ -428,7 +428,7 @@
           "precision": 0,
           "formula": "ratioTapChanger.highTapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger.highTapPosition"
+          "id": "ratioTapChangerHighTapPosition"
         },
         {
           "name": "Ratio tap",
@@ -436,7 +436,7 @@
           "precision": 0,
           "formula": "ratioTapChanger.tapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger.tapPosition"
+          "id": "ratioTapChangerTapPosition"
         },
         {
           "name": "Voltage set point (kV)",
@@ -444,7 +444,7 @@
           "precision": 1,
           "formula": "ratioTapChanger.targetV",
           "dependencies": null,
-          "id": "ratioTapChanger.targetV"
+          "id": "ratioTapChangerTargetV"
         },
         {
           "name": "Ratio deadband",
@@ -452,7 +452,7 @@
           "precision": 1,
           "formula": "ratioTapChanger.targetDeadband",
           "dependencies": null,
-          "id": "ratioTapChanger.targetDeadband"
+          "id": "ratioTapChangerTargetDeadband"
         },
         {
           "name": "Ratio regulation",
@@ -460,7 +460,7 @@
           "precision": null,
           "formula": "ratioTapChanger.regulationType",
           "dependencies": null,
-          "id": "ratioTapChanger.regulationType"
+          "id": "ratioTapChangerRegulationType"
         },
         {
           "name": "Ratio regulated side",
@@ -468,7 +468,7 @@
           "precision": null,
           "formula": "ratioTapChanger.regulationSide",
           "dependencies": null,
-          "id": "ratioTapChanger.regulationSide"
+          "id": "ratioTapChangerRegulationSide"
         },
         {
           "name": "Ratio regulated terminal",
@@ -476,7 +476,7 @@
           "precision": null,
           "formula": "ratioTapChanger.ratioRegulatingTerminal",
           "dependencies": null,
-          "id": "ratioTapChanger.ratioRegulatingTerminal"
+          "id": "ratioTapChangerRatioRegulatingTerminal"
         },
         {
           "name": "Phase regulation mode",
@@ -484,7 +484,7 @@
           "precision": null,
           "formula": "phaseTapChanger.regulationMode",
           "dependencies": null,
-          "id": "phaseTapChanger.regulationMode"
+          "id": "phaseTapChangerRegulationMode"
         },
         {
           "name": "Phase low tap position",
@@ -492,7 +492,7 @@
           "precision": 0,
           "formula": "phaseTapChanger.lowTapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger.lowTapPosition"
+          "id": "phaseTapChangerLowTapPosition"
         },
         {
           "name": "Phase high tap position",
@@ -500,7 +500,7 @@
           "precision": 0,
           "formula": "phaseTapChanger.highTapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger.highTapPosition"
+          "id": "phaseTapChangerHighTapPosition"
         },
         {
           "name": "Phase tap",
@@ -508,7 +508,7 @@
           "precision": 0,
           "formula": "phaseTapChanger.tapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger.tapPosition"
+          "id": "phaseTapChangerTapPosition"
         },
         {
           "name": "Current (A) or flow set point (MW)",
@@ -516,7 +516,7 @@
           "precision": 1,
           "formula": "phaseTapChanger.regulationValue",
           "dependencies": null,
-          "id": "phaseTapChanger.regulationValue"
+          "id": "phaseTapChangerRegulationValue"
         },
         {
           "name": "Phase deadband",
@@ -524,7 +524,7 @@
           "precision": 1,
           "formula": "phaseTapChanger.targetDeadband",
           "dependencies": null,
-          "id": "phaseTapChanger.targetDeadband"
+          "id": "phaseTapChangerTargetDeadband"
         },
         {
           "name": "Phase regulation",
@@ -532,7 +532,7 @@
           "precision": null,
           "formula": "phaseTapChanger.regulationType",
           "dependencies": null,
-          "id": "phaseTapChanger.regulationType"
+          "id": "phaseTapChangerRegulationType"
         },
         {
           "name": "Phase regulated side",
@@ -540,7 +540,7 @@
           "precision": null,
           "formula": "phaseTapChanger.regulationSide",
           "dependencies": null,
-          "id": "phaseTapChanger.regulationSide"
+          "id": "phaseTapChangerRegulationSide"
         },
         {
           "name": "Phase regulated terminal",
@@ -548,7 +548,7 @@
           "precision": null,
           "formula": "phaseTapChanger.phaseRegulatingTerminal",
           "dependencies": null,
-          "id": "phaseTapChanger.phaseRegulatingTerminal"
+          "id": "phaseTapChangerPhaseRegulatingTerminal"
         },
         {
           "name": "Series resistance (Ω)",
@@ -770,7 +770,7 @@
           "precision": 0,
           "formula": "ratioTapChanger1.tapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger1.tapPosition"
+          "id": "ratioTapChanger1TapPosition"
         },
         {
           "name": "Ratio on-load 2",
@@ -802,7 +802,7 @@
           "precision": 0,
           "formula": "ratioTapChanger2.tapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger2.tapPosition"
+          "id": "ratioTapChanger2TapPosition"
         },
         {
           "name": "Ratio on-load 3",
@@ -834,7 +834,7 @@
           "precision": 0,
           "formula": "ratioTapChanger3.tapPosition",
           "dependencies": null,
-          "id": "ratioTapChanger3.tapPosition"
+          "id": "ratioTapChanger3TapPosition"
         },
         {
           "name": "Phase regulation mode 1",
@@ -858,7 +858,7 @@
           "precision": 0,
           "formula": "phaseTapChanger1.tapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger1.tapPosition"
+          "id": "phaseTapChanger1TapPosition"
         },
         {
           "name": "Current (A) or flow set point (MW) 1",
@@ -890,7 +890,7 @@
           "precision": 0,
           "formula": "phaseTapChanger2.tapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger2.tapPosition"
+          "id": "phaseTapChanger2TapPosition"
         },
         {
           "name": "Current (A) or flow set point (MW) 2",
@@ -922,7 +922,7 @@
           "precision": 0,
           "formula": "phaseTapChanger3.tapPosition",
           "dependencies": null,
-          "id": "phaseTapChanger3.tapPosition"
+          "id": "phaseTapChanger3TapPosition"
         },
         {
           "name": "Current (A) or flow set point (MW) 3",
@@ -1080,7 +1080,7 @@
           "precision": null,
           "formula": "activePowerControl.participate",
           "dependencies": null,
-          "id": "activePowerControl.participate"
+          "id": "activePowerControlParticipate"
         },
         {
           "name": "Active power regulation droop",
@@ -1088,7 +1088,7 @@
           "precision": 1,
           "formula": "activePowerControl.droop",
           "dependencies": null,
-          "id": "activePowerControl.droop"
+          "id": "activePowerControlDroop"
         },
         {
           "name": "Reactive percentage",
@@ -1096,7 +1096,7 @@
           "precision": 1,
           "formula": "coordinatedReactiveControl.qPercent",
           "dependencies": null,
-          "id": "coordinatedReactiveControl.qPercent"
+          "id": "coordinatedReactiveControlQPercent"
         },
         {
           "name": "Transient reactance (Ω)",
@@ -1104,7 +1104,7 @@
           "precision": 1,
           "formula": "generatorShortCircuit.directTransX",
           "dependencies": null,
-          "id": "generatorShortCircuit.directTransX"
+          "id": "generatorShortCircuitDirectTransX"
         },
         {
           "name": "Transformer reactance (Ω)",
@@ -1112,7 +1112,7 @@
           "precision": 1,
           "formula": "generatorShortCircuit.stepUpTransformerX",
           "dependencies": null,
-          "id": "generatorShortCircuit.stepUpTransformerX"
+          "id": "generatorShortCircuitStepUpTransformerX"
         },
         {
           "name": "Planning P (MW)",
@@ -1120,7 +1120,7 @@
           "precision": 1,
           "formula": "generatorStartup.plannedActivePowerSetPoint",
           "dependencies": null,
-          "id": "generatorStartup.plannedActivePowerSetPoint"
+          "id": "generatorStartupPlannedActivePowerSetPoint"
         },
         {
           "name": "Startup Cost",
@@ -1128,7 +1128,7 @@
           "precision": 1,
           "formula": "generatorStartup.marginalCost",
           "dependencies": null,
-          "id": "generatorStartup.marginalCost"
+          "id": "generatorStartupMarginalCost"
         },
         {
           "name": "Planning outage rate",
@@ -1136,7 +1136,7 @@
           "precision": 2,
           "formula": "generatorStartup.plannedOutageRate",
           "dependencies": null,
-          "id": "generatorStartup.plannedOutageRate"
+          "id": "generatorStartupPlannedOutageRate"
         },
         {
           "name": "Forced outage rate",
@@ -1144,7 +1144,7 @@
           "precision": 2,
           "formula": "generatorStartup.forcedOutageRate",
           "dependencies": null,
-          "id": "generatorStartup.forcedOutageRate"
+          "id": "generatorStartupForcedOutageRate"
         }
       ]
     },
@@ -1560,7 +1560,7 @@
           "precision": null,
           "formula": "activePowerControl.participate",
           "dependencies": null,
-          "id": "activePowerControl.participate"
+          "id": "activePowerControlParticipate"
         },
         {
           "name": "Droop (%)",
@@ -1568,7 +1568,7 @@
           "precision": 1,
           "formula": "activePowerControl.droop",
           "dependencies": null,
-          "id": "activePowerControl.droop"
+          "id": "activePowerControlDroop"
         }
       ]
     },
@@ -1678,7 +1678,7 @@
           "precision": 1,
           "formula": "hvdcOperatorActivePowerRange.oprFromCS1toCS2",
           "dependencies": null,
-          "id": "hvdcOperatorActivePowerRange.oprFromCS1toCS2"
+          "id": "hvdcOperatorActivePowerRangeOprFromCS1toCS2"
         },
         {
           "name": "Operational limit (side_2 to side_1) (MW)",
@@ -1686,7 +1686,7 @@
           "precision": 1,
           "formula": "hvdcOperatorActivePowerRange.oprFromCS2toCS1",
           "dependencies": null,
-          "id": "hvdcOperatorActivePowerRange.oprFromCS2toCS1"
+          "id": "hvdcOperatorActivePowerRangeOprFromCS2toCS1"
         },
         {
           "name": "AC emulation",
@@ -1694,7 +1694,7 @@
           "precision": null,
           "formula": "hvdcAngleDroopActivePowerControl.isEnabled",
           "dependencies": null,
-          "id": "hvdcAngleDroopActivePowerControl.isEnabled"
+          "id": "hvdcAngleDroopActivePowerControlIsEnabled"
         },
         {
           "name": "K (MW/Deg)",
@@ -1702,7 +1702,7 @@
           "precision": 1,
           "formula": "hvdcAngleDroopActivePowerControl.droop",
           "dependencies": null,
-          "id": "hvdcAngleDroopActivePowerControl.droop"
+          "id": "hvdcAngleDroopActivePowerControlDroop"
         },
         {
           "name": "P0 (side_1 to side_2) (MW)",
@@ -1710,7 +1710,7 @@
           "precision": 1,
           "formula": "hvdcAngleDroopActivePowerControl.p0",
           "dependencies": null,
-          "id": "hvdcAngleDroopActivePowerControl.p0"
+          "id": "hvdcAngleDroopActivePowerControlP0"
         }
       ]
     },
