@@ -95,15 +95,23 @@ public final class SpreadsheetConfigMapper {
     public static GlobalFilterInfos toGlobalFilterDto(GlobalFilterEntity entity) {
         return new GlobalFilterInfos(
                 entity.getUuid(),
-                entity.getFilterId(),
-                entity.getName()
+                entity.getFilterUuid(),
+                entity.getFilterType(),
+                entity.getLabel(),
+                entity.isRecent(),
+                entity.getEquipmentType(),
+                entity.getPath()
         );
     }
 
     public static GlobalFilterEntity toGlobalFilterEntity(GlobalFilterInfos dto) {
         return GlobalFilterEntity.builder()
-                .filterId(dto.filterId())
-                .name(dto.name())
+                .filterType(dto.filterType())
+                .filterUuid(dto.filterUuid())
+                .label(dto.label())
+                .recent(dto.recent())
+                .equipmentType(dto.equipmentType())
+                .path(dto.path())
                 .build();
     }
 }

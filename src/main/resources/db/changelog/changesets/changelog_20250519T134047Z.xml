@@ -1,0 +1,43 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="marcelinhug (generated)" id="1747662056442-1">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="equipment_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-2">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="filter_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-3">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="filter_uuid" type="uuid"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-4">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="label" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-5">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="path" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-6">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="recent" type="boolean"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-7">
+        <dropColumn columnName="FILTER_ID" tableName="SPREADSHEET_GLOBAL_FILTER"/>
+    </changeSet>
+    <changeSet author="marcelinhug (generated)" id="1747662056442-8">
+        <dropColumn columnName="NAME" tableName="SPREADSHEET_GLOBAL_FILTER"/>
+    </changeSet>
+</databaseChangeLog>

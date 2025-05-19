@@ -17,14 +17,28 @@ import java.util.UUID;
 @Schema(name = "GlobalFilterDto", description = "Global filter configuration")
 public record GlobalFilterInfos(
 
-        @Schema(description = "Global filter UUID")
-        UUID uuid,
+    @Schema(description = "Global filter UUID")
+    UUID uuid,
 
-        @NotNull(message = "Filter ID is mandatory")
-        @Schema(description = "Filter ID")
-        UUID filterId,
+    @Schema(description = "Generic filter ID")
+    UUID filterUuid,
 
-        @NotNull(message = "Filter name is mandatory")
-        @Schema(description = "Filter name")
-        String name
-) { }
+    @NotNull(message = "Filter type is mandatory")
+    @Schema(description = "Filter type")
+    String filterType,
+
+    @NotNull(message = "Filter label is mandatory")
+    @Schema(description = "Filter label")
+    String label,
+
+    @Schema(description = "Was filter recently applied")
+    boolean recent,
+
+    @Schema(description = "Generic filter related equipment type")
+    String equipmentType,
+
+    @Schema(description = "Generic filter path")
+    String path
+
+) {
+}
