@@ -73,7 +73,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(createdConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.uuid")
+                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
                 .isEqualTo(configToCreate);
         assertThat(createdConfig.id()).isNotNull();
     }
@@ -100,7 +100,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(receivedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.uuid")
+                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
                 .isEqualTo(configToRead);
         assertThat(receivedConfig.id()).isEqualTo(configUuid);
     }
@@ -173,7 +173,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(retrievedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "columns.id", "globalFilters.uuid", "id")
+                .ignoringFields("columns.uuid", "columns.id", "globalFilters.id", "id")
                 .isEqualTo(updatedConfig);
     }
 
@@ -222,7 +222,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
         assertThat(duplicatedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.uuid")
+                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
                 .isEqualTo(configToCreate);
         assertThat(duplicatedConfig.id()).isNotEqualTo(configUuid);
     }

@@ -239,7 +239,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID uuid = UUID.randomUUID();
             UUID filterId = UUID.randomUUID();
             GlobalFilterEntity entity = GlobalFilterEntity.builder()
-                    .uuid(uuid)
+                    .id(uuid)
                     .uuid(filterId)
                     .label("TestGlobalFilter")
                     .build();
@@ -249,7 +249,7 @@ public class DtoConverterTest implements WithAssertions {
             assertThat(dto)
                     .as("DTO conversion result")
                     .satisfies(d -> {
-                        assertThat(d.uuid()).isEqualTo(uuid);
+                        assertThat(d.id()).isEqualTo(uuid);
                         assertThat(d.uuid()).isEqualTo(filterId);
                         assertThat(d.label()).isEqualTo("TestGlobalFilter");
                     });
