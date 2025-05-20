@@ -60,11 +60,13 @@
     </changeSet>
     <changeSet author="marcelinhug" id="init-equipment-type-from-sheet-type">
         <sql>
-            UPDATE spreadsheet_global_filter s
-            SET equipment_type = c.sheet_type
-                FROM spreadsheet_config c
-            WHERE s.spreadsheet_config_id = c.id
-              AND s.equipment_type IS NULL;
+            UPDATE spreadsheet_global_filter
+            SET equipment_type = (
+                SELECT sheet_type
+                FROM spreadsheet_config
+                WHERE spreadsheet_config.id = spreadsheet_global_filter.spreadsheet_config_id
+            )
+            WHERE equipment_type IS NULL;
         </sql>
     </changeSet>
 </databaseChangeLog>
