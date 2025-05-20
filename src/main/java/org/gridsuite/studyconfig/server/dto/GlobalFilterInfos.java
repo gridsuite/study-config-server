@@ -18,10 +18,10 @@ import java.util.UUID;
 public record GlobalFilterInfos(
 
     @Schema(description = "Global filter UUID")
-    UUID uuid,
+    UUID id,
 
     @Schema(description = "Generic filter ID")
-    UUID filterUuid,
+    UUID uuid,
 
     @NotNull(message = "Filter type is mandatory")
     @Schema(description = "Filter type")

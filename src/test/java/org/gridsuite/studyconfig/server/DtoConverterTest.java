@@ -50,11 +50,11 @@ public class DtoConverterTest implements WithAssertions {
                     ))
                     .globalFilters(Arrays.asList(
                             GlobalFilterEntity.builder()
-                                .filterUuid(UUID.randomUUID())
+                                .uuid(UUID.randomUUID())
                                 .label("GlobalFilter1")
                                 .build(),
                             GlobalFilterEntity.builder()
-                                .filterUuid(UUID.randomUUID())
+                                .uuid(UUID.randomUUID())
                                 .label("GlobalFilter2")
                                 .build()
                     ))
@@ -84,10 +84,10 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.columns().get(1).filterValue()).isNull();
                         // Global filters assertions
                         assertThat(d.globalFilters()).hasSize(2);
-                        assertThat(d.globalFilters().get(0).filterUuid()).isNotNull();
+                        assertThat(d.globalFilters().get(0).uuid()).isNotNull();
                         assertThat(d.globalFilters().get(0).label()).isEqualTo("GlobalFilter1");
 
-                        assertThat(d.globalFilters().get(1).filterUuid()).isNotNull();
+                        assertThat(d.globalFilters().get(1).uuid()).isNotNull();
                         assertThat(d.globalFilters().get(1).label()).isEqualTo("GlobalFilter2");
                     });
         }
@@ -141,7 +141,7 @@ public class DtoConverterTest implements WithAssertions {
 
                         // Global filter assertions
                         assertThat(e.getGlobalFilters()).hasSize(1);
-                        assertThat(e.getGlobalFilters().get(0).getFilterUuid()).isEqualTo(filterId);
+                        assertThat(e.getGlobalFilters().get(0).getUuid()).isEqualTo(filterId);
                         assertThat(e.getGlobalFilters().get(0).getLabel()).isEqualTo("GlobalFilter1");
                     });
         }
@@ -240,7 +240,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID filterId = UUID.randomUUID();
             GlobalFilterEntity entity = GlobalFilterEntity.builder()
                     .uuid(uuid)
-                    .filterUuid(filterId)
+                    .uuid(filterId)
                     .label("TestGlobalFilter")
                     .build();
 
@@ -250,7 +250,7 @@ public class DtoConverterTest implements WithAssertions {
                     .as("DTO conversion result")
                     .satisfies(d -> {
                         assertThat(d.uuid()).isEqualTo(uuid);
-                        assertThat(d.filterUuid()).isEqualTo(filterId);
+                        assertThat(d.uuid()).isEqualTo(filterId);
                         assertThat(d.label()).isEqualTo("TestGlobalFilter");
                     });
         }
@@ -266,7 +266,7 @@ public class DtoConverterTest implements WithAssertions {
             assertThat(entity)
                     .as("Entity conversion result")
                     .satisfies(e -> {
-                        assertThat(e.getFilterUuid()).isEqualTo(filterId);
+                        assertThat(e.getUuid()).isEqualTo(filterId);
                         assertThat(e.getLabel()).isEqualTo("TestGlobalFilter");
                     });
         }

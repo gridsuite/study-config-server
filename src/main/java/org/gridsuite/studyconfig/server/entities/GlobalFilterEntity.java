@@ -25,8 +25,8 @@ public class GlobalFilterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid")
-    private UUID uuid;
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "filter_type", nullable = false)
     private String filterType;
@@ -37,8 +37,8 @@ public class GlobalFilterEntity {
     @Column(name = "recent")
     private boolean recent;
 
-    @Column(name = "filter_uuid")
-    private UUID filterUuid;
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "equipment_type")
     private String equipmentType;
