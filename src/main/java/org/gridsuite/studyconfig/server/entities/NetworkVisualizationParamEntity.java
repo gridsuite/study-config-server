@@ -47,7 +47,7 @@ public class NetworkVisualizationParamEntity {
     private String mapBaseMap = "mapbox";
 
     @Column(name = "diagonal_label")
-    private Boolean diagonalLabel = false;
+    private Boolean diagonalLabel = true;
 
     @Column(name = "center_label")
     private Boolean centerLabel = false;
