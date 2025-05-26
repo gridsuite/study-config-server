@@ -25,13 +25,25 @@ public class GlobalFilterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "filter_type", nullable = false)
+    private String filterType;
+
+    @Column(name = "label", nullable = false)
+    private String label;
+
+    @Column(name = "recent")
+    private boolean recent;
+
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "filter_id", nullable = false)
-    private UUID filterId;
+    @Column(name = "equipment_type")
+    private String equipmentType;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
-    private String name;
+    @Column(name = "path")
+    private String path;
 
 }

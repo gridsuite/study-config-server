@@ -83,8 +83,12 @@ public class SpreadsheetConfigService {
         if (entity.getGlobalFilters() != null) {
             duplicate.setGlobalFilters(entity.getGlobalFilters().stream()
                     .map(globalFilter -> GlobalFilterEntity.builder()
-                            .filterId(globalFilter.getFilterId())
-                            .name(globalFilter.getName())
+                            .filterType(globalFilter.getFilterType())
+                            .label(globalFilter.getLabel())
+                            .uuid(globalFilter.getUuid())
+                            .equipmentType(globalFilter.getEquipmentType())
+                            .recent(globalFilter.isRecent())
+                            .path(globalFilter.getPath())
                             .build())
                     .toList());
         }
@@ -277,8 +281,12 @@ public class SpreadsheetConfigService {
                             .toList());
                     configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
                             .map(globalFilter -> GlobalFilterEntity.builder()
-                                    .filterId(globalFilter.getFilterId())
-                                    .name(globalFilter.getName())
+                                    .filterType(globalFilter.getFilterType())
+                                    .label(globalFilter.getLabel())
+                                    .uuid(globalFilter.getUuid())
+                                    .equipmentType(globalFilter.getEquipmentType())
+                                    .recent(globalFilter.isRecent())
+                                    .path(globalFilter.getPath())
                                     .build())
                             .toList());
                     return configDuplicate;

@@ -1,0 +1,72 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="marcelinhug" id="rename-uuid-to-id">
+        <dropPrimaryKey tableName="spreadsheet_global_filter" constraintName="spreadsheet_global_filterPK"/>
+        <renameColumn tableName="spreadsheet_global_filter"
+                      oldColumnName="uuid"
+                      newColumnName="id"
+                      columnDataType="uuid"/>
+        <addPrimaryKey tableName="spreadsheet_global_filter"
+                       columnNames="id"
+                       constraintName="spreadsheet_global_filterPK"/>
+    </changeSet>
+    <changeSet author="marcelinhug" id="rename-name-to-label">
+        <renameColumn tableName="spreadsheet_global_filter"
+                      oldColumnName="name"
+                      newColumnName="label"
+                      columnDataType="varchar(255)"/>
+    </changeSet>
+    <changeSet author="marcelinhug" id="rename-filterId-to-filterUuid">
+        <renameColumn tableName="spreadsheet_global_filter"
+                      oldColumnName="filter_id"
+                      newColumnName="uuid"
+                      columnDataType="uuid"/>
+        <dropNotNullConstraint
+                tableName="spreadsheet_global_filter"
+                columnName="uuid"
+                columnDataType="uuid"/>
+    </changeSet>
+    <changeSet author="marcelinhug" id="add-equipment-type">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="equipment_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug" id="add-filter-type">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="filter_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug" id="add-path">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="path" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marcelinhug" id="add-recent-default-false">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="recent" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <!-- Set default values for existing rows -->
+    <changeSet author="marcelinhug" id="update-existing-filter-type">
+        <update tableName="spreadsheet_global_filter">
+            <column name="filter_type" value="genericFilter"/>
+            <where>filter_type IS NULL</where>
+        </update>
+    </changeSet>
+    <changeSet author="marcelinhug" id="init-equipment-type-from-sheet-type">
+        <sql>
+            UPDATE spreadsheet_global_filter
+            SET equipment_type = (
+                SELECT sheet_type
+                FROM spreadsheet_config
+                WHERE spreadsheet_config.id = spreadsheet_global_filter.spreadsheet_config_id
+            )
+            WHERE equipment_type IS NULL;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
