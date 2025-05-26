@@ -68,8 +68,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV",
           "dependencies": null,
           "id": "nominalV"
@@ -162,16 +162,16 @@
         },
         {
           "name": "Nominal voltage 1 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage1",
           "dependencies": null,
           "id": "nominalVoltage1"
         },
         {
           "name": "Nominal voltage 2 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage2",
           "dependencies": null,
           "id": "nominalVoltage2"
@@ -320,16 +320,16 @@
         },
         {
           "name": "Nominal voltage 1 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage1",
           "dependencies": null,
           "id": "nominalVoltage1"
         },
         {
           "name": "Nominal voltage 2 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage2",
           "dependencies": null,
           "id": "nominalVoltage2"
@@ -646,24 +646,24 @@
         },
         {
           "name": "Nominal voltage 1 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV1",
           "dependencies": null,
           "id": "nominalV1"
         },
         {
           "name": "Nominal voltage 2 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV2",
           "dependencies": null,
           "id": "nominalV2"
         },
         {
           "name": "Nominal voltage 3 (kV)",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV3",
           "dependencies": null,
           "id": "nominalV3"
@@ -980,8 +980,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage",
           "dependencies": null,
           "id": "nominalVoltage"
@@ -1194,8 +1194,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage",
           "dependencies": null,
           "id": "nominalVoltage"
@@ -1288,8 +1288,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage",
           "dependencies": null,
           "id": "nominalVoltage"
@@ -1406,8 +1406,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV",
           "dependencies": null,
           "id": "nominalV"
@@ -1492,8 +1492,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalVoltage",
           "dependencies": null,
           "id": "nominalVoltage"
@@ -1752,8 +1752,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV",
           "dependencies": null,
           "id": "nominalV"
@@ -1846,8 +1846,8 @@
         },
         {
           "name": "Nominal V",
-          "type": "NUMBER",
-          "precision": 0,
+          "type": "ENUM",
+          "precision": null,
           "formula": "nominalV",
           "dependencies": null,
           "id": "nominalV"
