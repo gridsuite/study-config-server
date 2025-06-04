@@ -27,6 +27,9 @@ public record GlobalFilterInfos(
     @Schema(description = "Filter type")
     String filterType,
 
+    @Schema(description = "Filter subtype")
+    String filterSubtype,
+
     @NotNull(message = "Filter label is mandatory")
     @Schema(description = "Filter label")
     String label,

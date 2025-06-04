@@ -425,8 +425,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Global Filter 1", false, null, null),
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Global Filter 2", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Global Filter 1", false, null, null),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Global Filter 2", false, null, null)
         );
 
         List<ColumnInfos> columnsConfig2 = Arrays.asList(
@@ -439,7 +439,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Another Global Filter", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Another Global Filter", false, null, null)
         );
 
         return List.of(
@@ -472,9 +472,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Updated Filter 1", false, null, null),
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Updated Filter 2", false, null, null),
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Updated Filter 3", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Updated Filter 1", false, null, null),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Updated Filter 2", false, null, null),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Updated Filter 3", false, null, null)
         );
 
         List<ColumnInfos> columnsConfig2 = Arrays.asList(
@@ -485,7 +485,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Updated Other Filter", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Updated Other Filter", false, null, null)
         );
 
         List<ColumnInfos> columnsConfig3 = Arrays.asList(
@@ -496,7 +496,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<GlobalFilterInfos> globalFiltersConfig3 = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Third Config Filter", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Third Config Filter", false, null, null)
         );
 
         return List.of(

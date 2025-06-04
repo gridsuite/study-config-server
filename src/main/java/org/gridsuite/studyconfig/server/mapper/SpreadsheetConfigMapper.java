@@ -97,6 +97,7 @@ public final class SpreadsheetConfigMapper {
                 entity.getId(),
                 entity.getUuid(),
                 entity.getFilterType(),
+                entity.getFilterSubtype(),
                 entity.getLabel(),
                 entity.isRecent(),
                 entity.getEquipmentType(),
@@ -107,6 +108,7 @@ public final class SpreadsheetConfigMapper {
     public static GlobalFilterEntity toGlobalFilterEntity(GlobalFilterInfos dto) {
         return GlobalFilterEntity.builder()
                 .filterType(dto.filterType())
+                .filterSubtype(dto.filterSubtype())
                 .uuid(dto.uuid())
                 .label(dto.label())
                 .recent(dto.recent())
