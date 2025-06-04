@@ -107,7 +107,7 @@ public class DtoConverterTest implements WithAssertions {
                                     null, null, null, null)
                     ),
                     List.of(
-                            new GlobalFilterInfos(null, filterId, "country", null,"GlobalFilter1", false, null, null)
+                            new GlobalFilterInfos(null, filterId, "country", null, "GlobalFilter1", false, null, null)
                     )
             );
 
@@ -259,7 +259,7 @@ public class DtoConverterTest implements WithAssertions {
         void testConversionToEntityOfGlobalFilter() {
             UUID uuid = UUID.randomUUID();
             UUID filterId = UUID.randomUUID();
-            GlobalFilterInfos dto = new GlobalFilterInfos(uuid, filterId, "country", null,"TestGlobalFilter", false, null, null);
+            GlobalFilterInfos dto = new GlobalFilterInfos(uuid, filterId, "country", null, "TestGlobalFilter", false, null, null);
 
             GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
 

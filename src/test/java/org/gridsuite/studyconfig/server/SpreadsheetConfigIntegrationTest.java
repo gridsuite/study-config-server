@@ -401,7 +401,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // Create new filters to set
         List<GlobalFilterInfos> filtersToSet = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Replacement Filter", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null, "Replacement Filter", false, null, null)
         );
 
         // Call the endpoint to set the filters
@@ -422,7 +422,7 @@ class SpreadsheetConfigIntegrationTest {
     void testSetGlobalFiltersToNonExistentConfig() throws Exception {
         UUID nonExistentConfigId = UUID.randomUUID();
         List<GlobalFilterInfos> filtersToAdd = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Test Filter", false, null, null)
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null, "Test Filter", false, null, null)
         );
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
@@ -474,7 +474,7 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<GlobalFilterInfos> createGlobalFilters() {
         return Arrays.asList(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null,"Global Filter 1", false, null, null),
+                new GlobalFilterInfos(null, UUID.randomUUID(), "country", null, "Global Filter 1", false, null, null),
                 new GlobalFilterInfos(null, UUID.randomUUID(), "country", null, "Global Filter 2", false, null, null)
         );
     }
