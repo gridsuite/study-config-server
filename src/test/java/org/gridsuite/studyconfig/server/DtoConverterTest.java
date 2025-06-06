@@ -39,24 +39,24 @@ public class DtoConverterTest implements WithAssertions {
                     .sheetType(SheetType.BATTERY)
                     .columns(Arrays.asList(
                             ColumnEntity.builder()
-                                .name("Column1")
-                                .formula("A+B")
-                                .id("id1")
-                                .filterDataType("text")
-                                .filterType("contains")
-                                .filterValue("test")
-                                .build(),
+                                    .name("Column1")
+                                    .formula("A+B")
+                                    .id("id1")
+                                    .filterDataType("text")
+                                    .filterType("contains")
+                                    .filterValue("test")
+                                    .build(),
                             ColumnEntity.builder().name("Column2").formula("C*D").id("id2").build()
                     ))
                     .globalFilters(Arrays.asList(
                             GlobalFilterEntity.builder()
-                                .uuid(UUID.randomUUID())
-                                .label("GlobalFilter1")
-                                .build(),
+                                    .id(UUID.randomUUID())
+                                    .label("GlobalFilter1")
+                                    .build(),
                             GlobalFilterEntity.builder()
-                                .uuid(UUID.randomUUID())
-                                .label("GlobalFilter2")
-                                .build()
+                                    .id(UUID.randomUUID())
+                                    .label("GlobalFilter2")
+                                    .build()
                     ))
                     .build();
 
@@ -84,10 +84,10 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.columns().get(1).filterValue()).isNull();
                         // Global filters assertions
                         assertThat(d.globalFilters()).hasSize(2);
-                        assertThat(d.globalFilters().get(0).uuid()).isNotNull();
+                        assertThat(d.globalFilters().get(0).id()).isNotNull();
                         assertThat(d.globalFilters().get(0).label()).isEqualTo("GlobalFilter1");
 
-                        assertThat(d.globalFilters().get(1).uuid()).isNotNull();
+                        assertThat(d.globalFilters().get(1).id()).isNotNull();
                         assertThat(d.globalFilters().get(1).label()).isEqualTo("GlobalFilter2");
                     });
         }
@@ -107,7 +107,7 @@ public class DtoConverterTest implements WithAssertions {
                                     null, null, null, null)
                     ),
                     List.of(
-                            new GlobalFilterInfos(null, filterId, "country", "GlobalFilter1", false, null, null)
+                            GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").recent(false).build()
                     )
             );
 
@@ -259,7 +259,7 @@ public class DtoConverterTest implements WithAssertions {
         void testConversionToEntityOfGlobalFilter() {
             UUID uuid = UUID.randomUUID();
             UUID filterId = UUID.randomUUID();
-            GlobalFilterInfos dto = new GlobalFilterInfos(uuid, filterId, "country", "TestGlobalFilter", false, null, null);
+            GlobalFilterInfos dto = GlobalFilterInfos.builder().id(uuid).uuid(filterId).filterType("country").label("TestGlobalFilter").recent(false).build();
 
             GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
 

@@ -31,6 +31,9 @@ public class GlobalFilterEntity {
     @Column(name = "filter_type", nullable = false)
     private String filterType;
 
+    @Column(name = "filter_subtype")
+    private String filterSubtype;
+
     @Column(name = "label", nullable = false)
     private String label;
 
