@@ -8,12 +8,14 @@ package org.gridsuite.studyconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
+@Builder
 @Schema(name = "GlobalFilterDto", description = "Global filter configuration")
 public record GlobalFilterInfos(
 
