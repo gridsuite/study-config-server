@@ -30,4 +30,4 @@ public record ColumnStateUpdateInfos(
         @Schema(description = "New position in the column order (0-based index)")
         Integer order
 
-) {}
+) { }
