@@ -8,12 +8,14 @@ package org.gridsuite.studyconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
+@Builder
 @Schema(name = "GlobalFilterDto", description = "Global filter configuration")
 public record GlobalFilterInfos(
 
@@ -26,6 +28,9 @@ public record GlobalFilterInfos(
     @NotNull(message = "Filter type is mandatory")
     @Schema(description = "Filter type")
     String filterType,
+
+    @Schema(description = "Filter subtype")
+    String filterSubtype,
 
     @NotNull(message = "Filter label is mandatory")
     @Schema(description = "Filter label")

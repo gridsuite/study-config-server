@@ -492,7 +492,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // Create new filters to set
         List<GlobalFilterInfos> filtersToSet = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Replacement Filter", false, null, null)
+                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Replacement Filter").recent(false).build()
         );
 
         // Call the endpoint to set the filters
@@ -513,7 +513,7 @@ class SpreadsheetConfigIntegrationTest {
     void testSetGlobalFiltersToNonExistentConfig() throws Exception {
         UUID nonExistentConfigId = UUID.randomUUID();
         List<GlobalFilterInfos> filtersToAdd = List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Test Filter", false, null, null)
+                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Test Filter").recent(false).build()
         );
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
@@ -565,14 +565,14 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<GlobalFilterInfos> createGlobalFilters() {
         return Arrays.asList(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Global Filter 1", false, null, null),
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Global Filter 2", false, null, null)
+                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Global Filter 1").recent(false).build(),
+                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Global Filter 2").recent(false).build()
         );
     }
 
     private List<GlobalFilterInfos> createUpdatedGlobalFilters() {
         return List.of(
-                new GlobalFilterInfos(null, UUID.randomUUID(), "country", "Updated Global Filter", false, null, null)
+                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Updated Global Filter").recent(false).build()
         );
     }
 
