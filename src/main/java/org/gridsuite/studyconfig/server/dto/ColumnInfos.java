@@ -51,5 +51,8 @@ public record ColumnInfos(
     String filterValue,
 
     @Schema(description = "Filter tolerance for numeric comparisons")
-    Double filterTolerance
+    Double filterTolerance,
+
+    @Schema(description = "Column visibility", defaultValue = "true")
+    Boolean visible
 ) { }

@@ -73,7 +73,8 @@ public final class SpreadsheetConfigMapper {
                 entity.getFilterDataType(),
                 entity.getFilterType(),
                 entity.getFilterValue(),
-                entity.getFilterTolerance()
+                entity.getFilterTolerance(),
+                entity.getVisible()
                 );
     }
 
@@ -89,6 +90,7 @@ public final class SpreadsheetConfigMapper {
                 .filterType(dto.filterType())
                 .filterValue(dto.filterValue())
                 .filterTolerance(dto.filterTolerance())
+                .visible(dto.visible() != null ? dto.visible() : true)
                 .build();
     }
 

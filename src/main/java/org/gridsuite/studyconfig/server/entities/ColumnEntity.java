@@ -61,4 +61,7 @@ public class ColumnEntity {
     @Column(name = "filter_tolerance")
     private Double filterTolerance;
 
+    @Column(name = "visible", nullable = false)
+    @Builder.Default
+    private Boolean visible = true;
 }
