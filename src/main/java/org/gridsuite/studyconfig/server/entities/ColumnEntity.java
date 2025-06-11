@@ -63,5 +63,5 @@ public class ColumnEntity {
 
     @Column(name = "visible", nullable = false)
     @Builder.Default
-    private Boolean visible = true;
+    private boolean visible = true;
 }

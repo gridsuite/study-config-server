@@ -333,7 +333,7 @@ public class SpreadsheetConfigService {
         columnEntity.setFilterType(dto.filterType());
         columnEntity.setFilterValue(dto.filterValue());
         columnEntity.setFilterTolerance(dto.filterTolerance());
-        columnEntity.setVisible(dto.visible() != null ? dto.visible() : true);
+        columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
     }
@@ -381,11 +381,13 @@ public class SpreadsheetConfigService {
         }
 
         // Reorder columns based on the provided states
-        List<UUID> orderedColumnIds = columnStates.stream()
-                .sorted(Comparator.comparingInt(ColumnStateUpdateInfos::order))
-                .map(ColumnStateUpdateInfos::columnId)
-                .toList();
-        reorderColumns(orderedColumnIds, columns);
+        columns.sort(Comparator.comparing(column ->
+            columnStates.stream()
+                    .filter(state -> state.columnId().equals(column.getUuid()))
+                    .findFirst()
+                    .map(ColumnStateUpdateInfos::order)
+                    .orElse(Integer.MAX_VALUE)
+        ));
     }
 
     private SpreadsheetConfigCollectionInfos readDefaultSpreadsheetConfigCollection() throws IOException {

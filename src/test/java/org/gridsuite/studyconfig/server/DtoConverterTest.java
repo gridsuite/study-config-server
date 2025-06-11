@@ -133,7 +133,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getColumns().get(0).getFilterType()).isEqualTo("greaterThan");
                         assertThat(e.getColumns().get(0).getFilterValue()).isEqualTo("100");
                         assertThat(e.getColumns().get(0).getFilterTolerance()).isEqualTo(0.5);
-                        assertThat(e.getColumns().get(0).getVisible()).isTrue();
+                        assertThat(e.getColumns().get(0).isVisible()).isTrue();
 
                         assertThat(e.getColumns().get(1).getName()).isEqualTo("Column2");
                         assertThat(e.getColumns().get(1).getFormula()).isEqualTo("Z*W");
@@ -143,7 +143,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getColumns().get(1).getFilterType()).isNull();
                         assertThat(e.getColumns().get(1).getFilterValue()).isNull();
                         assertThat(e.getColumns().get(1).getFilterTolerance()).isNull();
-                        assertThat(e.getColumns().get(1).getVisible()).isTrue();
+                        assertThat(e.getColumns().get(1).isVisible()).isTrue();
 
                         // Global filter assertions
                         assertThat(e.getGlobalFilters()).hasSize(1);
@@ -212,7 +212,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getFilterType()).isEqualTo("lessThan");
                         assertThat(e.getFilterValue()).isEqualTo("50.5");
                         assertThat(e.getFilterTolerance()).isEqualTo(0.1);
-                        assertThat(e.getVisible()).isTrue();
+                        assertThat(e.isVisible()).isTrue();
                     });
         }
 
