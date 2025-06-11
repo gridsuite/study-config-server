@@ -94,7 +94,6 @@ public final class SpreadsheetConfigMapper {
 
     public static GlobalFilterInfos toGlobalFilterDto(GlobalFilterEntity entity) {
         return new GlobalFilterInfos(
-                entity.getId(),
                 entity.getUuid(),
                 entity.getFilterType(),
                 entity.getFilterSubtype(),
