@@ -40,7 +40,6 @@ public record GlobalFilterInfos(
     @Schema(description = "Filter label")
     String label,
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Was filter recently applied")
     boolean recent,
 
