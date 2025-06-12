@@ -93,16 +93,16 @@ public final class SpreadsheetConfigMapper {
     }
 
     public static GlobalFilterInfos toGlobalFilterDto(GlobalFilterEntity entity) {
-        return new GlobalFilterInfos(
-                entity.getId(),
-                entity.getUuid(),
-                entity.getFilterType(),
-                entity.getFilterSubtype(),
-                entity.getLabel(),
-                entity.isRecent(),
-                entity.getEquipmentType(),
-                entity.getPath()
-        );
+        return GlobalFilterInfos.builder()
+                .uuid(entity.getUuid())
+                .filterType(entity.getFilterType())
+                .filterSubtype(entity.getFilterSubtype())
+                .label(entity.getLabel())
+                .recent(entity.isRecent())
+                .equipmentType(entity.getEquipmentType())
+                .path(entity.getPath())
+                .build();
+
     }
 
     public static GlobalFilterEntity toGlobalFilterEntity(GlobalFilterInfos dto) {
