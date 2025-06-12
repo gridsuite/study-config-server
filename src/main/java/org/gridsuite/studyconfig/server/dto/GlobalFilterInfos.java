@@ -6,6 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -19,9 +20,11 @@ import java.util.UUID;
 @Schema(name = "GlobalFilterDto", description = "Global filter configuration")
 public record GlobalFilterInfos(
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Global filter UUID")
     UUID id,
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter ID")
     UUID uuid,
 
@@ -29,6 +32,7 @@ public record GlobalFilterInfos(
     @Schema(description = "Filter type")
     String filterType,
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Filter subtype")
     String filterSubtype,
 
@@ -39,9 +43,11 @@ public record GlobalFilterInfos(
     @Schema(description = "Was filter recently applied")
     boolean recent,
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter related equipment type")
     String equipmentType,
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter path")
     String path
 

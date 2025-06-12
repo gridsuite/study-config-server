@@ -88,10 +88,7 @@ public class DtoConverterTest implements WithAssertions {
 
                         // Global filters assertions
                         assertThat(d.globalFilters()).hasSize(2);
-                        assertThat(d.globalFilters().get(0).id()).isNotNull();
                         assertThat(d.globalFilters().get(0).label()).isEqualTo("GlobalFilter1");
-
-                        assertThat(d.globalFilters().get(1).id()).isNotNull();
                         assertThat(d.globalFilters().get(1).label()).isEqualTo("GlobalFilter2");
                     });
         }
@@ -259,7 +256,6 @@ public class DtoConverterTest implements WithAssertions {
             assertThat(dto)
                     .as("DTO conversion result")
                     .satisfies(d -> {
-                        assertThat(d.id()).isEqualTo(uuid);
                         assertThat(d.uuid()).isEqualTo(filterId);
                         assertThat(d.label()).isEqualTo("TestGlobalFilter");
                     });
