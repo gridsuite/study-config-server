@@ -1338,7 +1338,7 @@
           "name": "Switch-on Q at nominal voltage",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "switchedOnQAtNominalV",
+          "formula": "maxQAtNominalV / maximumSectionCount",
           "dependencies": null,
           "id": "switchedOnQAtNominalV"
         },
@@ -1354,7 +1354,7 @@
           "name": "Switch-on susceptance",
           "type": "NUMBER",
           "precision": 5,
-          "formula": "switchedOnSusceptance",
+          "formula": "maxSusceptance / maximumSectionCount",
           "dependencies": null,
           "id": "switchedOnSusceptance"
         },
