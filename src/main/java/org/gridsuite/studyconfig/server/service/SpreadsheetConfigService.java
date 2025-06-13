@@ -333,6 +333,7 @@ public class SpreadsheetConfigService {
         columnEntity.setFilterType(dto.filterType());
         columnEntity.setFilterValue(dto.filterValue());
         columnEntity.setFilterTolerance(dto.filterTolerance());
+        columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
     }
@@ -352,11 +353,41 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
         List<ColumnEntity> columns = entity.getColumns();
 
+        reorderColumns(columnOrder, columns);
+    }
+
+    private static void reorderColumns(List<UUID> columnOrder, List<ColumnEntity> columns) {
         columns.sort((c1, c2) -> {
             int idx1 = columnOrder.indexOf(c1.getUuid());
             int idx2 = columnOrder.indexOf(c2.getUuid());
             return Integer.compare(idx1, idx2);
         });
+    }
+
+    @Transactional
+    public void updateColumnStates(UUID id, List<ColumnStateUpdateInfos> columnStates) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        List<ColumnEntity> columns = entity.getColumns();
+
+        Map<UUID, ColumnEntity> columnMap = columns.stream()
+                .collect(Collectors.toMap(ColumnEntity::getUuid, column -> column));
+
+        for (ColumnStateUpdateInfos state : columnStates) {
+            ColumnEntity column = columnMap.get(state.columnId());
+            if (column == null) {
+                throw new EntityNotFoundException(COLUMN_NOT_FOUND + state.columnId());
+            }
+            column.setVisible(state.visible());
+        }
+
+        // Reorder columns based on the provided states
+        columns.sort(Comparator.comparing(column ->
+            columnStates.stream()
+                    .filter(state -> state.columnId().equals(column.getUuid()))
+                    .findFirst()
+                    .map(ColumnStateUpdateInfos::order)
+                    .orElse(Integer.MAX_VALUE)
+        ));
     }
 
     private SpreadsheetConfigCollectionInfos readDefaultSpreadsheetConfigCollection() throws IOException {

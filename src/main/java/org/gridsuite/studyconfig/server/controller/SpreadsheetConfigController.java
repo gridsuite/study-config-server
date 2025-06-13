@@ -15,10 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
-import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.dto.MetadataInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -176,6 +173,20 @@ public class SpreadsheetConfigController {
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "New order of column IDs") @RequestBody List<UUID> columnOrder) {
         spreadsheetConfigService.reorderColumns(id, columnOrder);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/columns/states")
+    @Operation(summary = "Update column states",
+            description = "Updates the visibility and order of columns in a spreadsheet configuration")
+    @ApiResponse(responseCode = "204", description = "Column states updated successfully")
+    @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
+    @ApiResponse(responseCode = "400", description = "Invalid column state data")
+    public ResponseEntity<Void> updateColumnStates(
+            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @Parameter(description = "List of column state updates")
+            @Valid @RequestBody List<ColumnStateUpdateInfos> columnStates) {
+        spreadsheetConfigService.updateColumnStates(id, columnStates);
         return ResponseEntity.noContent().build();
     }
 
