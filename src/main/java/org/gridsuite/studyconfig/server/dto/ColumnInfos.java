@@ -54,5 +54,11 @@ public record ColumnInfos(
     Double filterTolerance,
 
     @Schema(description = "Column visibility", defaultValue = "true")
-    boolean visible
-) { }
+    Boolean visible
+) {
+    public ColumnInfos {
+        if (visible == null) {
+            visible = true;
+        }
+    }
+}

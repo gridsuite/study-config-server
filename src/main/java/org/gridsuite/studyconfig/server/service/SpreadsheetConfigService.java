@@ -357,11 +357,7 @@ public class SpreadsheetConfigService {
     }
 
     private static void reorderColumns(List<UUID> columnOrder, List<ColumnEntity> columns) {
-        columns.sort((c1, c2) -> {
-            int idx1 = columnOrder.indexOf(c1.getUuid());
-            int idx2 = columnOrder.indexOf(c2.getUuid());
-            return Integer.compare(idx1, idx2);
-        });
+        columns.sort(Comparator.comparingInt(column -> columnOrder.indexOf(column.getUuid())));
     }
 
     @Transactional
@@ -381,13 +377,11 @@ public class SpreadsheetConfigService {
         }
 
         // Reorder columns based on the provided states
-        columns.sort(Comparator.comparing(column ->
-            columnStates.stream()
-                    .filter(state -> state.columnId().equals(column.getUuid()))
-                    .findFirst()
-                    .map(ColumnStateUpdateInfos::order)
-                    .orElse(Integer.MAX_VALUE)
-        ));
+        List<UUID> orderedColumnIds = columnStates.stream()
+                .sorted(Comparator.comparingInt(ColumnStateUpdateInfos::order))
+                .map(ColumnStateUpdateInfos::columnId)
+                .toList();
+        reorderColumns(orderedColumnIds, columns);
     }
 
     private SpreadsheetConfigCollectionInfos readDefaultSpreadsheetConfigCollection() throws IOException {
