@@ -1313,7 +1313,7 @@
         {
           "name": "Maximum number of sections",
           "type": "NUMBER",
-          "precision": null,
+          "precision": 0,
           "formula": "maximumSectionCount",
           "dependencies": null,
           "id": "maximumSectionCount"
@@ -1321,7 +1321,7 @@
         {
           "name": "Current number of sections",
           "type": "NUMBER",
-          "precision": null,
+          "precision": 0,
           "formula": "sectionCount",
           "dependencies": null,
           "id": "sectionCount"

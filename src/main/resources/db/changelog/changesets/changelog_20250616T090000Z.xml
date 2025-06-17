@@ -19,4 +19,14 @@
               AND formula = 'maxSusceptance / maximumSectionCount';
         </sql>
     </changeSet>
+
+    <changeSet author="berrahmaach" id="update-section-count-columns-precision">
+        <comment>Update precision to 0 for maximumSectionCount and sectionCount columns where precision is null</comment>
+        <sql dbms="postgresql">
+            UPDATE spreadsheet_column
+            SET precision = 0
+            WHERE column_id IN ('maximumSectionCount', 'sectionCount')
+              AND precision IS NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
