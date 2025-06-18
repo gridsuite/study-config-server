@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="berrahmaach" id="correct-shunt-compensator-formulas-switchedOnQAtNominalV">
+        <comment>Correct switchedOnQAtNominalV formula - replace incorrect formula with the correct one</comment>
+        <sql dbms="postgresql">
+            UPDATE spreadsheet_column
+            SET formula = '(maxQAtNominalV / maximumSectionCount) * sectionCount'
+            WHERE column_id = 'switchedOnQAtNominalV'
+              AND formula = 'maxQAtNominalV / maximumSectionCount';
+        </sql>
+    </changeSet>
+
+    <changeSet author="berrahmaach" id="correct-shunt-compensator-formulas-switchedOnSusceptance">
+        <comment>Correct switchedOnSusceptance formula - replace incorrect formula with the correct one</comment>
+        <sql dbms="postgresql">
+            UPDATE spreadsheet_column
+            SET formula = '(maxSusceptance / maximumSectionCount) * sectionCount'
+            WHERE column_id = 'switchedOnSusceptance'
+              AND formula = 'maxSusceptance / maximumSectionCount';
+        </sql>
+    </changeSet>
+
+    <changeSet author="berrahmaach" id="update-section-count-columns-precision">
+        <comment>Update precision to 0 for maximumSectionCount and sectionCount columns where precision is null</comment>
+        <sql dbms="postgresql">
+            UPDATE spreadsheet_column
+            SET precision = 0
+            WHERE column_id IN ('maximumSectionCount', 'sectionCount')
+              AND precision IS NULL;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

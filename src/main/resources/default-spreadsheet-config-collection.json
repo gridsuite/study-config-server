@@ -1313,7 +1313,7 @@
         {
           "name": "Maximum number of sections",
           "type": "NUMBER",
-          "precision": null,
+          "precision": 0,
           "formula": "maximumSectionCount",
           "dependencies": null,
           "id": "maximumSectionCount"
@@ -1321,7 +1321,7 @@
         {
           "name": "Current number of sections",
           "type": "NUMBER",
-          "precision": null,
+          "precision": 0,
           "formula": "sectionCount",
           "dependencies": null,
           "id": "sectionCount"
@@ -1338,7 +1338,7 @@
           "name": "Switch-on Q at nominal voltage",
           "type": "NUMBER",
           "precision": 1,
-          "formula": "maxQAtNominalV / maximumSectionCount",
+          "formula": "(maxQAtNominalV / maximumSectionCount) * sectionCount",
           "dependencies": null,
           "id": "switchedOnQAtNominalV"
         },
@@ -1354,7 +1354,7 @@
           "name": "Switch-on susceptance",
           "type": "NUMBER",
           "precision": 5,
-          "formula": "maxSusceptance / maximumSectionCount",
+          "formula": "(maxSusceptance / maximumSectionCount) * sectionCount",
           "dependencies": null,
           "id": "switchedOnSusceptance"
         },
