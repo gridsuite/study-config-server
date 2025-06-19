@@ -456,7 +456,7 @@ class SpreadsheetConfigIntegrationTest {
         UUID configUuid = saveAndReturnId(configToRename);
 
         String newName = "RenamedConfig";
-        mockMvc.perform(patch(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/name")
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/name")
                 .content(newName)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -473,7 +473,7 @@ class SpreadsheetConfigIntegrationTest {
     @Test
     void testRenameNonExistentSpreadsheetConfig() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
-        mockMvc.perform(patch(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid + "/name")
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid + "/name")
                 .content("NewName")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
