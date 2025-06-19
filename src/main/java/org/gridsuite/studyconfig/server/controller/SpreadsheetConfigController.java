@@ -101,7 +101,7 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/name")
+    @PutMapping("/{id}/name")
     @Operation(summary = "Rename a spreadsheet configuration",
             description = "Updates the name of an existing spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Configuration renamed")
