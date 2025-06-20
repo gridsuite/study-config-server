@@ -63,6 +63,9 @@ public class SpreadsheetConfigService {
                 .name(entity.getName())
                 .sheetType(entity.getSheetType())
                 .build();
+        if (entity.getNodeAliases() != null) {
+            duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
+        }
         List<ColumnEntity> columns = entity.getColumns().stream()
                 .map(column -> ColumnEntity.builder()
                         .name(column.getName())
@@ -123,6 +126,9 @@ public class SpreadsheetConfigService {
 
         entity.setSheetType(dto.sheetType());
         entity.setName(dto.name());
+        if (dto.nodeAliases() != null) {
+            entity.setNodeAliases(new ArrayList<>(dto.nodeAliases()));
+        }
         entity.getColumns().clear();
         if (dto.columns() != null) {
             entity.getColumns().addAll(dto.columns().stream()
@@ -176,6 +182,8 @@ public class SpreadsheetConfigService {
                     return clone;
                 })
                 .toList());
+        List<String> allConfigsUniqueAliases = entity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getNodeAliases).flatMap(Collection::stream).collect(Collectors.toSet()).stream().toList();
+        entity.setNodeAliases(new ArrayList<>(allConfigsUniqueAliases));
         return spreadsheetConfigCollectionRepository.save(entity).getId();
     }
 
@@ -265,6 +273,9 @@ public class SpreadsheetConfigService {
                             .name(config.getName())
                             .sheetType(config.getSheetType())
                             .build();
+                    if (config.getNodeAliases() != null) {
+                        configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
+                    }
                     configDuplicate.setColumns(config.getColumns().stream()
                             .map(column -> ColumnEntity.builder()
                                     .name(column.getName())

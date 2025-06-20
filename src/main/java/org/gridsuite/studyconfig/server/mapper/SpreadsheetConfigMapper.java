@@ -14,6 +14,8 @@ import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
+import java.util.ArrayList;
+
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
@@ -32,7 +34,8 @@ public final class SpreadsheetConfigMapper {
                     .toList(),
                 entity.getGlobalFilters().stream()
                     .map(SpreadsheetConfigMapper::toGlobalFilterDto)
-                    .toList()
+                    .toList(),
+                entity.getNodeAliases()
         );
     }
 
@@ -45,7 +48,9 @@ public final class SpreadsheetConfigMapper {
                 .name(dto.name())
                 .sheetType(dto.sheetType())
                 .build();
-
+        if (dto.nodeAliases() != null) {
+            entity.setNodeAliases(new ArrayList<>(dto.nodeAliases()));
+        }
         if (dto.columns() != null) {
             entity.setColumns(dto.columns().stream()
                     .map(SpreadsheetConfigMapper::toColumnEntity)

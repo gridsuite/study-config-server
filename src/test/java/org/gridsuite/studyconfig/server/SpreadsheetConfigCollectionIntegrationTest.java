@@ -267,7 +267,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         List<ColumnInfos> columnInfos = List.of(
                 new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew", null, null, null, null, true)
         );
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null);
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null, List.of());
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         MvcResult mvcResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs")
@@ -305,7 +305,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     @Test
     void testAddSpreadsheetConfigToNonExistentCollection() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of(), null);
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of(), null, List.of());
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + nonExistentUuid + "/spreadsheet-configs")
@@ -407,8 +407,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null, List.of())
         );
     }
 
@@ -443,8 +443,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnsConfig1, globalFiltersConfig1),
-                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.LOAD, columnsConfig2, globalFiltersConfig2)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnsConfig1, globalFiltersConfig1, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.LOAD, columnsConfig2, globalFiltersConfig2, List.of())
         );
     }
 
@@ -457,9 +457,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos, null)
+                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos, null, List.of())
         );
     }
 
@@ -500,9 +500,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "Updated1", SheetType.BATTERY, columnsConfig1, globalFiltersConfig1),
-                new SpreadsheetConfigInfos(null, "Updated2", SheetType.LINE, columnsConfig2, globalFiltersConfig2),
-                new SpreadsheetConfigInfos(null, "Added3", SheetType.BUS, columnsConfig3, globalFiltersConfig3)
+                new SpreadsheetConfigInfos(null, "Updated1", SheetType.BATTERY, columnsConfig1, globalFiltersConfig1, List.of()),
+                new SpreadsheetConfigInfos(null, "Updated2", SheetType.LINE, columnsConfig2, globalFiltersConfig2, List.of()),
+                new SpreadsheetConfigInfos(null, "Added3", SheetType.BUS, columnsConfig3, globalFiltersConfig3, List.of())
         );
     }
 

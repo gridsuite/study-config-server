@@ -33,5 +33,8 @@ public record SpreadsheetConfigInfos(
     List<ColumnInfos> columns,
 
     @Schema(description = "Global filters")
-    List<GlobalFilterInfos> globalFilters
+    List<GlobalFilterInfos> globalFilters,
+
+    @Schema(description = "List of node aliases")
+    List<String> nodeAliases
 ) { }
