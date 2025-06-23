@@ -234,23 +234,31 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testMergeModelsIntoNewCollection() throws Exception {
-        // create a first collection with 2 configs (config1 aliases = a1,a2 ; config2 aliases = a1,a2,a3)
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigsWithAliases(), null);
-        UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
+        // create a source collection to create N configs
+        SpreadsheetConfigCollectionInfos sourceCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigsWithAliases(), null);
+        UUID collectionUuid = postSpreadsheetConfigCollection(sourceCollection);
         List<SpreadsheetConfigInfos> sourceConfigs = getSpreadsheetConfigCollection(collectionUuid).spreadsheetConfigs();
         List<UUID> configIds = sourceConfigs.stream().map(SpreadsheetConfigInfos::id).toList();
-        assertThat(configIds).hasSize(2);
-        List<String> expectedMergedUniqueAliases = sourceConfigs.stream().map (c -> c.nodeAliases()).flatMap(Collection::stream).collect(Collectors.toSet()).stream().toList();
 
-        // create a second collection duplicating + merging these existing Configs
+        // create a second collection duplicating + merging these source Configs
         UUID mergedCollectionUuid = postMergeSpreadsheetConfigsIntoCollection(configIds);
+        assertThat(mergedCollectionUuid).isNotEqualTo(collectionUuid);
 
         SpreadsheetConfigCollectionInfos mergedCollection = getSpreadsheetConfigCollection(mergedCollectionUuid);
         List<UUID> duplicatedConfigIds = mergedCollection.spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
-        assertThat(mergedCollectionUuid).isNotEqualTo(collectionUuid);
         assertThat(duplicatedConfigIds).hasSameSizeAs(configIds);
         assertThat(duplicatedConfigIds.stream().sorted().toList()).isNotEqualTo(configIds.stream().sorted().toList());
-        assertThat(mergedCollection.nodeAliases().stream().sorted().toList()).isEqualTo(expectedMergedUniqueAliases.stream().sorted().toList());
+
+        // don't compare config names, they may have been renamed to be unique
+        assertThat(mergedCollection)
+                .usingRecursiveComparison()
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id", "spreadsheetConfigs.name")
+                .ignoringExpectedNullFields()
+                .isEqualTo(sourceCollection);
+
+        // merged aliases must be unique
+        List<String> expectedMergedUniqueAliases = sourceConfigs.stream().map(SpreadsheetConfigInfos::nodeAliases).flatMap(Collection::stream).collect(Collectors.toSet()).stream().toList();
+        assertThat(mergedCollection.nodeAliases()).isEqualTo(expectedMergedUniqueAliases);
     }
 
     @Test
@@ -414,7 +422,10 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         return List.of(
                 new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of("a1", "a2")),
-                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null, List.of("a1", "a2", "a3"))
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null, List.of("a1", "a2", "a3")),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.GENERATOR, columnInfos, null, List.of("a2", "a4")),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.GENERATOR, columnInfos, null, List.of("alias"))
         );
     }
 
