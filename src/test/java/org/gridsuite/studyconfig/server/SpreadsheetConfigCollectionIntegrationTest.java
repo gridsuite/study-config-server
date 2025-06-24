@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -233,18 +234,31 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testMergeModelsIntoNewCollection() throws Exception {
-        // create a first collection with 2 configs
-        SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
-        UUID collectionUuid = postSpreadsheetConfigCollection(collectionToCreate);
-        List<UUID> configIds = getSpreadsheetConfigCollection(collectionUuid).spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
-        assertThat(configIds).hasSize(2);
-        // create a second collection duplicating + merging these existing Configs
-        UUID mergedCollectionUuid = postMergeSpreadsheetConfigsIntoCollection(configIds);
-        List<UUID> duplicatedConfigIds = getSpreadsheetConfigCollection(mergedCollectionUuid).spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
+        // create a source collection to create N configs
+        SpreadsheetConfigCollectionInfos sourceCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigsWithAliases(), List.of("sourceAlias"));
+        UUID collectionUuid = postSpreadsheetConfigCollection(sourceCollection);
+        List<SpreadsheetConfigInfos> sourceConfigs = getSpreadsheetConfigCollection(collectionUuid).spreadsheetConfigs();
+        List<UUID> configIds = sourceConfigs.stream().map(SpreadsheetConfigInfos::id).toList();
 
+        // create a second collection, duplicating and merging these N source Configs
+        UUID mergedCollectionUuid = postMergeSpreadsheetConfigsIntoCollection(configIds);
         assertThat(mergedCollectionUuid).isNotEqualTo(collectionUuid);
+
+        SpreadsheetConfigCollectionInfos mergedCollection = getSpreadsheetConfigCollection(mergedCollectionUuid);
+        List<UUID> duplicatedConfigIds = mergedCollection.spreadsheetConfigs().stream().map(SpreadsheetConfigInfos::id).toList();
         assertThat(duplicatedConfigIds).hasSameSizeAs(configIds);
         assertThat(duplicatedConfigIds.stream().sorted().toList()).isNotEqualTo(configIds.stream().sorted().toList());
+
+        // dont compare aliases, merged collection aliases are computed
+        assertThat(mergedCollection)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "nodeAliases", "spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
+                .ignoringExpectedNullFields()
+                .isEqualTo(sourceCollection);
+
+        // merged aliases must be unique
+        List<String> expectedUniqueAliases = sourceConfigs.stream().map(SpreadsheetConfigInfos::nodeAliases).flatMap(Collection::stream).collect(Collectors.toSet()).stream().toList();
+        assertThat(mergedCollection.nodeAliases()).isEqualTo(expectedUniqueAliases);
     }
 
     @Test
@@ -267,7 +281,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         List<ColumnInfos> columnInfos = List.of(
                 new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", "idNew", null, null, null, null, true)
         );
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null);
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null, List.of());
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         MvcResult mvcResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs")
@@ -305,7 +319,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
     @Test
     void testAddSpreadsheetConfigToNonExistentCollection() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of(), null);
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, List.of(), null, List.of());
 
         String newConfigJson = mapper.writeValueAsString(newConfig);
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + nonExistentUuid + "/spreadsheet-configs")
@@ -400,6 +414,21 @@ class SpreadsheetConfigCollectionIntegrationTest {
                 .hasSize(sourceConfigIds.size());
     }
 
+    private List<SpreadsheetConfigInfos> createSpreadsheetConfigsWithAliases() {
+        List<ColumnInfos> columnInfos = Arrays.asList(
+                new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null, true),
+                new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, "idB", null, null, null, null, true)
+        );
+
+        return List.of(
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of("a1", "a2")),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null, List.of("a1", "a2", "a3")),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.GENERATOR, columnInfos, null, List.of("a2", "a4")),
+                new SpreadsheetConfigInfos(null, "TestSheet3", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet4", SheetType.GENERATOR, columnInfos, null, List.of("alias"))
+        );
+    }
+
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
         List<ColumnInfos> columnInfos = Arrays.asList(
             new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null, true),
@@ -407,8 +436,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet1", SheetType.GENERATOR, columnInfos, null, List.of())
         );
     }
 
@@ -443,8 +472,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnsConfig1, globalFiltersConfig1),
-                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.LOAD, columnsConfig2, globalFiltersConfig2)
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnsConfig1, globalFiltersConfig1, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet2", SheetType.LOAD, columnsConfig2, globalFiltersConfig2, List.of())
         );
     }
 
@@ -457,9 +486,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null),
-                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos, null)
+                new SpreadsheetConfigInfos(null, "Generator", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet", SheetType.GENERATOR, columnInfos, null, List.of()),
+                new SpreadsheetConfigInfos(null, "TestSheet (1)", SheetType.BATTERY, columnInfos, null, List.of())
         );
     }
 
@@ -500,9 +529,9 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         return List.of(
-                new SpreadsheetConfigInfos(null, "Updated1", SheetType.BATTERY, columnsConfig1, globalFiltersConfig1),
-                new SpreadsheetConfigInfos(null, "Updated2", SheetType.LINE, columnsConfig2, globalFiltersConfig2),
-                new SpreadsheetConfigInfos(null, "Added3", SheetType.BUS, columnsConfig3, globalFiltersConfig3)
+                new SpreadsheetConfigInfos(null, "Updated1", SheetType.BATTERY, columnsConfig1, globalFiltersConfig1, List.of()),
+                new SpreadsheetConfigInfos(null, "Updated2", SheetType.LINE, columnsConfig2, globalFiltersConfig2, List.of()),
+                new SpreadsheetConfigInfos(null, "Added3", SheetType.BUS, columnsConfig3, globalFiltersConfig3, List.of())
         );
     }
 
