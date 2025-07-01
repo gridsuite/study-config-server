@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum DiagramLayoutType {
-    NETWORK_AREA("network-area"),
+    NETWORK_AREA_DIAGRAM("network-area-diagram"),
     SUBSTATION("substation"),
     VOLTAGE_LEVEL("voltage-level");
 

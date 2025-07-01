@@ -1,5 +1,6 @@
 package org.gridsuite.studyconfig.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 import org.gridsuite.studyconfig.server.service.StudyLayoutService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(value = "/" + StudyConfigApi.API_VERSION + "/study-layout")
 @RequiredArgsConstructor
 @Tag(name = "Study Layout Config", description = "Study Layout Configuration API")
-public class StudyLayoutConfigController {
+public class StudyLayoutController {
     private final StudyLayoutService studyLayoutService;
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
@@ -29,11 +31,12 @@ public class StudyLayoutConfigController {
         return ResponseEntity.ok().body(studyLayoutService.saveStudyLayout(studyLayout));
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Get study layout")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The study layout is returned")})
     public ResponseEntity<StudyLayout> getStudyLayout(
         @PathVariable("id") UUID studyLayoutUuid) {
-        return ResponseEntity.ok().body(studyLayoutService.getByStudyUuidAndUserId(studyLayoutUuid));
+        ObjectMapper objectMapper = new ObjectMapper();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyLayoutService.getByStudyUuidAndUserId(studyLayoutUuid));
     }
 }

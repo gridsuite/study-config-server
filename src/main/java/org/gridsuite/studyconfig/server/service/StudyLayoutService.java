@@ -5,6 +5,7 @@ import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class StudyLayoutService {
         this.studyLayoutRepository = studyLayoutRepository;
     }
 
+    @Transactional
     public StudyLayout getByStudyUuidAndUserId(UUID studyLayoutUuid) {
         return studyLayoutRepository
             .findById(studyLayoutUuid)
@@ -23,6 +25,7 @@ public class StudyLayoutService {
             .toDto();
     }
 
+    @Transactional
     public UUID saveStudyLayout(StudyLayout studyLayout) {
         StudyLayoutEntity studyLayoutEntity = studyLayoutRepository.save(studyLayout.toEntity());
 

@@ -17,9 +17,10 @@ import java.util.UUID;
 @Getter
 public class StudyLayoutEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     UUID uuid;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<AbstractDiagramLayoutEntity> diagramGridLayoutEntityList;
 
     public StudyLayout toDto() {

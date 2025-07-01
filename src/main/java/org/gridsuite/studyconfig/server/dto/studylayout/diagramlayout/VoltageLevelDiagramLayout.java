@@ -1,9 +1,15 @@
 package org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.entities.studylayout.VoltageLevelLayoutEntity;
 
 @SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class VoltageLevelDiagramLayout extends AbstractDiagramLayout {
     String voltageLevelId;
 
