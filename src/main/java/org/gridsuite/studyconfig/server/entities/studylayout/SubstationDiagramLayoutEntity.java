@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.SubstationDiagramLayout;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
@@ -16,10 +19,10 @@ public class SubstationDiagramLayoutEntity extends AbstractDiagramLayoutEntity {
     public SubstationDiagramLayout toDto() {
         return SubstationDiagramLayout.builder()
             .diagramUuid(diagramUuid)
-            .w(width)
-            .h(height)
-            .x(xPosition)
-            .y(yPosition)
+            .gridLayout(gridLayout.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().toDto()
+            )))
             .substationId(substationId)
             .build();
     }

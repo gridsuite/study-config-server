@@ -7,6 +7,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.entities.studylayout.SubstationDiagramLayoutEntity;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,10 +27,10 @@ public class SubstationDiagramLayout extends AbstractDiagramLayout {
     public SubstationDiagramLayoutEntity toEntity() {
         return SubstationDiagramLayoutEntity.builder()
             .diagramUuid(diagramUuid)
-            .width(w)
-            .height(h)
-            .xPosition(x)
-            .yPosition(y)
+            .gridLayout(gridLayout.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().toEntity()
+            )))
             .substationId(substationId)
             .build();
     }

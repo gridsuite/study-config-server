@@ -2,6 +2,7 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
+import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.VoltageLevelDiagramLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutRepository;
@@ -12,13 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class StudyLayoutTest {
+class StudyLayoutTest {
 
     @Autowired
     private StudyLayoutRepository studyLayoutRepository;
@@ -32,10 +34,15 @@ public class StudyLayoutTest {
             .diagramLayoutParams(List.of(
                 VoltageLevelDiagramLayout.builder()
                     .voltageLevelId("vl1")
-                    .w(1)
-                    .h(2)
-                    .x(3)
-                    .y(4)
+                    .gridLayout(Map.of(
+                        "lg",
+                        DiagramGridLayout.builder().w(1)
+                            .h(2)
+                            .x(3)
+                            .y(4)
+                            .build()
+                    ))
+
                     .diagramUuid(diagramLayoutUuid)
                     .build()))
             .build();

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +20,10 @@ public abstract class AbstractDiagramLayoutEntity {
     private UUID id;
 
     UUID diagramUuid;
-    Integer width;
-    Integer height;
-    Integer xPosition;
-    Integer yPosition;
+
+    @ElementCollection
+    @MapKeyColumn(name = "grid_layout_key")
+    Map<String, DiagramGridLayoutEntity> gridLayout;
 
     public abstract AbstractDiagramLayout toDto();
 }

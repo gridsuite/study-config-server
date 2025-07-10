@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.entities.studylayout.NetworkAreaDiagramLayoutEntity;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -27,10 +29,10 @@ public class NetworkAreaDiagramLayout extends AbstractDiagramLayout {
     public NetworkAreaDiagramLayoutEntity toEntity() {
         return NetworkAreaDiagramLayoutEntity.builder()
             .diagramUuid(diagramUuid)
-            .width(w)
-            .height(h)
-            .xPosition(x)
-            .yPosition(y)
+            .gridLayout(gridLayout.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().toEntity()
+            )))
             .voltageLevelIds(voltageLevelIds)
             .depth(depth)
             .build();

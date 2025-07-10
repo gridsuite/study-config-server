@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.entities.studylayout.AbstractDiagramLayoutEntity;
 
+import java.util.Map;
 import java.util.UUID;
 
 @SuperBuilder
@@ -31,10 +32,7 @@ import java.util.UUID;
 public abstract class AbstractDiagramLayout {
     UUID diagramUuid;
 
-    Integer w;
-    Integer h;
-    Integer x;
-    Integer y;
+    Map<String, DiagramGridLayout> gridLayout;
 
 //    String type = getDiagramType().getLabel();
 
