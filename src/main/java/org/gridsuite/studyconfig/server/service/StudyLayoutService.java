@@ -3,7 +3,6 @@ package org.gridsuite.studyconfig.server.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutRepository;
 import org.springframework.stereotype.Service;
