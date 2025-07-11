@@ -1,10 +1,7 @@
 package org.gridsuite.studyconfig.server.entities.studylayout;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Getter
+@Setter
 public class StudyLayoutEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,5 +25,10 @@ public class StudyLayoutEntity {
         return StudyLayout.builder()
             .diagramLayoutParams(diagramGridLayoutEntityList.stream().map(AbstractDiagramLayoutEntity::toDto).toList())
             .build();
+    }
+
+    public void replaceAllDiagramLayouts(List<AbstractDiagramLayoutEntity> diagramGridLayoutEntityList) {
+        this.diagramGridLayoutEntityList.clear();
+        this.diagramGridLayoutEntityList.addAll(diagramGridLayoutEntityList);
     }
 }

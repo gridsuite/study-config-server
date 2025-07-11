@@ -1,6 +1,5 @@
 package org.gridsuite.studyconfig.server.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -31,12 +30,20 @@ public class StudyLayoutController {
         return ResponseEntity.ok().body(studyLayoutService.saveStudyLayout(studyLayout));
     }
 
+    @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update study layout")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The study layout has been updated")})
+    public ResponseEntity<Void> updateStudyLayout(@PathVariable("id") UUID studyLayoutUuid,
+                                                  @RequestBody StudyLayout studyLayout) {
+        studyLayoutService.updateStudyLayout(studyLayoutUuid, studyLayout);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Get study layout")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The study layout is returned")})
     public ResponseEntity<StudyLayout> getStudyLayout(
         @PathVariable("id") UUID studyLayoutUuid) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyLayoutService.getByStudyUuidAndUserId(studyLayoutUuid));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyLayoutService.getByStudyLayoutUuid(studyLayoutUuid));
     }
 }

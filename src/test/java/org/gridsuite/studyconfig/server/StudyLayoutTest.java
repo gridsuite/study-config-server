@@ -51,7 +51,7 @@ class StudyLayoutTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        String test = objectMapper.writeValueAsString(studyLayoutService.getByStudyUuidAndUserId(studyLayoutEntity.getUuid()));
+        String test = objectMapper.writeValueAsString(studyLayoutService.getByStudyLayoutUuid(studyLayoutEntity.getUuid()));
 
         assertTrue(true);
     }
