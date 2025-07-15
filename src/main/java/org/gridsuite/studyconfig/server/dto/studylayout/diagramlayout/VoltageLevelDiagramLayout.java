@@ -19,11 +19,6 @@ public class VoltageLevelDiagramLayout extends AbstractDiagramLayout {
     String voltageLevelId;
 
     @Override
-    public DiagramLayoutType getDiagramType() {
-        return DiagramLayoutType.VOLTAGE_LEVEL;
-    }
-
-    @Override
     public VoltageLevelLayoutEntity toEntity() {
         return VoltageLevelLayoutEntity.builder()
             .diagramUuid(diagramUuid)

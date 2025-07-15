@@ -34,10 +34,5 @@ public abstract class AbstractDiagramLayout {
 
     Map<String, DiagramGridLayout> gridLayout;
 
-//    String type = getDiagramType().getLabel();
-
-    @JsonIgnore
-    public abstract DiagramLayoutType getDiagramType();
-
     public abstract AbstractDiagramLayoutEntity toEntity();
 }

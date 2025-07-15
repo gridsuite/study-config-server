@@ -21,11 +21,6 @@ public class NetworkAreaDiagramLayout extends AbstractDiagramLayout {
     Integer depth;
 
     @Override
-    public DiagramLayoutType getDiagramType() {
-        return DiagramLayoutType.NETWORK_AREA_DIAGRAM;
-    }
-
-    @Override
     public NetworkAreaDiagramLayoutEntity toEntity() {
         return NetworkAreaDiagramLayoutEntity.builder()
             .diagramUuid(diagramUuid)

@@ -19,11 +19,6 @@ public class SubstationDiagramLayout extends AbstractDiagramLayout {
     String substationId;
 
     @Override
-    public DiagramLayoutType getDiagramType() {
-        return DiagramLayoutType.SUBSTATION;
-    }
-
-    @Override
     public SubstationDiagramLayoutEntity toEntity() {
         return SubstationDiagramLayoutEntity.builder()
             .diagramUuid(diagramUuid)
