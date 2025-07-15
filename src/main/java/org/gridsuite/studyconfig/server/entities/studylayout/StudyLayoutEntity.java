@@ -19,6 +19,7 @@ public class StudyLayoutEntity {
     UUID uuid;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "study_layout_id", foreignKey = @ForeignKey(name = "fk_diagram_layout_study_layout"))
     List<AbstractDiagramLayoutEntity> diagramGridLayoutEntityList;
 
     public StudyLayout toDto() {

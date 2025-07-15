@@ -1,6 +1,6 @@
 package org.gridsuite.studyconfig.server.entities.studylayout;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,8 +14,16 @@ import java.util.stream.Collectors;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "fk_network_area_diagram_layout_abstract"))
 public class NetworkAreaDiagramLayoutEntity extends AbstractDiagramLayoutEntity {
+    @ElementCollection()
+    @CollectionTable(
+        name = "network_area_diagram_voltage_level_ids",
+        joinColumns = @JoinColumn(name = "network_area_diagram_layout_id"),
+        foreignKey = @ForeignKey(name = "fk_network_area_diagram_voltage_level_ids")
+    )
     List<String> voltageLevelIds;
+
     Integer depth;
 
     public NetworkAreaDiagramLayout toDto() {
@@ -26,7 +34,7 @@ public class NetworkAreaDiagramLayoutEntity extends AbstractDiagramLayoutEntity 
                 entry -> entry.getValue().toDto()
             )))
             .depth(depth)
-            .voltageLevelIds(voltageLevelIds)
+            .voltageLevelIds(voltageLevelIds != null ? List.copyOf(voltageLevelIds) : null)
             .build();
     }
 }

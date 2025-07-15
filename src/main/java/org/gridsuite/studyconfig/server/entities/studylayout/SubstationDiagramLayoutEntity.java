@@ -1,6 +1,6 @@
 package org.gridsuite.studyconfig.server.entities.studylayout;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @SuperBuilder
 @Entity
+@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "fk_substation_diagram_layout_abstract"))
 public class SubstationDiagramLayoutEntity extends AbstractDiagramLayoutEntity {
     String substationId;
 

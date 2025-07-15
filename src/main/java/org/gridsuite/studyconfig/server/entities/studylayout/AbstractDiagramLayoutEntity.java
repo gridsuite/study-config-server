@@ -22,6 +22,7 @@ public abstract class AbstractDiagramLayoutEntity {
     UUID diagramUuid;
 
     @ElementCollection
+    @CollectionTable(foreignKey = @ForeignKey(name = "fk_grid_layout_abstract_diagram"))
     @MapKeyColumn(name = "grid_layout_key")
     Map<String, DiagramGridLayoutEntity> gridLayout;
 

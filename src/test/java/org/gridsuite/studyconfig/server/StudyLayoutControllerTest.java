@@ -3,6 +3,7 @@ package org.gridsuite.studyconfig.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.DiagramGridLayout;
+import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.NetworkAreaDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.SubstationDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.VoltageLevelDiagramLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
@@ -85,6 +86,25 @@ class StudyLayoutControllerTest {
             ))
 
             .diagramUuid(newDiagramLayoutUuid)
+            .build());
+
+        UUID diagramUuid = UUID.randomUUID();
+        List<String> voltageLevelIds = List.of("vl1", "vl2", "vl3");
+        Integer depth = 5;
+
+        updatedStudyLayout.getDiagramLayoutParams().add(NetworkAreaDiagramLayout.builder()
+            .diagramUuid(diagramUuid)
+            .gridLayout(Map.of(
+                "lg",
+                DiagramGridLayout.builder()
+                    .w(10)
+                    .h(20)
+                    .x(30)
+                    .y(40)
+                    .build()
+            ))
+            .voltageLevelIds(voltageLevelIds)
+            .depth(depth)
             .build());
 
         mockMvc.perform(put("/v1/study-layout/{studyLayoutUuid}", existingStudyLayout.getUuid())
