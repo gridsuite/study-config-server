@@ -27,6 +27,7 @@ import java.util.UUID;
     @JsonSubTypes.Type(value = SubstationDiagramLayout.class, name = "substation"),
     @JsonSubTypes.Type(value = VoltageLevelDiagramLayout.class, name = "voltage-level"),
     @JsonSubTypes.Type(value = NetworkAreaDiagramLayout.class, name = "network-area-diagram"),
+    @JsonSubTypes.Type(value = NadFromElementDiagramLayout.class, name = "nad-from-element"),
 })
 public abstract class AbstractDiagramLayout {
     UUID diagramUuid;
