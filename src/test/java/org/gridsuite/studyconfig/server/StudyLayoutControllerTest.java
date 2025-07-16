@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,6 +50,15 @@ class StudyLayoutControllerTest {
         StudyLayout result = objectMapper.readValue(mockMvcResult.getResponse().getContentAsString(), StudyLayout.class);
 
         assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult.toDto());
+    }
+
+    @Test
+    void testDeleteStudyLayout() throws Exception {
+        StudyLayoutEntity expectedResult = studyLayoutRepository.save(createStudyLayout().toEntity());
+        mockMvc.perform(delete("/v1/study-layout/{studyLayoutUuid}", expectedResult.getUuid()))
+            .andExpect(status().isOk());
+
+        assertTrue(studyLayoutRepository.findById(expectedResult.getUuid()).isEmpty());
     }
 
     @Test

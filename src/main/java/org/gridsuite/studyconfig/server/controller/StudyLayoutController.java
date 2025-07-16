@@ -46,4 +46,13 @@ public class StudyLayoutController {
         @PathVariable("id") UUID studyLayoutUuid) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(studyLayoutService.getByStudyLayoutUuid(studyLayoutUuid));
     }
+
+    @DeleteMapping(value = "/{id}")
+    @Operation(summary = "Delete study layout")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The study layout is deleted")})
+    public ResponseEntity<StudyLayout> deleteStudyLayout(
+        @PathVariable("id") UUID studyLayoutUuid) {
+        studyLayoutService.deleteStudyLayout(studyLayoutUuid);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -27,6 +27,11 @@ public class StudyLayoutService {
     }
 
     @Transactional
+    public void deleteStudyLayout(UUID studyLayoutUuid) {
+        studyLayoutRepository.deleteById(studyLayoutUuid);
+    }
+
+    @Transactional
     public UUID saveStudyLayout(StudyLayout studyLayout) {
         StudyLayoutEntity studyLayoutEntity = studyLayoutRepository.save(studyLayout.toEntity());
 
