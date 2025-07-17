@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024, RTE (http://www.rte-france.com)
+  Copyright (c) 2025, RTE (http://www.rte-france.com)
   This Source Code Form is subject to the terms of the Mozilla Public
   License, v. 2.0. If a copy of the MPL was not distributed with this
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,13 +9,11 @@ package org.gridsuite.studyconfig.server.mapper;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.DiagramGridLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.NadFromElementDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.NetworkAreaDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.SubstationDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.VoltageLevelDiagramLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.AbstractDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.DiagramGridLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.studylayout.NadFromElementDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.NetworkAreaDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.SubstationDiagramLayoutEntity;
@@ -27,15 +25,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Mapper for conversion between StudyLayout DTOs and Entities
- *
- * @author Generated based on StudyLayoutConversionService
- */
 public final class StudyLayoutMapper {
 
     private StudyLayoutMapper() {
-        // Private constructor to prevent instantiation
     }
 
     public static StudyLayoutEntity toEntity(StudyLayout dto) {
@@ -68,16 +60,13 @@ public final class StudyLayoutMapper {
                     .build();
             case NetworkAreaDiagramLayout n -> NetworkAreaDiagramLayoutEntity.builder()
                     .diagramUuid(n.getDiagramUuid())
+                    .filterUuid(n.getFilterUuid())
+                    .nadConfigUuid(n.getNadConfigUuid())
                     .voltageLevelIds(n.getVoltageLevelIds())
+                    .voltageLevelToExpandIds(n.getVoltageLevelToExpandIds())
+                    .voltageLevelToOmitIds(n.getVoltageLevelToOmitIds())
                     .depth(n.getDepth())
                     .gridLayout(convertGridLayoutMap(n.getGridLayout(), StudyLayoutMapper::toGridLayoutEntity))
-                    .build();
-            case NadFromElementDiagramLayout nad -> NadFromElementDiagramLayoutEntity.builder()
-                    .diagramUuid(nad.getDiagramUuid())
-                    .elementName(nad.getElementName())
-                    .elementType(nad.getElementType())
-                    .elementUuid(nad.getElementUuid())
-                    .gridLayout(convertGridLayoutMap(nad.getGridLayout(), StudyLayoutMapper::toGridLayoutEntity))
                     .build();
             case null -> null;
             default -> throw new IllegalArgumentException("Unknown diagram layout DTO type: " + dto.getClass());
@@ -98,16 +87,13 @@ public final class StudyLayoutMapper {
                     .build();
             case NetworkAreaDiagramLayoutEntity n -> NetworkAreaDiagramLayout.builder()
                     .diagramUuid(n.getDiagramUuid())
-                    .voltageLevelIds(n.getVoltageLevelIds())
+                    .filterUuid(n.getFilterUuid())
+                    .nadConfigUuid(n.getNadConfigUuid())
+                    .voltageLevelIds(n.getVoltageLevelIds() != null ? List.copyOf(n.getVoltageLevelIds()) : null)
+                    .voltageLevelToExpandIds(n.getVoltageLevelToExpandIds() != null ? List.copyOf(n.getVoltageLevelToExpandIds()) : null)
+                    .voltageLevelToOmitIds(n.getVoltageLevelToOmitIds() != null ? List.copyOf(n.getVoltageLevelToOmitIds()) : null)
                     .depth(n.getDepth())
                     .gridLayout(convertGridLayoutMap(n.getGridLayout(), StudyLayoutMapper::toGridLayoutDto))
-                    .build();
-            case NadFromElementDiagramLayoutEntity nad -> NadFromElementDiagramLayout.builder()
-                    .diagramUuid(nad.getDiagramUuid())
-                    .elementName(nad.getElementName())
-                    .elementType(nad.getElementType())
-                    .elementUuid(nad.getElementUuid())
-                    .gridLayout(convertGridLayoutMap(nad.getGridLayout(), StudyLayoutMapper::toGridLayoutDto))
                     .build();
             case null -> null;
             default -> throw new IllegalArgumentException("Unknown diagram layout entity type: " + entity.getClass());

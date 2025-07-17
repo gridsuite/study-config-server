@@ -1,42 +1,34 @@
-/*
-  Copyright (c) 2024, RTE (http://www.rte-france.com)
-  This Source Code Form is subject to the terms of the Mozilla Public
-  License, v. 2.0. If a copy of the MPL was not distributed with this
-  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 package org.gridsuite.studyconfig.server.configuration;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.NadFromElementDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.NetworkAreaDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.SubstationDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.VoltageLevelDiagramLayout;
-import org.springframework.context.annotation.Bean;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayoutJsonMapper;
 import org.springframework.context.annotation.Configuration;
+
+import jakarta.annotation.PostConstruct;
 
 /**
  * Jackson configuration for diagram layout polymorphic serialization.
  * This external configuration avoids circular dependencies between the abstract base class
- * and its subtypes by registering the type mappings outside the class hierarchy.
+ * and its subtypes by using a mixin approach with type mappings.
  */
 @Configuration
 public class DiagramLayoutJacksonConfiguration {
 
-    @Bean
-    public Module diagramLayoutTypeModule() {
-        SimpleModule module = new SimpleModule("DiagramLayoutTypeModule");
+    private final ObjectMapper objectMapper;
 
-        // Register subtypes for polymorphic serialization/deserialization
-        // This approach avoids circular dependencies that would occur with @JsonSubTypes
-        module.registerSubtypes(
-            new NamedType(SubstationDiagramLayout.class, "substation"),
-            new NamedType(VoltageLevelDiagramLayout.class, "voltage-level"),
-            new NamedType(NetworkAreaDiagramLayout.class, "network-area-diagram"),
-            new NamedType(NadFromElementDiagramLayout.class, "nad-from-element")
-        );
+    public DiagramLayoutJacksonConfiguration(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
-        return module;
+    @PostConstruct
+    public void configureDiagramLayoutMixIn() {
+        objectMapper.addMixIn(AbstractDiagramLayout.class, AbstractDiagramLayoutJsonMapper.class);
     }
 }

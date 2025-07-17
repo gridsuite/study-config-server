@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-6">
+    <changeSet author="labidiayo (generated)" id="1752789358314-6">
         <createTable tableName="abstract_diagram_layout_entity">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="abstract_diagram_layout_entityPK"/>
@@ -9,7 +9,7 @@
             <column name="study_layout_id" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-7">
+    <changeSet author="labidiayo (generated)" id="1752789358314-7">
         <createTable tableName="abstract_diagram_layout_entity_grid_layout">
             <column name="abstract_diagram_layout_entity_id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="abstract_diagram_layout_entity_grid_layoutPK"/>
@@ -23,25 +23,17 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-8">
-        <createTable tableName="nad_from_element_diagram_layout_entity">
-            <column name="element_name" type="VARCHAR(255)"/>
-            <column name="element_type" type="VARCHAR(255)"/>
-            <column name="element_uuid" type="UUID"/>
-            <column name="id" type="UUID">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_from_element_diagram_layout_entityPK"/>
-            </column>
-        </createTable>
-    </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-9">
+    <changeSet author="labidiayo (generated)" id="1752789358314-8">
         <createTable tableName="network_area_diagram_layout_entity">
             <column name="depth" type="INT"/>
+            <column name="filter_uuid" type="UUID"/>
+            <column name="nad_config_uuid" type="UUID"/>
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="network_area_diagram_layout_entityPK"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-10">
+    <changeSet author="labidiayo (generated)" id="1752789358314-9">
         <createTable tableName="network_area_diagram_voltage_level_ids">
             <column name="network_area_diagram_layout_id" type="UUID">
                 <constraints nullable="false"/>
@@ -49,14 +41,30 @@
             <column name="voltage_level_ids" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-11">
+    <changeSet author="labidiayo (generated)" id="1752789358314-10">
+        <createTable tableName="network_area_diagram_voltage_level_to_expand_ids">
+            <column name="network_area_diagram_layout_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voltage_level_to_expand_ids" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1752789358314-11">
+        <createTable tableName="network_area_diagram_voltage_level_to_omit_ids">
+            <column name="network_area_diagram_layout_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voltage_level_to_omit_ids" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1752789358314-12">
         <createTable tableName="study_layout_entity">
             <column name="uuid" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="study_layout_entityPK"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-12">
+    <changeSet author="labidiayo (generated)" id="1752789358314-13">
         <createTable tableName="substation_diagram_layout_entity">
             <column name="substation_id" type="VARCHAR(255)"/>
             <column name="id" type="UUID">
@@ -64,7 +72,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-13">
+    <changeSet author="labidiayo (generated)" id="1752789358314-14">
         <createTable tableName="voltage_level_layout_entity">
             <column name="voltage_level_id" type="VARCHAR(255)"/>
             <column name="id" type="UUID">
@@ -72,25 +80,28 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-14">
+    <changeSet author="labidiayo (generated)" id="1752789358314-15">
         <addForeignKeyConstraint baseColumnNames="study_layout_id" baseTableName="abstract_diagram_layout_entity" constraintName="fk_diagram_layout_study_layout" deferrable="false" initiallyDeferred="false" referencedColumnNames="uuid" referencedTableName="study_layout_entity" validate="true"/>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-15">
+    <changeSet author="labidiayo (generated)" id="1752789358314-16">
         <addForeignKeyConstraint baseColumnNames="abstract_diagram_layout_entity_id" baseTableName="abstract_diagram_layout_entity_grid_layout" constraintName="fk_grid_layout_abstract_diagram" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-16">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="nad_from_element_diagram_layout_entity" constraintName="fk_nad_from_element_diagram_layout_abstract" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
-    </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-17">
+    <changeSet author="labidiayo (generated)" id="1752789358314-17">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="network_area_diagram_layout_entity" constraintName="fk_network_area_diagram_layout_abstract" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-18">
+    <changeSet author="labidiayo (generated)" id="1752789358314-18">
         <addForeignKeyConstraint baseColumnNames="network_area_diagram_layout_id" baseTableName="network_area_diagram_voltage_level_ids" constraintName="fk_network_area_diagram_voltage_level_ids" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="network_area_diagram_layout_entity" validate="true"/>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-19">
+    <changeSet author="labidiayo (generated)" id="1752789358314-19">
+        <addForeignKeyConstraint baseColumnNames="network_area_diagram_layout_id" baseTableName="network_area_diagram_voltage_level_to_expand_ids" constraintName="fk_network_area_diagram_voltage_level_to_expand_ids" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="network_area_diagram_layout_entity" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1752789358314-20">
+        <addForeignKeyConstraint baseColumnNames="network_area_diagram_layout_id" baseTableName="network_area_diagram_voltage_level_to_omit_ids" constraintName="fk_network_area_diagram_voltage_level_to_omit_ids" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="network_area_diagram_layout_entity" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1752789358314-21">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="substation_diagram_layout_entity" constraintName="fk_substation_diagram_layout_abstract" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
     </changeSet>
-    <changeSet author="lesaulnierkev (generated)" id="1752653524166-20">
+    <changeSet author="labidiayo (generated)" id="1752789358314-22">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="voltage_level_layout_entity" constraintName="fk_voltage_level_layout_abstract" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
     </changeSet>
 </databaseChangeLog>

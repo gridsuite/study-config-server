@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -98,6 +104,8 @@ class StudyLayoutControllerTest {
 
         UUID diagramUuid = UUID.randomUUID();
         List<String> voltageLevelIds = List.of("vl1", "vl2", "vl3");
+        List<String> voltageLevelToExpandIds = List.of("vl1");
+        List<String> voltageLevelToOmitIds = List.of("vl2");
         Integer depth = 5;
 
         updatedStudyLayout.getDiagramLayoutParams().add(NetworkAreaDiagramLayout.builder()
@@ -112,6 +120,10 @@ class StudyLayoutControllerTest {
                     .build()
             ))
             .voltageLevelIds(voltageLevelIds)
+            .voltageLevelToExpandIds(voltageLevelToExpandIds)
+            .voltageLevelToOmitIds(voltageLevelToOmitIds)
+            .filterUuid(UUID.randomUUID())
+            .nadConfigUuid(UUID.randomUUID())
             .depth(depth)
             .build());
 
