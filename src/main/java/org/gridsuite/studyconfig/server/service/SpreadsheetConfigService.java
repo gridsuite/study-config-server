@@ -372,6 +372,22 @@ public class SpreadsheetConfigService {
     }
 
     @Transactional
+    public void duplicateColumn(UUID id, UUID columnId) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        ColumnEntity columnEntity = entity.getColumns().stream().filter(col -> col.getUuid().equals(columnId))
+                .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
+        ColumnEntity columnCopy = columnEntity.toBuilder().build();
+        columnCopy.setUuid(UUID.randomUUID());
+        columnCopy.setId(columnCopy.getId() + "copy");
+        columnCopy.setName(columnCopy.getName() + "-copy");
+
+        List<ColumnEntity> columns = entity.getColumns();
+        columns.add(columns.indexOf(columnEntity) + 1, columnCopy);
+        entity.setColumns(columns);
+        spreadsheetConfigRepository.save(entity);
+    }
+
+    @Transactional
     public void updateColumnStates(UUID id, List<ColumnStateUpdateInfos> columnStates) {
         SpreadsheetConfigEntity entity = findEntityById(id);
         List<ColumnEntity> columns = entity.getColumns();
