@@ -311,6 +311,34 @@ class SpreadsheetConfigIntegrationTest {
     }
 
     @Test
+    void testDuplicateColumn() throws Exception {
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
+        UUID configId = saveAndReturnId(config);
+
+        SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
+        UUID columnId = savedConfig.columns().get(0).uuid();
+        assertThat(savedConfig.columns()).hasSize(4);
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId + "/duplicate"))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigInfos configAfterDuplicate = getSpreadsheetConfig(configId);
+        assertThat(configAfterDuplicate.columns()).hasSize(5);
+        ColumnInfos columnInfos = configAfterDuplicate.columns().get(0);
+        ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
+
+        assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
+        assertThat(columnInfos.id()).isNotEqualTo(duplicatedColumnInfos.id());
+        assertThat(columnInfos.visible()).isEqualTo(duplicatedColumnInfos.visible());
+        assertThat(columnInfos.formula()).isEqualTo(duplicatedColumnInfos.formula());
+        assertThat(columnInfos.dependencies()).isEqualTo(duplicatedColumnInfos.dependencies());
+        assertThat(columnInfos.precision()).isEqualTo(duplicatedColumnInfos.precision());
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetColumn() throws Exception {
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
         UUID configId = saveAndReturnId(config);
