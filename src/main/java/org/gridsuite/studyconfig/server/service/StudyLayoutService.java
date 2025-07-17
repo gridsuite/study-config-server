@@ -2,9 +2,9 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutRepository;
+import org.gridsuite.studyconfig.server.mapper.StudyLayoutMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +18,13 @@ public class StudyLayoutService {
         this.studyLayoutRepository = studyLayoutRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public StudyLayout getByStudyLayoutUuid(UUID studyLayoutUuid) {
-        return studyLayoutRepository
-            .findById(studyLayoutUuid)
-            .orElseThrow(() -> new EntityNotFoundException("Study layout not found with id: " + studyLayoutUuid))
-            .toDto();
+        StudyLayoutEntity entity = studyLayoutRepository
+                .findById(studyLayoutUuid)
+                .orElseThrow(() -> new EntityNotFoundException("Study layout not found with id: " + studyLayoutUuid));
+
+        return StudyLayoutMapper.toDto(entity);
     }
 
     @Transactional
@@ -33,7 +34,7 @@ public class StudyLayoutService {
 
     @Transactional
     public UUID saveStudyLayout(StudyLayout studyLayout) {
-        StudyLayoutEntity studyLayoutEntity = studyLayoutRepository.save(studyLayout.toEntity());
+        StudyLayoutEntity studyLayoutEntity = studyLayoutRepository.save(StudyLayoutMapper.toEntity(studyLayout));
 
         return studyLayoutEntity.getUuid();
     }
@@ -42,7 +43,9 @@ public class StudyLayoutService {
     public void updateStudyLayout(UUID studyLayoutUuid, StudyLayout studyLayout) {
         StudyLayoutEntity studyLayoutEntity = studyLayoutRepository.findById(studyLayoutUuid).orElseThrow(() -> new EntityNotFoundException("Study layout not found with id: " + studyLayoutUuid));
 
-        studyLayoutEntity.replaceAllDiagramLayouts(studyLayout.getDiagramLayoutParams().stream().map(AbstractDiagramLayout::toEntity).toList());
+        studyLayoutEntity.replaceAllDiagramLayouts(studyLayout.getDiagramLayoutParams().stream()
+                .map(StudyLayoutMapper::toDiagramLayoutEntity)
+                .toList());
 
         studyLayoutRepository.save(studyLayoutEntity);
     }

@@ -2,7 +2,6 @@ package org.gridsuite.studyconfig.server.entities.studylayout;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.gridsuite.studyconfig.server.dto.studylayout.StudyLayout;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +20,6 @@ public class StudyLayoutEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "study_layout_id", foreignKey = @ForeignKey(name = "fk_diagram_layout_study_layout"))
     List<AbstractDiagramLayoutEntity> diagramGridLayoutEntityList;
-
-    public StudyLayout toDto() {
-        return StudyLayout.builder()
-            .diagramLayoutParams(diagramGridLayoutEntityList.stream().map(AbstractDiagramLayoutEntity::toDto).toList())
-            .build();
-    }
 
     public void replaceAllDiagramLayouts(List<AbstractDiagramLayoutEntity> diagramGridLayoutEntityList) {
         this.diagramGridLayoutEntityList.clear();

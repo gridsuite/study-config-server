@@ -8,6 +8,7 @@ import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.Substation
 import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.VoltageLevelDiagramLayout;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.studylayout.StudyLayoutRepository;
+import org.gridsuite.studyconfig.server.mapper.StudyLayoutMapper;
 import org.gridsuite.studyconfig.server.service.StudyLayoutService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +42,18 @@ class StudyLayoutControllerTest {
 
     @Test
     void testGetStudyLayout() throws Exception {
-        StudyLayoutEntity expectedResult = studyLayoutRepository.save(createStudyLayout().toEntity());
+        StudyLayoutEntity expectedResult = studyLayoutRepository.save(StudyLayoutMapper.toEntity(createStudyLayout()));
         MvcResult mockMvcResult = mockMvc.perform(get("/v1/study-layout/{studyLayoutUuid}", expectedResult.getUuid()))
             .andExpect(status().isOk())
             .andReturn();
 
         StudyLayout result = objectMapper.readValue(mockMvcResult.getResponse().getContentAsString(), StudyLayout.class);
-
-        assertThat(result).usingRecursiveComparison().isEqualTo(expectedResult.toDto());
+        assertThat(result).usingRecursiveComparison().isEqualTo(StudyLayoutMapper.toDto(expectedResult));
     }
 
     @Test
     void testDeleteStudyLayout() throws Exception {
-        StudyLayoutEntity expectedResult = studyLayoutRepository.save(createStudyLayout().toEntity());
+        StudyLayoutEntity expectedResult = studyLayoutRepository.save(StudyLayoutMapper.toEntity(createStudyLayout()));
         mockMvc.perform(delete("/v1/study-layout/{studyLayoutUuid}", expectedResult.getUuid()))
             .andExpect(status().isOk());
 
@@ -78,7 +78,7 @@ class StudyLayoutControllerTest {
 
     @Test
     void testUpdateStudyLayout() throws Exception {
-        StudyLayoutEntity existingStudyLayout = studyLayoutRepository.save(createStudyLayout().toEntity());
+        StudyLayoutEntity existingStudyLayout = studyLayoutRepository.save(StudyLayoutMapper.toEntity(createStudyLayout()));
 
         UUID newDiagramLayoutUuid = UUID.randomUUID();
         StudyLayout updatedStudyLayout = createStudyLayout();
