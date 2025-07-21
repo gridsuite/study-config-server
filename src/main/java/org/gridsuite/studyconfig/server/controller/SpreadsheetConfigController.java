@@ -166,6 +166,17 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{id}/columns/{columnId}/duplicate")
+    @Operation(summary = "Duplicate a column", description = "Duplicate a column and place it after the source column")
+    @ApiResponse(responseCode = "204", description = "Column duplicated")
+    @ApiResponse(responseCode = "404", description = "Column not found")
+    public ResponseEntity<Void> duplicateColumn(
+            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @Parameter(description = "ID of the column to duplicate") @PathVariable UUID columnId) {
+        spreadsheetConfigService.duplicateColumn(id, columnId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}/columns/reorder")
     @Operation(summary = "Reorder columns", description = "Reorders the columns of a spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Columns reordered")
