@@ -4,20 +4,24 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.entities.studylayout;
+package org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+import java.util.UUID;
+
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-@Entity
+@Setter
 @Getter
-@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "fk_substation_diagram_layout_abstract"))
-public class SubstationDiagramLayoutEntity extends AbstractDiagramLayoutEntity {
-    String substationId;
+public abstract class AbstractDiagramLayout {
+    UUID diagramUuid;
+
+    Map<String, DiagramPosition> diagramPositions;
 }

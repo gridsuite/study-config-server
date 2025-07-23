@@ -4,19 +4,22 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout;
+package org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
+@Embeddable
 @Getter
-public class SubstationDiagramLayout extends AbstractDiagramLayout {
-    String substationId;
+public class DiagramPositionEntity {
+    Integer width;
+    Integer height;
+    Integer xPosition;
+    Integer yPosition;
 }

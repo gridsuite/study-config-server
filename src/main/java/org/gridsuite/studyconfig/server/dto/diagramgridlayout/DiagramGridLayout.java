@@ -4,18 +4,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout;
+package org.gridsuite.studyconfig.server.dto.diagramgridlayout;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
+import java.util.List;
+
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayout;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
 public class DiagramGridLayout {
-    Integer w;
-    Integer h;
-    Integer x;
-    Integer y;
+    List<AbstractDiagramLayout> diagramLayouts;
 }

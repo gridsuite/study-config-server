@@ -7,8 +7,9 @@
 package org.gridsuite.studyconfig.server.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.studylayout.diagramlayout.AbstractDiagramLayoutJsonMapper;
+
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayoutJsonMapper;
 import org.springframework.context.annotation.Configuration;
 
 import jakarta.annotation.PostConstruct;
