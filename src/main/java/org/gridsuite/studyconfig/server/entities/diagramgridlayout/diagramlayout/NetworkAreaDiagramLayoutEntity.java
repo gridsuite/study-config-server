@@ -21,6 +21,9 @@ import java.util.UUID;
 @Getter
 @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "fk_network_area_diagram_layout_abstract"))
 public class NetworkAreaDiagramLayoutEntity extends AbstractDiagramLayoutEntity {
+    // Maximum length for the name field
+    private static final int MAX_NAME_LENGTH = 255;
+
     @Column(name = "original_nad_config_uuid")
     UUID originalNadConfigUuid;
 
@@ -32,4 +35,17 @@ public class NetworkAreaDiagramLayoutEntity extends AbstractDiagramLayoutEntity 
 
     @Column(name = "name")
     String name;
+
+    /**
+     * Ensures that the name does not exceed the maximum length.
+     * This method is called before persisting or updating the entity.
+     */
+    @PrePersist
+    @PreUpdate
+    private void truncateName() {
+        if (name != null && name.length() > MAX_NAME_LENGTH) {
+            name = name.substring(0, MAX_NAME_LENGTH);
+        }
+    }
+
 }
