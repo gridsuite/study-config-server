@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.UUID;
 
 /**
@@ -58,6 +59,9 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "component_library")
     private String componentLibrary = "";
 
-    @Column(name = "init_nad_with_geo_data")
-    private Boolean initNadWithGeoData = true;
+    @Column(name = "nad_generation_mode")
+    private String nadGenerationMode = "GEOGRAPHICAL_COORDINATES";
+
+    @Column(name = "nad_config_uuid")
+    private UUID nadConfigUuid;
 }

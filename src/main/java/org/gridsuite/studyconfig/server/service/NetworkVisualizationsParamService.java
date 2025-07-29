@@ -54,7 +54,8 @@ public class NetworkVisualizationsParamService {
                 .substationLayout(entity.getSubstationLayout())
                 .componentLibrary(entity.getComponentLibrary())
                 // NAD
-                .initNadWithGeoData(entity.getInitNadWithGeoData())
+                .nadGenerationMode(entity.getNadGenerationMode())
+                .nadConfigUuid(entity.getNadConfigUuid())
                 .build();
         return repository.save(duplicate).getId();
     }

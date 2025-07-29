@@ -7,13 +7,15 @@
 package org.gridsuite.studyconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.UUID;
 
 /**
  * @author David BRAQUART <david.braquart at rte-france.com>
  */
 @Schema(name = "NetworkAreaDiagramParamDto", description = "Network area diagram parameters")
 public record NetworkAreaDiagramParamInfos(
-
-    @Schema(description = "Initialize with geographical data")
-    Boolean initNadWithGeoData
+    @Schema(description = "The nad generation mode")
+    String nadGenerationMode,
+    @Schema(description = "The nad configuration uuid")
+    UUID nadConfigUuid
 ) { }

@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NetworkVisualizationParamsIntegrationTest {
 
     private static final String URI_NETWORK_VISUALIZATION_PARAM_BASE = "/v1/network-visualizations-params";
+    private static final String GEOGRAPHICAL_COORDINATES = "GEOGRAPHICAL_COORDINATES";
 
     @Autowired
     private MockMvc mockMvc;
@@ -156,14 +157,14 @@ class NetworkVisualizationParamsIntegrationTest {
         return new NetworkVisualizationParamInfos(null,
                 new MapParamInfos(true, false, "flow", true, "base"),
                 new SingleLineDiagramParamInfos(false, false, "layout", "lib"),
-                new NetworkAreaDiagramParamInfos(true));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES, null));
     }
 
     private NetworkVisualizationParamInfos createDtoForUpdate(UUID id) {
         return new NetworkVisualizationParamInfos(id,
                 new MapParamInfos(false, true, "flow2", false, "base2"),
                 new SingleLineDiagramParamInfos(true, true, "layout2", "lib2"),
-                new NetworkAreaDiagramParamInfos(false));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES, null));
     }
 
     private UUID saveAndReturnId(NetworkVisualizationParamInfos dto) {
