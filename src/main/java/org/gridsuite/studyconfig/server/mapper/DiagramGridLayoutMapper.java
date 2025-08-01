@@ -18,12 +18,14 @@ import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.Diag
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.SubstationDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.VoltageLevelDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.AbstractDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.DiagramPositionEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.SubstationDiagramLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.VoltageLevelLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.MapLayoutEntity;
 
 public final class DiagramGridLayoutMapper {
 
@@ -66,6 +68,10 @@ public final class DiagramGridLayoutMapper {
                     .name(v.getName())
                     .diagramPositions(convertDiagramPositionsMap(v.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionEntity))
                     .build();
+            case MapLayout m -> MapLayoutEntity.builder()
+                    .diagramUuid(m.getDiagramUuid())
+                    .diagramPositions(convertDiagramPositionsMap(m.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionEntity))
+                    .build();
             case null -> null;
             default -> throw new IllegalArgumentException("Unknown diagram layout DTO type: " + dto.getClass());
         };
@@ -90,6 +96,10 @@ public final class DiagramGridLayoutMapper {
                     .filterUuid(n.getFilterUuid())
                     .name(n.getName())
                     .diagramPositions(convertDiagramPositionsMap(n.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionDto))
+                    .build();
+            case MapLayoutEntity m -> MapLayout.builder()
+                    .diagramUuid(m.getDiagramUuid())
+                    .diagramPositions(convertDiagramPositionsMap(m.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionDto))
                     .build();
             case null -> null;
             default -> throw new IllegalArgumentException("Unknown diagram layout entity type: " + entity.getClass());
