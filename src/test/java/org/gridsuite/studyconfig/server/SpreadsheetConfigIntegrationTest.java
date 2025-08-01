@@ -547,7 +547,7 @@ class SpreadsheetConfigIntegrationTest {
         // Initial config should have filters set
         SpreadsheetConfigInfos initialConfig = getSpreadsheetConfig(configId);
         assertThat(initialConfig.globalFilters()).hasSize(2);
-        assertThat(initialConfig.columns().get(0)).hasFieldOrPropertyWithValue("filterValue", "test-value");
+        assertThat(initialConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", "test-value");
 
         // Call the endpoint to reset the filters
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/filters")
@@ -556,8 +556,8 @@ class SpreadsheetConfigIntegrationTest {
 
         // Verify the filters (global or column based) were reset
         SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
-        assertThat(updatedConfig.globalFilters()).hasSize(0);
-        assertThat(updatedConfig.columns().get(0)).hasFieldOrPropertyWithValue("filterValue", null);
+        assertThat(updatedConfig.globalFilters()).isEmpty();
+        assertThat(updatedConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", null);
     }
 
     @Test
