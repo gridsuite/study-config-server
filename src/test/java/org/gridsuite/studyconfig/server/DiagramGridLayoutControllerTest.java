@@ -13,6 +13,7 @@ import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.Diag
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.SubstationDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.VoltageLevelDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutRepository;
 import org.gridsuite.studyconfig.server.mapper.DiagramGridLayoutMapper;
@@ -84,6 +85,22 @@ class DiagramGridLayoutControllerTest {
     }
 
     @Test
+    void testSaveMapGridLayout() throws Exception {
+        DiagramGridLayout mapLayoutToSave = createMapGridLayout();
+
+        MvcResult mockMvcResult = mockMvc.perform(post("/v1/diagram-grid-layout")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mapLayoutToSave)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UUID mapGridLayoutUUID = objectMapper.readValue(mockMvcResult.getResponse().getContentAsString(), UUID.class);
+
+        DiagramGridLayout diagramGridLayoutToCheck = diagramGridLayoutService.getByDiagramGridLayoutUuid(mapGridLayoutUUID);
+        assertThat(diagramGridLayoutToCheck).usingRecursiveComparison().isEqualTo(mapLayoutToSave);
+    }
+
+    @Test
     void testUpdateDiagramGridLayout() throws Exception {
         DiagramGridLayoutEntity existingDiagramGridLayout = diagramGridLayoutRepository.save(DiagramGridLayoutMapper.toEntity(createDiagramGridLayout()));
 
@@ -146,6 +163,23 @@ class DiagramGridLayoutControllerTest {
                     ))
 
                     .diagramUuid(diagramLayoutUuid)
+                    .build())))
+            .build();
+    }
+
+    private DiagramGridLayout createMapGridLayout() {
+        return DiagramGridLayout.builder()
+            .diagramLayouts(new ArrayList<>(List.of(
+                MapLayout.builder()
+                    .diagramPositions(Map.of(
+                        "lg",
+                        DiagramPosition.builder().w(1)
+                            .h(2)
+                            .x(3)
+                            .y(4)
+                            .build()
+                    ))
+                    .diagramUuid(UUID.randomUUID())
                     .build())))
             .build();
     }
