@@ -8,6 +8,7 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
@@ -371,6 +372,35 @@ public class SpreadsheetConfigService {
         columns.sort(Comparator.comparingInt(column -> columnOrder.indexOf(column.getUuid())));
     }
 
+    private String newCandidate(String base, int n) {
+        return base + '(' + n + ')';
+    }
+
+    private Pair<String, String> getDuplicateIdAndNameCandidate(SpreadsheetConfigEntity entity, String columnId, String columnName) {
+        String newColumnId = columnId;
+        String newColumnName = columnName;
+
+        var existingColumnIds = entity.getColumns().stream().map(ColumnEntity::getId).collect(Collectors.toSet());
+        var existingColumnNames = entity.getColumns().stream().map(ColumnEntity::getName).collect(Collectors.toSet());
+
+        if (existingColumnIds.contains(columnId)) {
+            int i = 1;
+            while (existingColumnIds.contains(newCandidate(columnId, i))) {
+                ++i;
+            }
+            newColumnId = newCandidate(columnId, i);
+        }
+        if (existingColumnNames.contains(columnName)) {
+            int i = 1;
+            while (existingColumnNames.contains(newCandidate(columnName, i))) {
+                ++i;
+            }
+            newColumnName = newCandidate(columnName, i);
+        }
+
+        return Pair.of(newColumnId, newColumnName);
+    }
+
     @Transactional
     public void duplicateColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
@@ -378,9 +408,9 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(UUID.randomUUID());
-        columnCopy.setId(columnCopy.getId() + "copy");
-        columnCopy.setName(columnCopy.getName() + "-copy");
-
+        Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
+        columnCopy.setId(idAndName.getLeft());
+        columnCopy.setName(idAndName.getRight());
         List<ColumnEntity> columns = entity.getColumns();
         columns.add(columns.indexOf(columnEntity) + 1, columnCopy);
         entity.setColumns(columns);
