@@ -103,7 +103,7 @@ public class NetworkVisualizationsParamController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/positions-config-uuid")
+    @PutMapping("/{id}/positions-config-uuid")
     @Operation(summary = "Update the positions configuration uuid",
             description = "Updates existing network visualizations parameter")
     @ApiResponse(responseCode = "204", description = "the positions configuration uuid parameter updated")
