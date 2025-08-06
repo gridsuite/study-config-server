@@ -133,6 +133,44 @@ class NetworkVisualizationParamsIntegrationTest {
         assertThat(networkVisualizationParamRepository.existsById(duplicatedParams.id())).isTrue();
     }
 
+    @Test
+    void testUpdatePositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        UUID paramsUuid = saveAndReturnId(paramsToUpdate);
+        UUID updatedPositionsConfigUuid = UUID.randomUUID();
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+                        .content("\"" + updatedPositionsConfigUuid + "\"")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        NetworkVisualizationParamInfos retrievedParams = getParams(paramsUuid);
+        assertThat(retrievedParams.networkAreaDiagramParameters().positionsConfigUuid())
+                .isEqualTo(updatedPositionsConfigUuid);
+    }
+
+    @Test
+    void testUpdateWithInvalidPositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        UUID paramsUuid = saveAndReturnId(paramsToUpdate);
+        String invalidUuid = "\"not-a-valid-uuid\"";
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+                        .content(invalidUuid)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateNotFoundPositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        saveAndReturnId(paramsToUpdate);
+        UUID nonExistentId = UUID.randomUUID();
+        UUID updatedPositionsConfigUuid = UUID.randomUUID();
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + nonExistentId + "/positions-config-uuid")
+                        .content("\"" + updatedPositionsConfigUuid + "\"")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     private NetworkVisualizationParamInfos getParams(UUID paramsUuid) throws Exception {
         MvcResult mvcGetResult = mockMvc.perform(get(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid))
                 .andExpect(status().isOk())
