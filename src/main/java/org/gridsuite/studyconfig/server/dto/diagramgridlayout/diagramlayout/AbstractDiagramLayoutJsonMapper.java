@@ -19,7 +19,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = SubstationDiagramLayout.class, name = "substation"),
     @JsonSubTypes.Type(value = VoltageLevelDiagramLayout.class, name = "voltage-level"),
-    @JsonSubTypes.Type(value = NetworkAreaDiagramLayout.class, name = "network-area-diagram")
+    @JsonSubTypes.Type(value = NetworkAreaDiagramLayout.class, name = "network-area-diagram"),
+    @JsonSubTypes.Type(value = MapLayout.class, name = "map")
+
 })
 public interface AbstractDiagramLayoutJsonMapper {
 }
