@@ -54,8 +54,8 @@ public class NetworkVisualizationsParamService {
                 .substationLayout(entity.getSubstationLayout())
                 .componentLibrary(entity.getComponentLibrary())
                 // NAD
-                .nadGenerationMode(entity.getNadGenerationMode())
-                .nadConfigUuid(entity.getNadConfigUuid())
+                .nadPositionsGenerationMode(entity.getNadPositionsGenerationMode())
+                .positionsConfigUuid(entity.getPositionsConfigUuid())
                 .build();
         return repository.save(duplicate).getId();
     }
@@ -69,6 +69,12 @@ public class NetworkVisualizationsParamService {
     public void updateParameters(UUID id, NetworkVisualizationParamInfos dto) {
         NetworkVisualizationParamEntity entity = findEntityById(id);
         NetworkVisualizationParamMapper.updateEntity(entity, dto);
+    }
+
+    @Transactional
+    public void updatePositionsConfigUuid(UUID id, UUID positionsConfigUuid) {
+        NetworkVisualizationParamEntity entity = findEntityById(id);
+        NetworkVisualizationParamMapper.updateEntity(entity, positionsConfigUuid);
     }
 
     @Transactional

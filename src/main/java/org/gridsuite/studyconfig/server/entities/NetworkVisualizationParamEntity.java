@@ -59,9 +59,9 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "component_library")
     private String componentLibrary = "";
 
-    @Column(name = "nad_generation_mode")
-    private String nadGenerationMode = "GEOGRAPHICAL_COORDINATES";
+    @Column(name = "nad_positions_generation_mode")
+    private String nadPositionsGenerationMode = "GEOGRAPHICAL_COORDINATES";
 
-    @Column(name = "nad_config_uuid")
-    private UUID nadConfigUuid;
+    @Column(name = "positions_config_uuid")
+    private UUID positionsConfigUuid;
 }
