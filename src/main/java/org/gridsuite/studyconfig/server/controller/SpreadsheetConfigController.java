@@ -213,4 +213,15 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}/columns/filters")
+    @Operation(summary = "Reset global and column filters",
+            description = "Reset all columns filters in a spreadsheet configuration as well as the global filter")
+    @ApiResponse(responseCode = "204", description = "Filters reset successfully")
+    @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
+    public ResponseEntity<Void> resetFilters(
+            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id) {
+        spreadsheetConfigService.resetSpreadsheetConfigFilters(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
