@@ -373,30 +373,34 @@ public class SpreadsheetConfigService {
     }
 
     private String newCandidate(String base, int n) {
-        return base + '(' + n + ')';
+        return base + '_' + n;
+    }
+
+    /**
+     * Generates a unique value by appending a numeric suffix if the original value already exists.
+     *
+     * @param originalValue  the original value to make unique
+     * @param existingValues set of existing values to avoid conflicts with
+     * @return a unique value, either the original or with a numeric suffix
+     */
+    private String getUniqueValue(String originalValue, Set<String> existingValues) {
+        if (!existingValues.contains(originalValue)) {
+            return originalValue;
+        }
+
+        int i = 1;
+        while (existingValues.contains(newCandidate(originalValue, i))) {
+            ++i;
+        }
+        return newCandidate(originalValue, i);
     }
 
     private Pair<String, String> getDuplicateIdAndNameCandidate(SpreadsheetConfigEntity entity, String columnId, String columnName) {
-        String newColumnId = columnId;
-        String newColumnName = columnName;
-
         var existingColumnIds = entity.getColumns().stream().map(ColumnEntity::getId).collect(Collectors.toSet());
         var existingColumnNames = entity.getColumns().stream().map(ColumnEntity::getName).collect(Collectors.toSet());
+        String newColumnId = getUniqueValue(columnId, existingColumnIds);
+        String newColumnName = getUniqueValue(columnName, existingColumnNames);
 
-        if (existingColumnIds.contains(columnId)) {
-            int i = 1;
-            while (existingColumnIds.contains(newCandidate(columnId, i))) {
-                ++i;
-            }
-            newColumnId = newCandidate(columnId, i);
-        }
-        if (existingColumnNames.contains(columnName)) {
-            int i = 1;
-            while (existingColumnNames.contains(newCandidate(columnName, i))) {
-                ++i;
-            }
-            newColumnName = newCandidate(columnName, i);
-        }
 
         return Pair.of(newColumnId, newColumnName);
     }

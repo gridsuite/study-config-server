@@ -329,8 +329,8 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
 
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.id() + "(1)", duplicatedColumnInfos.id());
-        assertEquals(columnInfos.name() + "(1)", duplicatedColumnInfos.name());
+        assertEquals(columnInfos.id() + "_1", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.name() + "_1", duplicatedColumnInfos.name());
         assertThat(columnInfos.visible()).isEqualTo(duplicatedColumnInfos.visible());
         assertThat(columnInfos.formula()).isEqualTo(duplicatedColumnInfos.formula());
         assertThat(columnInfos.dependencies()).isEqualTo(duplicatedColumnInfos.dependencies());
@@ -342,8 +342,8 @@ class SpreadsheetConfigIntegrationTest {
         assertThat(configAfterDuplicate.columns()).hasSize(6);
         duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.id() + "(2)", duplicatedColumnInfos.id());
-        assertEquals(columnInfos.name() + "(2)", duplicatedColumnInfos.name());
+        assertEquals(columnInfos.id() + "_2", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.name() + "_2", duplicatedColumnInfos.name());
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
                 .andExpect(status().isNotFound());
