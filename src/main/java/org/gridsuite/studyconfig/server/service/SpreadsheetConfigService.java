@@ -401,7 +401,6 @@ public class SpreadsheetConfigService {
         String newColumnId = getUniqueValue(columnId, existingColumnIds);
         String newColumnName = getUniqueValue(columnName, existingColumnNames);
 
-
         return Pair.of(newColumnId, newColumnName);
     }
 
