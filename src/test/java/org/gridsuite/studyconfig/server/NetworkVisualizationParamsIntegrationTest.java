@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NetworkVisualizationParamsIntegrationTest {
 
     private static final String URI_NETWORK_VISUALIZATION_PARAM_BASE = "/v1/network-visualizations-params";
+    private static final String GEOGRAPHICAL_COORDINATES = "GEOGRAPHICAL_COORDINATES";
 
     @Autowired
     private MockMvc mockMvc;
@@ -132,6 +133,44 @@ class NetworkVisualizationParamsIntegrationTest {
         assertThat(networkVisualizationParamRepository.existsById(duplicatedParams.id())).isTrue();
     }
 
+    @Test
+    void testUpdatePositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        UUID paramsUuid = saveAndReturnId(paramsToUpdate);
+        UUID updatedPositionsConfigUuid = UUID.randomUUID();
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+                        .content("\"" + updatedPositionsConfigUuid + "\"")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        NetworkVisualizationParamInfos retrievedParams = getParams(paramsUuid);
+        assertThat(retrievedParams.networkAreaDiagramParameters().positionsConfigUuid())
+                .isEqualTo(updatedPositionsConfigUuid);
+    }
+
+    @Test
+    void testUpdateWithInvalidPositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        UUID paramsUuid = saveAndReturnId(paramsToUpdate);
+        String invalidUuid = "\"not-a-valid-uuid\"";
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+                        .content(invalidUuid)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateNotFoundPositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        saveAndReturnId(paramsToUpdate);
+        UUID nonExistentId = UUID.randomUUID();
+        UUID updatedPositionsConfigUuid = UUID.randomUUID();
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + nonExistentId + "/positions-config-uuid")
+                        .content("\"" + updatedPositionsConfigUuid + "\"")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     private NetworkVisualizationParamInfos getParams(UUID paramsUuid) throws Exception {
         MvcResult mvcGetResult = mockMvc.perform(get(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid))
                 .andExpect(status().isOk())
@@ -156,14 +195,14 @@ class NetworkVisualizationParamsIntegrationTest {
         return new NetworkVisualizationParamInfos(null,
                 new MapParamInfos(true, false, "flow", true, "base"),
                 new SingleLineDiagramParamInfos(false, false, "layout", "lib"),
-                new NetworkAreaDiagramParamInfos(true));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES, null));
     }
 
     private NetworkVisualizationParamInfos createDtoForUpdate(UUID id) {
         return new NetworkVisualizationParamInfos(id,
                 new MapParamInfos(false, true, "flow2", false, "base2"),
                 new SingleLineDiagramParamInfos(true, true, "layout2", "lib2"),
-                new NetworkAreaDiagramParamInfos(false));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES, null));
     }
 
     private UUID saveAndReturnId(NetworkVisualizationParamInfos dto) {
