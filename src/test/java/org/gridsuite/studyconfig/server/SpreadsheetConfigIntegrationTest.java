@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -328,11 +329,21 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
 
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertThat(columnInfos.id()).isNotEqualTo(duplicatedColumnInfos.id());
+        assertEquals(columnInfos.id() + "_1", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.name() + "_1", duplicatedColumnInfos.name());
         assertThat(columnInfos.visible()).isEqualTo(duplicatedColumnInfos.visible());
         assertThat(columnInfos.formula()).isEqualTo(duplicatedColumnInfos.formula());
         assertThat(columnInfos.dependencies()).isEqualTo(duplicatedColumnInfos.dependencies());
         assertThat(columnInfos.precision()).isEqualTo(duplicatedColumnInfos.precision());
+
+        mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId + "/duplicate"))
+                .andExpect(status().isNoContent());
+        configAfterDuplicate = getSpreadsheetConfig(configId);
+        assertThat(configAfterDuplicate.columns()).hasSize(6);
+        duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
+        assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
+        assertEquals(columnInfos.id() + "_2", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.name() + "_2", duplicatedColumnInfos.name());
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
                 .andExpect(status().isNotFound());

@@ -8,6 +8,7 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
@@ -371,6 +372,38 @@ public class SpreadsheetConfigService {
         columns.sort(Comparator.comparingInt(column -> columnOrder.indexOf(column.getUuid())));
     }
 
+    private String newCandidate(String base, int n) {
+        return base + '_' + n;
+    }
+
+    /**
+     * Generates a unique value by appending a numeric suffix if the original value already exists.
+     *
+     * @param originalValue  the original value to make unique
+     * @param existingValues set of existing values to avoid conflicts with
+     * @return a unique value, either the original or with a numeric suffix
+     */
+    private String getUniqueValue(String originalValue, Set<String> existingValues) {
+        if (!existingValues.contains(originalValue)) {
+            return originalValue;
+        }
+
+        int i = 1;
+        while (existingValues.contains(newCandidate(originalValue, i))) {
+            ++i;
+        }
+        return newCandidate(originalValue, i);
+    }
+
+    private Pair<String, String> getDuplicateIdAndNameCandidate(SpreadsheetConfigEntity entity, String columnId, String columnName) {
+        var existingColumnIds = entity.getColumns().stream().map(ColumnEntity::getId).collect(Collectors.toSet());
+        var existingColumnNames = entity.getColumns().stream().map(ColumnEntity::getName).collect(Collectors.toSet());
+        String newColumnId = getUniqueValue(columnId, existingColumnIds);
+        String newColumnName = getUniqueValue(columnName, existingColumnNames);
+
+        return Pair.of(newColumnId, newColumnName);
+    }
+
     @Transactional
     public void duplicateColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
@@ -378,9 +411,9 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(UUID.randomUUID());
-        columnCopy.setId(columnCopy.getId() + "copy");
-        columnCopy.setName(columnCopy.getName() + "-copy");
-
+        Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
+        columnCopy.setId(idAndName.getLeft());
+        columnCopy.setName(idAndName.getRight());
         List<ColumnEntity> columns = entity.getColumns();
         columns.add(columns.indexOf(columnEntity) + 1, columnCopy);
         entity.setColumns(columns);
