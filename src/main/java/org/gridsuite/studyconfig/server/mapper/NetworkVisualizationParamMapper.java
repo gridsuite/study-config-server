@@ -37,7 +37,7 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary()
                 ),
-                new NetworkAreaDiagramParamInfos(entity.getNadPositionsGenerationMode(), entity.getPositionsConfigUuid())
+                new NetworkAreaDiagramParamInfos(entity.getNadPositionsGenerationMode(), entity.getNadPositionsConfigUuid())
         );
     }
 
@@ -60,11 +60,11 @@ public final class NetworkVisualizationParamMapper {
         entity.setSubstationLayout(dto.singleLineDiagramParameters().substationLayout());
         entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         // NAD
-        entity.setPositionsConfigUuid(dto.networkAreaDiagramParameters().positionsConfigUuid());
+        entity.setNadPositionsConfigUuid(dto.networkAreaDiagramParameters().nadPositionsConfigUuid());
         entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode());
     }
 
-    public static void updateEntity(NetworkVisualizationParamEntity entity, UUID positionsConfigUuid) {
-        entity.setPositionsConfigUuid(positionsConfigUuid);
+    public static void updateNadPositionsConfigUuid(NetworkVisualizationParamEntity entity, UUID nadPositionsConfigUuid) {
+        entity.setNadPositionsConfigUuid(nadPositionsConfigUuid);
     }
 }

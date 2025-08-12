@@ -17,5 +17,5 @@ public record NetworkAreaDiagramParamInfos(
     @Schema(description = "The nad positions generation mode")
     String nadPositionsGenerationMode,
     @Schema(description = "The positions configuration uuid")
-    UUID positionsConfigUuid
+    UUID nadPositionsConfigUuid
 ) { }

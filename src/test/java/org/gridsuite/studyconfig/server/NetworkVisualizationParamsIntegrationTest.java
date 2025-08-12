@@ -138,13 +138,13 @@ class NetworkVisualizationParamsIntegrationTest {
         NetworkVisualizationParamInfos paramsToUpdate = createDto();
         UUID paramsUuid = saveAndReturnId(paramsToUpdate);
         UUID updatedPositionsConfigUuid = UUID.randomUUID();
-        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/nad-positions-config-uuid")
                         .content("\"" + updatedPositionsConfigUuid + "\"")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
         NetworkVisualizationParamInfos retrievedParams = getParams(paramsUuid);
-        assertThat(retrievedParams.networkAreaDiagramParameters().positionsConfigUuid())
+        assertThat(retrievedParams.networkAreaDiagramParameters().nadPositionsConfigUuid())
                 .isEqualTo(updatedPositionsConfigUuid);
     }
 
@@ -153,7 +153,7 @@ class NetworkVisualizationParamsIntegrationTest {
         NetworkVisualizationParamInfos paramsToUpdate = createDto();
         UUID paramsUuid = saveAndReturnId(paramsToUpdate);
         String invalidUuid = "\"not-a-valid-uuid\"";
-        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/positions-config-uuid")
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid + "/nad-positions-config-uuid")
                         .content(invalidUuid)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -165,7 +165,7 @@ class NetworkVisualizationParamsIntegrationTest {
         saveAndReturnId(paramsToUpdate);
         UUID nonExistentId = UUID.randomUUID();
         UUID updatedPositionsConfigUuid = UUID.randomUUID();
-        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + nonExistentId + "/positions-config-uuid")
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + nonExistentId + "/nad-positions-config-uuid")
                         .content("\"" + updatedPositionsConfigUuid + "\"")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
