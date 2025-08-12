@@ -64,4 +64,11 @@ public class ColumnEntity {
     @Column(name = "visible", nullable = false)
     @Builder.Default
     private boolean visible = true;
+
+    public void resetFilter() {
+        this.filterDataType = null;
+        this.filterType = null;
+        this.filterTolerance = null;
+        this.filterValue = null;
+    }
 }

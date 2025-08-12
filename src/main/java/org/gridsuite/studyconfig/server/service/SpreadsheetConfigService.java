@@ -519,4 +519,9 @@ public class SpreadsheetConfigService {
         entity.setName(name);
     }
 
+    @Transactional
+    public void resetSpreadsheetConfigFilters(UUID id) {
+        findEntityById(id).resetFilters();
+    }
+
 }
