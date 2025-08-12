@@ -549,6 +549,29 @@ class SpreadsheetConfigIntegrationTest {
     }
 
     @Test
+    void testResetFiltersForSpreadsheetConfig() throws Exception {
+        // Create a spreadsheet config with existing global filters
+        SpreadsheetConfigInfos configWithFilters = new SpreadsheetConfigInfos(
+                null, "ConfigWithFilters", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of());
+        UUID configId = saveAndReturnId(configWithFilters);
+
+        // Initial config should have filters set
+        SpreadsheetConfigInfos initialConfig = getSpreadsheetConfig(configId);
+        assertThat(initialConfig.globalFilters()).hasSize(2);
+        assertThat(initialConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", "test-value");
+
+        // Call the endpoint to reset the filters
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + "/reset-filters")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // Verify the filters (global or column based) were reset
+        SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
+        assertThat(updatedConfig.globalFilters()).isEmpty();
+        assertThat(updatedConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", null);
+    }
+
+    @Test
     void testSetGlobalFiltersToNonExistentConfig() throws Exception {
         UUID nonExistentConfigId = UUID.randomUUID();
         List<GlobalFilterInfos> filtersToAdd = List.of(
