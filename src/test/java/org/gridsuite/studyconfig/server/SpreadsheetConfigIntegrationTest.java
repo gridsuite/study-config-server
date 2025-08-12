@@ -561,7 +561,7 @@ class SpreadsheetConfigIntegrationTest {
         assertThat(initialConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", "test-value");
 
         // Call the endpoint to reset the filters
-        mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/filters")
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + "/reset-filters")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
