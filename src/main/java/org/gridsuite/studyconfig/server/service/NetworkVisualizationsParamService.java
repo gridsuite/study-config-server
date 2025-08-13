@@ -8,10 +8,12 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode;
 import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
 import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
 import org.gridsuite.studyconfig.server.mapper.NetworkVisualizationParamMapper;
 import org.gridsuite.studyconfig.server.repositories.NetworkVisualizationParamRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +28,13 @@ public class NetworkVisualizationsParamService {
 
     private final NetworkVisualizationParamRepository repository;
 
+    @Value("${study-config.nad-positions-generation-default-mode:}")
+    private NadPositionsGenerationMode nadPositionsGenerationDefaultMode;
+
     @Transactional
     public UUID createDefaultParameters() {
         NetworkVisualizationParamEntity entity = new NetworkVisualizationParamEntity();
+        entity.setNadPositionsGenerationMode(nadPositionsGenerationDefaultMode.toString());
         return repository.save(entity).getId();
     }
 
@@ -62,7 +68,7 @@ public class NetworkVisualizationsParamService {
 
     @Transactional(readOnly = true)
     public NetworkVisualizationParamInfos getParameters(UUID id) {
-        return NetworkVisualizationParamMapper.toDto(findEntityById(id));
+        return NetworkVisualizationParamMapper.toDto(findEntityById(id), nadPositionsGenerationDefaultMode);
     }
 
     @Transactional

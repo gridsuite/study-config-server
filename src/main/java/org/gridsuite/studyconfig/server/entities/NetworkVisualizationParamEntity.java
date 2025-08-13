@@ -7,15 +7,9 @@
 package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
-
-import static org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode.GEOGRAPHICAL_COORDINATES;
 
 /**
  * @author David BRAQUART <david.braquart at rte-france.com>
@@ -62,7 +56,7 @@ public class NetworkVisualizationParamEntity {
     private String componentLibrary = "";
 
     @Column(name = "nad_positions_generation_mode")
-    private String nadPositionsGenerationMode = GEOGRAPHICAL_COORDINATES.name();
+    private String nadPositionsGenerationMode = null;
 
     @Column(name = "nad_positions_config_uuid")
     private UUID nadPositionsConfigUuid = null;

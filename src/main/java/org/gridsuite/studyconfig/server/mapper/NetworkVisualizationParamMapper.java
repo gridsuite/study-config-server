@@ -6,6 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.apache.logging.log4j.util.Strings;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
 
@@ -19,7 +20,7 @@ public final class NetworkVisualizationParamMapper {
     private NetworkVisualizationParamMapper() {
     }
 
-    public static NetworkVisualizationParamInfos toDto(NetworkVisualizationParamEntity entity) {
+    public static NetworkVisualizationParamInfos toDto(NetworkVisualizationParamEntity entity, NadPositionsGenerationMode nadPositionsGenerationDefaultMode) {
         return new NetworkVisualizationParamInfos(
                 entity.getId(),
                 new MapParamInfos(
@@ -34,8 +35,13 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary()
                 ),
-                new NetworkAreaDiagramParamInfos(NadPositionsGenerationMode.valueOf(entity.getNadPositionsGenerationMode()), entity.getNadPositionsConfigUuid())
+                new NetworkAreaDiagramParamInfos(getNadPositionsGenerationMode(entity.getNadPositionsGenerationMode(), nadPositionsGenerationDefaultMode), entity.getNadPositionsConfigUuid())
         );
+    }
+
+    private static NadPositionsGenerationMode getNadPositionsGenerationMode(String nadPositionsGenerationMode, NadPositionsGenerationMode nadPositionsGenerationDefaultMode) {
+        return Strings.isEmpty(nadPositionsGenerationMode) ? nadPositionsGenerationDefaultMode : NadPositionsGenerationMode.valueOf(nadPositionsGenerationMode);
+
     }
 
     public static NetworkVisualizationParamEntity toEntity(NetworkVisualizationParamInfos dto) {
