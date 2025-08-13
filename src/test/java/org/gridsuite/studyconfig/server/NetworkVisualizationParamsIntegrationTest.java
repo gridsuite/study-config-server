@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode.GEOGRAPHICAL_COORDINATES;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NetworkVisualizationParamsIntegrationTest {
 
     private static final String URI_NETWORK_VISUALIZATION_PARAM_BASE = "/v1/network-visualizations-params";
-    private static final String GEOGRAPHICAL_COORDINATES = "GEOGRAPHICAL_COORDINATES";
 
     @Autowired
     private MockMvc mockMvc;

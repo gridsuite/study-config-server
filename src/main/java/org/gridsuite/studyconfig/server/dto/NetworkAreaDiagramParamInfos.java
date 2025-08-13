@@ -15,7 +15,7 @@ import java.util.UUID;
 @Schema(name = "NetworkAreaDiagramParamDto", description = "Network area diagram parameters")
 public record NetworkAreaDiagramParamInfos(
     @Schema(description = "The nad positions generation mode")
-    String nadPositionsGenerationMode,
+    NadPositionsGenerationMode nadPositionsGenerationMode,
     @Schema(description = "The positions configuration uuid")
     UUID nadPositionsConfigUuid
 ) { }

@@ -15,6 +15,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+import static org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode.GEOGRAPHICAL_COORDINATES;
+
 /**
  * @author David BRAQUART <david.braquart at rte-france.com>
  */
@@ -60,7 +62,7 @@ public class NetworkVisualizationParamEntity {
     private String componentLibrary = "";
 
     @Column(name = "nad_positions_generation_mode")
-    private String nadPositionsGenerationMode = "GEOGRAPHICAL_COORDINATES";
+    private String nadPositionsGenerationMode = GEOGRAPHICAL_COORDINATES.name();
 
     @Column(name = "nad_positions_config_uuid")
     private UUID nadPositionsConfigUuid = null;

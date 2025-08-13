@@ -6,10 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
-import org.gridsuite.studyconfig.server.dto.MapParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkAreaDiagramParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.studyconfig.server.dto.SingleLineDiagramParamInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
 
 import java.util.UUID;
@@ -37,7 +34,7 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary()
                 ),
-                new NetworkAreaDiagramParamInfos(entity.getNadPositionsGenerationMode(), entity.getNadPositionsConfigUuid())
+                new NetworkAreaDiagramParamInfos(NadPositionsGenerationMode.valueOf(entity.getNadPositionsGenerationMode()), entity.getNadPositionsConfigUuid())
         );
     }
 
@@ -61,7 +58,7 @@ public final class NetworkVisualizationParamMapper {
         entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         // NAD
         entity.setNadPositionsConfigUuid(dto.networkAreaDiagramParameters().nadPositionsConfigUuid());
-        entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode());
+        entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode().name());
     }
 
     public static void updateNadPositionsConfigUuid(NetworkVisualizationParamEntity entity, UUID nadPositionsConfigUuid) {
