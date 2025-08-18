@@ -102,16 +102,4 @@ public class NetworkVisualizationsParamController {
         service.deleteParameters(id);
         return ResponseEntity.noContent().build();
     }
-
-    @PutMapping("/{id}/nad-positions-config-uuid")
-    @Operation(summary = "Update the positions configuration uuid",
-            description = "Updates existing network visualizations parameter")
-    @ApiResponse(responseCode = "204", description = "the nad positions configuration uuid parameter updated")
-    @ApiResponse(responseCode = "404", description = "the nad positions configuration uuid parameter not found")
-    public ResponseEntity<Void> updateNadPositionsConfigUuid(
-            @Parameter(description = "ID of the parameters") @PathVariable UUID id,
-            @RequestBody UUID nadPositionsConfigUuid) {
-        service.updateNadPositionsConfigUuid(id, nadPositionsConfigUuid);
-        return ResponseEntity.noContent().build();
-    }
 }

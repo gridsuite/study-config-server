@@ -10,8 +10,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
 
-import java.util.UUID;
-
 /**
  * @author David BRAQUART <david.braquart at rte-france.com>
  */
@@ -35,7 +33,7 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary()
                 ),
-                new NetworkAreaDiagramParamInfos(getNadPositionsGenerationMode(entity.getNadPositionsGenerationMode(), nadPositionsGenerationDefaultMode), entity.getNadPositionsConfigUuid())
+                new NetworkAreaDiagramParamInfos(getNadPositionsGenerationMode(entity.getNadPositionsGenerationMode(), nadPositionsGenerationDefaultMode))
         );
     }
 
@@ -63,11 +61,6 @@ public final class NetworkVisualizationParamMapper {
         entity.setSubstationLayout(dto.singleLineDiagramParameters().substationLayout());
         entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         // NAD
-        entity.setNadPositionsConfigUuid(dto.networkAreaDiagramParameters().nadPositionsConfigUuid());
         entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode().name());
-    }
-
-    public static void updateNadPositionsConfigUuid(NetworkVisualizationParamEntity entity, UUID nadPositionsConfigUuid) {
-        entity.setNadPositionsConfigUuid(nadPositionsConfigUuid);
     }
 }
