@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode.GEOGRAPHICAL_COORDINATES;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -132,6 +133,18 @@ class NetworkVisualizationParamsIntegrationTest {
         assertThat(networkVisualizationParamRepository.existsById(duplicatedParams.id())).isTrue();
     }
 
+    @Test
+    void testUpdateNotFoundPositionsConfigUuidParameter() throws Exception {
+        NetworkVisualizationParamInfos paramsToUpdate = createDto();
+        saveAndReturnId(paramsToUpdate);
+        UUID nonExistentId = UUID.randomUUID();
+        UUID updatedPositionsConfigUuid = UUID.randomUUID();
+        mockMvc.perform(put(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + nonExistentId + "/nad-positions-config-uuid")
+                        .content("\"" + updatedPositionsConfigUuid + "\"")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     private NetworkVisualizationParamInfos getParams(UUID paramsUuid) throws Exception {
         MvcResult mvcGetResult = mockMvc.perform(get(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid))
                 .andExpect(status().isOk())
@@ -156,14 +169,14 @@ class NetworkVisualizationParamsIntegrationTest {
         return new NetworkVisualizationParamInfos(null,
                 new MapParamInfos(true, false, "flow", true, "base"),
                 new SingleLineDiagramParamInfos(false, false, "layout", "lib"),
-                new NetworkAreaDiagramParamInfos(true));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES));
     }
 
     private NetworkVisualizationParamInfos createDtoForUpdate(UUID id) {
         return new NetworkVisualizationParamInfos(id,
                 new MapParamInfos(false, true, "flow2", false, "base2"),
                 new SingleLineDiagramParamInfos(true, true, "layout2", "lib2"),
-                new NetworkAreaDiagramParamInfos(false));
+                new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES));
     }
 
     private UUID saveAndReturnId(NetworkVisualizationParamInfos dto) {

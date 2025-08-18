@@ -5,3 +5,6 @@ spring:
 powsybl-ws:
   database:
     name: studyconfig
+
+study-config:
+  nad-positions-generation-default-mode: GEOGRAPHICAL_COORDINATES

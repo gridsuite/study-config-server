@@ -7,11 +7,8 @@
 package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.UUID;
 
 /**
@@ -58,6 +55,6 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "component_library")
     private String componentLibrary = "";
 
-    @Column(name = "init_nad_with_geo_data")
-    private Boolean initNadWithGeoData = true;
+    @Column(name = "nad_positions_generation_mode")
+    private String nadPositionsGenerationMode = null;
 }

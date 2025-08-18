@@ -6,10 +6,8 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
-import org.gridsuite.studyconfig.server.dto.MapParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkAreaDiagramParamInfos;
-import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
-import org.gridsuite.studyconfig.server.dto.SingleLineDiagramParamInfos;
+import org.apache.logging.log4j.util.Strings;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity;
 
 /**
@@ -20,7 +18,7 @@ public final class NetworkVisualizationParamMapper {
     private NetworkVisualizationParamMapper() {
     }
 
-    public static NetworkVisualizationParamInfos toDto(NetworkVisualizationParamEntity entity) {
+    public static NetworkVisualizationParamInfos toDto(NetworkVisualizationParamEntity entity, NadPositionsGenerationMode nadPositionsGenerationDefaultMode) {
         return new NetworkVisualizationParamInfos(
                 entity.getId(),
                 new MapParamInfos(
@@ -35,8 +33,13 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary()
                 ),
-                new NetworkAreaDiagramParamInfos(entity.getInitNadWithGeoData())
+                new NetworkAreaDiagramParamInfos(getNadPositionsGenerationMode(entity.getNadPositionsGenerationMode(), nadPositionsGenerationDefaultMode))
         );
+    }
+
+    private static NadPositionsGenerationMode getNadPositionsGenerationMode(String nadPositionsGenerationMode, NadPositionsGenerationMode nadPositionsGenerationDefaultMode) {
+        return Strings.isEmpty(nadPositionsGenerationMode) ? nadPositionsGenerationDefaultMode : NadPositionsGenerationMode.valueOf(nadPositionsGenerationMode);
+
     }
 
     public static NetworkVisualizationParamEntity toEntity(NetworkVisualizationParamInfos dto) {
@@ -58,6 +61,6 @@ public final class NetworkVisualizationParamMapper {
         entity.setSubstationLayout(dto.singleLineDiagramParameters().substationLayout());
         entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         // NAD
-        entity.setInitNadWithGeoData(dto.networkAreaDiagramParameters().initNadWithGeoData());
+        entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode().name());
     }
 }
