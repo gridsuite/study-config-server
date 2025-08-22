@@ -52,4 +52,9 @@ public class SpreadsheetConfigEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "config_node_aliases", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_node_aliases"))
     private List<String> nodeAliases;
+
+    public void resetFilters() {
+        this.globalFilters.clear();
+        getColumns().forEach(ColumnEntity::resetFilter);
+    }
 }
