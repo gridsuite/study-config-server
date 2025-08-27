@@ -32,7 +32,7 @@ public class NetworkVisualizationParamEntity {
     private UUID id;
 
     @Column(name = "line_full_path")
-    private Boolean lineFullPath = true;
+    private Boolean lineFullPath = false;
 
     @Column(name = "line_parallel_path")
     private Boolean lineParallelPath = true;
