@@ -56,4 +56,14 @@ public class DiagramGridLayoutService {
 
         diagramGridLayoutRepository.save(diagramGridLayoutEntity);
     }
+
+    @Transactional
+    public UUID duplicateDiagramGridLayout(UUID diagramGridLayoutUuid) {
+        DiagramGridLayoutEntity entity = diagramGridLayoutRepository.findById(diagramGridLayoutUuid)
+                .orElseThrow(() -> new EntityNotFoundException("Diagram grid layout not found with id: " + diagramGridLayoutUuid));
+
+        DiagramGridLayoutEntity duplicate = DiagramGridLayoutMapper.toEntity(DiagramGridLayoutMapper.toDto(entity));
+
+        return diagramGridLayoutRepository.save(duplicate).getUuid();
+    }
 }

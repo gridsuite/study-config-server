@@ -85,6 +85,21 @@ class DiagramGridLayoutControllerTest {
     }
 
     @Test
+    void testDuplicateDiagramGridLayout() throws Exception {
+        DiagramGridLayoutEntity existing = diagramGridLayoutRepository.save(DiagramGridLayoutMapper.toEntity(createDiagramGridLayout()));
+
+        MvcResult mockMvcResult = mockMvc.perform(post("/v1/diagram-grid-layout")
+                        .queryParam("duplicateFrom", existing.getUuid().toString()))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UUID duplicatedUuid = objectMapper.readValue(mockMvcResult.getResponse().getContentAsString(), UUID.class);
+
+        DiagramGridLayout duplicated = diagramGridLayoutService.getByDiagramGridLayoutUuid(duplicatedUuid);
+        assertThat(duplicated).usingRecursiveComparison().isEqualTo(DiagramGridLayoutMapper.toDto(existing));
+    }
+
+    @Test
     void testSaveMapGridLayout() throws Exception {
         DiagramGridLayout mapLayoutToSave = createMapGridLayout();
 

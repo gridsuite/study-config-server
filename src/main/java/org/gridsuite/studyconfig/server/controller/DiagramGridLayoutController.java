@@ -7,13 +7,17 @@
 package org.gridsuite.studyconfig.server.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.service.DiagramGridLayoutService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +26,15 @@ import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/" + StudyConfigApi.API_VERSION + "/diagram-grid-layout")
 @RequiredArgsConstructor
 @Tag(name = "Diagram Grid Layout Config", description = "Diagram Grid Layout Configuration API")
 public class DiagramGridLayoutController {
     private final DiagramGridLayoutService diagramGridLayoutService;
+
+    public static final String DUPLICATE_FROM = "duplicateFrom";
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @Operation(summary = "Save diagram grid layout")
@@ -61,4 +68,13 @@ public class DiagramGridLayoutController {
         diagramGridLayoutService.deleteDiagramGridLayout(diagramGridLayoutUuid);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(params = { DUPLICATE_FROM })
+    @Operation(summary = "Duplicate diagram grid layout")
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "The diagram grid layout is duplicated")})
+    public ResponseEntity<UUID> duplicateDiagramGridLayout(@RequestParam(name = DUPLICATE_FROM) UUID diagramGridLayoutUuid) {
+        UUID newId = diagramGridLayoutService.duplicateDiagramGridLayout(diagramGridLayoutUuid);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newId);
+    }
+
 }
