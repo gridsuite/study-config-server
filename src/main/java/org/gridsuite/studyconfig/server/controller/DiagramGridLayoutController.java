@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.service.DiagramGridLayoutService;
@@ -24,7 +23,6 @@ import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
 @RestController
 @RequestMapping(value = "/" + StudyConfigApi.API_VERSION + "/diagram-grid-layout")
 @RequiredArgsConstructor

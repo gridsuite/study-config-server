@@ -94,7 +94,6 @@ class DiagramGridLayoutControllerTest {
                 .andReturn();
 
         UUID duplicatedUuid = objectMapper.readValue(mockMvcResult.getResponse().getContentAsString(), UUID.class);
-
         DiagramGridLayout duplicated = diagramGridLayoutService.getByDiagramGridLayoutUuid(duplicatedUuid);
         assertThat(duplicated).usingRecursiveComparison().isEqualTo(DiagramGridLayoutMapper.toDto(existing));
     }
