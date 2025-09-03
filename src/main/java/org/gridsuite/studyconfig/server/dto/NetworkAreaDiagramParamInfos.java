@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(name = "NetworkAreaDiagramParamDto", description = "Network area diagram parameters")
 public record NetworkAreaDiagramParamInfos(
-
-    @Schema(description = "Initialize with geographical data")
-    Boolean initNadWithGeoData
+    @Schema(description = "The nad positions generation mode")
+    NadPositionsGenerationMode nadPositionsGenerationMode
 ) { }
