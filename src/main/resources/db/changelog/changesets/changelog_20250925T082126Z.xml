@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!-- Remove foreign key constraint -->
+    <changeSet author="bouzolssyl (generated)" id="1758788507351-1">
+        <dropForeignKeyConstraint baseTableName="map_layout_entity" constraintName="fk_map_layout_abstract"/>
+    </changeSet>
+    <changeSet author="bouzolssyl (generated)" id="1758788507351-2">
+        <delete tableName="abstract_diagram_layout_entity_diagram_positions">
+            <where>abstract_diagram_layout_entity_id IN (SELECT id from map_layout_entity)</where>
+        </delete>
+        <delete tableName="abstract_diagram_layout_entity">
+            <where>id IN (SELECT id from map_layout_entity)</where>
+        </delete>
+        <delete tableName="map_layout_entity"/>
+    </changeSet>
+    <!-- Restore foreign key constraint -->
+    <changeSet author="bouzolssyl (generated)" id="1758788507351-3">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="map_layout_entity" constraintName="fk_map_layout_abstract" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="abstract_diagram_layout_entity" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
