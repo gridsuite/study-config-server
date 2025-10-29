@@ -410,7 +410,7 @@ public class SpreadsheetConfigService {
         ColumnEntity columnEntity = entity.getColumns().stream().filter(col -> col.getUuid().equals(columnId))
                 .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
-        columnCopy.setUuid(UUID.randomUUID());
+        columnCopy.setUuid(null);
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
         columnCopy.setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());
