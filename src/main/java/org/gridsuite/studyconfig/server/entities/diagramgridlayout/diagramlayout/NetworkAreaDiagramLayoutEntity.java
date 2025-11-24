@@ -30,8 +30,11 @@ public class NetworkAreaDiagramLayoutEntity extends AbstractDiagramLayoutEntity 
     @Column(name = "current_nad_config_uuid")
     UUID currentNadConfigUuid;
 
-    @Column(name = "filter_uuid")
-    UUID filterUuid;
+    @Column(name = "original_filter_uuid")
+    UUID originalFilterUuid;
+
+    @Column(name = "current_filter_uuid")
+    UUID currentFilterUuid;
 
     @Column(name = "name")
     String name;

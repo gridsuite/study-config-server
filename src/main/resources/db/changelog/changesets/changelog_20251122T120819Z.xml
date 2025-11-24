@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="amarsli (generated)" id="1763813315114-6">
+        <addColumn tableName="network_area_diagram_layout_entity">
+            <column name="current_filter_uuid" type="uuid"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="amarsli (generated)" id="1763813315114-7">
+        <addColumn tableName="network_area_diagram_layout_entity">
+            <column name="original_filter_uuid" type="uuid"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="amarsli (generated)" id="1763813315114-8">
+        <dropColumn columnName="filter_uuid" tableName="network_area_diagram_layout_entity"/>
+    </changeSet>
+</databaseChangeLog>

@@ -64,7 +64,8 @@ public final class DiagramGridLayoutMapper {
                     .diagramUuid(v.getDiagramUuid())
                     .originalNadConfigUuid(v.getOriginalNadConfigUuid())
                     .currentNadConfigUuid(v.getCurrentNadConfigUuid())
-                    .filterUuid(v.getFilterUuid())
+                    .originalFilterUuid(v.getOriginalFilterUuid())
+                    .currentFilterUuid(v.getCurrentFilterUuid())
                     .name(v.getName())
                     .diagramPositions(convertDiagramPositionsMap(v.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionEntity))
                     .build();
@@ -93,7 +94,8 @@ public final class DiagramGridLayoutMapper {
                     .diagramUuid(n.getDiagramUuid())
                     .originalNadConfigUuid(n.getOriginalNadConfigUuid())
                     .currentNadConfigUuid(n.getCurrentNadConfigUuid())
-                    .filterUuid(n.getFilterUuid())
+                    .originalFilterUuid(n.getOriginalFilterUuid())
+                    .currentFilterUuid(n.getCurrentFilterUuid())
                     .name(n.getName())
                     .diagramPositions(convertDiagramPositionsMap(n.getDiagramPositions(), DiagramGridLayoutMapper::toDiagramPositionDto))
                     .build();

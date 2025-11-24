@@ -133,7 +133,8 @@ class DiagramGridLayoutControllerTest {
             ))
             .originalNadConfigUuid(UUID.randomUUID())
             .currentNadConfigUuid(UUID.randomUUID())
-            .filterUuid(UUID.randomUUID())
+            .originalFilterUuid(UUID.randomUUID())
+            .currentFilterUuid(UUID.randomUUID())
             .name("Network Area Layout")
             .build());
 
