@@ -17,7 +17,7 @@ import lombok.*;
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Entity
-@Table(name = "spreadsheet_column")
+@Table(name = "columns")
 @Getter
 @Setter
 @NoArgsConstructor

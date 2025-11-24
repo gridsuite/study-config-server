@@ -44,8 +44,8 @@ public class SpreadsheetConfigEntity {
     @Builder.Default
     private List<ColumnEntity> columns = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_global_filter_spreadsheet_config"))
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "spreadsheet_global_filters", joinColumns = @JoinColumn(name = "spreadsheet_config_id"), inverseJoinColumns = @JoinColumn(name = "global_filter_id"))
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
