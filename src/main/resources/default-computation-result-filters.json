@@ -1,0 +1,135 @@
+{
+  "computationResultFilters": [
+    {
+      "computationType": "LOAD_FLOW",
+      "columnsFilters": [
+        {
+          "computationSubType": "LOADFLOW_CURRENT_LIMIT_VIOLATION",
+          "columns": []
+        },
+        {
+          "computationSubType": "LOADFLOW_VOLTAGE_LIMIT_VIOLATION",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "SECURITY_ANALYSIS",
+      "columnsFilters": [
+        {
+          "computationSubType": "SECURITY_ANALYSIS_RESULT_N",
+          "columns": []
+        },
+        {
+          "computationSubType": "SECURITY_ANALYSIS_RESULT_NMK",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "SENSITIVITY_ANALYSIS",
+      "columnsFilters": [
+        {
+          "computationSubType": "SENSITIVITY_AT_NODE_N",
+          "columns": []
+        },
+        {
+          "computationSubType": "SENSITIVITY_AT_NODE_NMK",
+          "columns": []
+        },
+        {
+          "computationSubType": "SENSITIVITY_IN_DELTA_A_N",
+          "columns": []
+        },
+        {
+          "computationSubType": "SENSITIVITY_IN_DELTA_MW_N",
+          "columns": []
+        },
+        {
+          "computationSubType": "SENSITIVITY_IN_DELTA_A_NMK",
+          "columns": []
+        },
+        {
+          "computationSubType": "SENSITIVITY_IN_DELTA_MW_NMK",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "SHORT_CIRCUIT",
+      "columnsFilters": [
+        {
+          "computationSubType": "SHORT_CIRCUIT_ALL_BUSES",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "DYNAMIC_SIMULATION",
+      "columnsFilters": [
+        {
+          "computationSubType": "DYNAMIC_SIMULATION",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "DYNAMIC_SECURITY_ANALYSIS",
+      "columnsFilters": [
+        {
+          "computationSubType": "DYNAMIC_SECURITY_ANALYSIS",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "SHORT_CIRCUIT_ONE_BUS",
+      "columnsFilters": [
+        {
+          "computationSubType": "SHORT_CIRCUIT_ONE_BUS",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "STATE_ESTIMATION",
+      "columnsFilters": [
+        {
+          "computationSubType": "STATE_ESTIMATION",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "VOLTAGE_INITIALIZATION",
+      "columnsFilters": [
+        {
+          "computationSubType": "VOLTAGE_INITIALIZATION",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    },
+    {
+      "computationType": "PCC_MIN",
+      "columnsFilters": [
+        {
+          "computationSubType": "PCCMIN_RESULT",
+          "columns": []
+        }
+      ],
+      "globalFilters": []
+    }
+  ]
+}
+
+
+
