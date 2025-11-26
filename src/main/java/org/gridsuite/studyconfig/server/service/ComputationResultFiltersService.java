@@ -10,8 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
+import org.gridsuite.studyconfig.server.repositories.ComputationResultFilterRepository;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -32,6 +36,7 @@ public class ComputationResultFiltersService {
 
     private static final String COMPUTATION_FILTERS_NOT_FOUND = "not found";
     private final ComputationResultFiltersRepository computationResultFiltersRepository;
+    private final ComputationResultFilterRepository computationResultFilterRepository;
     @Value("classpath:default-computation-result-filters.json")
     private Resource defaultComputationResultFiltersResource;
     private final ObjectMapper objectMapper;
@@ -67,5 +72,23 @@ public class ComputationResultFiltersService {
         return new ComputationResultFiltersInfos(entity.getId(), entity.getComputationResultFilter().stream()
                 .map(ComputationResultFiltersMapper::toDto)
                 .toList());
+    }
+
+    @Transactional
+    public void setGlobalFiltersForComputationResult(UUID id, List<GlobalFilterInfos> globalFilters) {
+        ComputationResultFilterEntity entity = findEntityById(id);
+        entity.getGlobalFilters().clear();
+        entity.getGlobalFilters().addAll(globalFilters.stream()
+                .map(ComputationResultFiltersMapper::toGlobalFilterEntity)
+                .toList());
+    }
+
+    private ComputationResultFilterEntity findEntityById(UUID id) {
+        return computationResultFilterRepository.findById(id)
+                .orElseThrow(() -> entityNotFoundException(id));
+    }
+
+    private EntityNotFoundException entityNotFoundException(UUID id) {
+        return new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
     }
 }

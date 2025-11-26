@@ -63,7 +63,7 @@ public class ComputationResultFiltersController {
     public ResponseEntity<Void> setGlobalFiltersForComputingResult(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Valid @RequestBody List<GlobalFilterInfos> filters) {
-        //computationGlobalFiltersService.setGlobalFiltersForComputationResult(id, filters);
+        computationGlobalFiltersService.setGlobalFiltersForComputationResult(id, filters);
         return ResponseEntity.noContent().build();
     }
 
