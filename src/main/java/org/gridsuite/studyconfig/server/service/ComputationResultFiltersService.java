@@ -9,8 +9,11 @@ package org.gridsuite.studyconfig.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +39,7 @@ import java.util.UUID;
 public class ComputationResultFiltersService {
 
     private static final String COMPUTATION_FILTERS_NOT_FOUND = "not found";
+    private static final String COLUMN_NOT_FOUND = "column not found";
     private final ComputationResultFiltersRepository computationResultFiltersRepository;
     private final ComputationResultFilterRepository computationResultFilterRepository;
     @Value("classpath:default-computation-result-filters.json")
@@ -81,6 +86,36 @@ public class ComputationResultFiltersService {
         entity.getGlobalFilters().addAll(globalFilters.stream()
                 .map(ComputationResultFiltersMapper::toGlobalFilterEntity)
                 .toList());
+    }
+
+    @Transactional
+    public void updateColumn(UUID id, UUID columnId, ColumnInfos dto) {
+        ComputationResultFilterEntity entity = findEntityById(id);
+        ColumnsFiltersEntity wrapper = entity.getColumnsFilters().stream()
+                .filter(w -> w.getId().equals(columnId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Column wrapper not found: " + columnId));
+        if (wrapper.getColumns() == null) {
+            wrapper.setColumns(new ArrayList<>());
+        }
+        ColumnEntity column = wrapper.getColumns().stream().filter(c -> c.getId().equals(dto.id())).findFirst()
+                .orElseGet(() -> {
+                    ColumnEntity newCol = new ColumnEntity();
+                    wrapper.getColumns().add(newCol);
+                    return newCol;
+                });
+        column.setId(dto.id());
+        column.setName(dto.name());
+        column.setType(dto.type());
+        column.setPrecision(dto.precision());
+        column.setFormula(dto.formula());
+        column.setDependencies(dto.dependencies());
+        column.setFilterDataType(dto.filterDataType());
+        column.setFilterType(dto.filterType());
+        column.setFilterValue(dto.filterValue());
+        column.setFilterTolerance(dto.filterTolerance());
+        column.setVisible(dto.visible());
+        computationResultFilterRepository.save(entity);
     }
 
     private ComputationResultFilterEntity findEntityById(UUID id) {

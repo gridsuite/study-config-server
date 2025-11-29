@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
@@ -64,6 +65,17 @@ public class ComputationResultFiltersController {
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Valid @RequestBody List<GlobalFilterInfos> filters) {
         computationGlobalFiltersService.setGlobalFiltersForComputationResult(id, filters);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/columns/{columnId}")
+    @Operation(summary = "Update a column", description = "Updates an existing column")
+    @ApiResponse(responseCode = "204", description = "Column updated")
+    public ResponseEntity<Void> updateColumn(
+            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
+            @Valid @RequestBody ColumnInfos dto) {
+        computationGlobalFiltersService.updateColumn(id, columnId, dto);
         return ResponseEntity.noContent().build();
     }
 
