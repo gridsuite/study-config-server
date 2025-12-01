@@ -10,10 +10,7 @@ import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.ColumnsFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFilterInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
-import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
-import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
-import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
+import org.gridsuite.studyconfig.server.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,8 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -269,41 +268,9 @@ public class SpreadsheetConfigService {
 
         SpreadsheetConfigCollectionEntity duplicate = new SpreadsheetConfigCollectionEntity();
         duplicate.setSpreadsheetConfigs(entity.getSpreadsheetConfigs().stream()
-                .map(config -> {
-                    SpreadsheetConfigEntity configDuplicate = SpreadsheetConfigEntity.builder()
-                            .name(config.getName())
-                            .sheetType(config.getSheetType())
-                            .build();
-                    if (config.getNodeAliases() != null) {
-                        configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
-                    }
-                    configDuplicate.setColumns(config.getColumns().stream()
-                            .map(column -> ColumnEntity.builder()
-                                    .name(column.getName())
-                                    .type(column.getType())
-                                    .precision(column.getPrecision())
-                                    .formula(column.getFormula())
-                                    .dependencies(column.getDependencies())
-                                    .id(column.getId())
-                                    .filterDataType(column.getFilterDataType())
-                                    .filterType(column.getFilterType())
-                                    .filterValue(column.getFilterValue())
-                                    .filterTolerance(column.getFilterTolerance())
-                                    .build())
-                            .toList());
-                    configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
-                            .map(globalFilter -> GlobalFilterEntity.builder()
-                                    .filterType(globalFilter.getFilterType())
-                                    .label(globalFilter.getLabel())
-                                    .uuid(globalFilter.getUuid())
-                                    .equipmentType(globalFilter.getEquipmentType())
-                                    .recent(globalFilter.isRecent())
-                                    .path(globalFilter.getPath())
-                                    .build())
-                            .toList());
-                    return configDuplicate;
-                })
-                .toList());
+                .map(cfg -> duplicateSpreadsheetConfigEntity(cfg.getId()))
+                .toList()
+        );
         duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
         return spreadsheetConfigCollectionRepository.save(duplicate).getId();
     }

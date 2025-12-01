@@ -35,13 +35,17 @@ public class ComputationResultFilterEntity {
     private ComputationType computationType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_id", foreignKey = @ForeignKey(name = "fk_computation_column"))
+    @JoinColumn(name = "computation_result_id", foreignKey = @ForeignKey(name = "fk_columns_filters_computation_result"))
     @OrderColumn(name = "column_order")
     @Builder.Default
     private List<ColumnsFiltersEntity> columnsFilters = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "computation_global_filters", joinColumns = @JoinColumn(name = "computation_global_filters_id"), inverseJoinColumns = @JoinColumn(name = "global_filter_id"))
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "computation_result_global_filter",
+            joinColumns = @JoinColumn(name = "computation_result_id"),
+            inverseJoinColumns = @JoinColumn(name = "global_filter_id")
+    )
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 }

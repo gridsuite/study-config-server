@@ -31,7 +31,7 @@ public class ComputationResultFiltersEntity {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_filters_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_collection"))
+    @JoinColumn(name = "computation_result_filters_id", foreignKey = @ForeignKey(name = "fk_computation_result_filters"))
     @OrderColumn(name = "order_index")
     @Builder.Default
     private List<ComputationResultFilterEntity> computationResultFilter = new ArrayList<>();
