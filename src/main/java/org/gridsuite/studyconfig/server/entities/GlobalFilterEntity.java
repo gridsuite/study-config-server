@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Entity
-@Table(name = "spreadsheet_global_filter")
+@Table(name = "global_filter")
 @Getter
 @Setter
 @NoArgsConstructor

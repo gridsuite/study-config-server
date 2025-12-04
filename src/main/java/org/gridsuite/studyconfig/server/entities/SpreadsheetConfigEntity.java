@@ -39,13 +39,17 @@ public class SpreadsheetConfigEntity {
     private SheetType sheetType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_column"))
+    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_columns"))
     @OrderColumn(name = "column_order")
     @Builder.Default
     private List<ColumnEntity> columns = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_global_filter_spreadsheet_config"))
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "spreadsheet_config_global_filter",
+            joinColumns = @JoinColumn(name = "spreadsheet_config_id"),
+            inverseJoinColumns = @JoinColumn(name = "global_filter_id")
+    )
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
