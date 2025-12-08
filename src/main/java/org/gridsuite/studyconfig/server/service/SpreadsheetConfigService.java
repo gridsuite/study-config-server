@@ -294,6 +294,7 @@ public class SpreadsheetConfigService {
                     configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
                             .map(globalFilter -> GlobalFilterEntity.builder()
                                     .filterType(globalFilter.getFilterType())
+                                    .filterSubtype(globalFilter.getFilterSubtype())
                                     .label(globalFilter.getLabel())
                                     .uuid(globalFilter.getUuid())
                                     .equipmentType(globalFilter.getEquipmentType())
