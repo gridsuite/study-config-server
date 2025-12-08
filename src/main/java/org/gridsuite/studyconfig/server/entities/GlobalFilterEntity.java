@@ -49,4 +49,15 @@ public class GlobalFilterEntity {
     @Column(name = "path")
     private String path;
 
+    public GlobalFilterEntity copy() {
+        return GlobalFilterEntity.builder()
+            .filterType(getFilterType())
+            .filterSubtype(getFilterSubtype())
+            .label(getLabel())
+            .uuid(getUuid())
+            .equipmentType(getEquipmentType())
+            .recent(isRecent())
+            .path(getPath())
+            .build();
+    }
 }

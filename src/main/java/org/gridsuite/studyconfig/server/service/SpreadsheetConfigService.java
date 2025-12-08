@@ -67,33 +67,14 @@ public class SpreadsheetConfigService {
         if (entity.getNodeAliases() != null) {
             duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
         }
-        List<ColumnEntity> columns = entity.getColumns().stream()
-                .map(column -> ColumnEntity.builder()
-                        .name(column.getName())
-                        .type(column.getType())
-                        .precision(column.getPrecision())
-                        .formula(column.getFormula())
-                        .dependencies(column.getDependencies())
-                        .id(column.getId())
-                        .filterDataType(column.getFilterDataType())
-                        .filterType(column.getFilterType())
-                        .filterValue(column.getFilterValue())
-                        .filterTolerance(column.getFilterTolerance())
-                        .build())
-                .toList();
-        duplicate.setColumns(columns);
+        duplicate.setColumns(entity.getColumns().stream()
+                .map(ColumnEntity::copy)
+                .toList());
 
         // Copy global filters if needed
         if (entity.getGlobalFilters() != null) {
             duplicate.setGlobalFilters(entity.getGlobalFilters().stream()
-                    .map(globalFilter -> GlobalFilterEntity.builder()
-                            .filterType(globalFilter.getFilterType())
-                            .label(globalFilter.getLabel())
-                            .uuid(globalFilter.getUuid())
-                            .equipmentType(globalFilter.getEquipmentType())
-                            .recent(globalFilter.isRecent())
-                            .path(globalFilter.getPath())
-                            .build())
+                    .map(GlobalFilterEntity::copy)
                     .toList());
         }
         return duplicate;
@@ -278,29 +259,10 @@ public class SpreadsheetConfigService {
                         configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
                     }
                     configDuplicate.setColumns(config.getColumns().stream()
-                            .map(column -> ColumnEntity.builder()
-                                    .name(column.getName())
-                                    .type(column.getType())
-                                    .precision(column.getPrecision())
-                                    .formula(column.getFormula())
-                                    .dependencies(column.getDependencies())
-                                    .id(column.getId())
-                                    .filterDataType(column.getFilterDataType())
-                                    .filterType(column.getFilterType())
-                                    .filterValue(column.getFilterValue())
-                                    .filterTolerance(column.getFilterTolerance())
-                                    .build())
+                            .map(ColumnEntity::copy)
                             .toList());
                     configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
-                            .map(globalFilter -> GlobalFilterEntity.builder()
-                                    .filterType(globalFilter.getFilterType())
-                                    .filterSubtype(globalFilter.getFilterSubtype())
-                                    .label(globalFilter.getLabel())
-                                    .uuid(globalFilter.getUuid())
-                                    .equipmentType(globalFilter.getEquipmentType())
-                                    .recent(globalFilter.isRecent())
-                                    .path(globalFilter.getPath())
-                                    .build())
+                            .map(GlobalFilterEntity::copy)
                             .toList());
                     return configDuplicate;
                 })
