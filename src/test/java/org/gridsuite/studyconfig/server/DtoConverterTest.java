@@ -15,6 +15,7 @@ import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
+import org.gridsuite.studyconfig.server.mapper.CommonFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -165,7 +166,7 @@ public class DtoConverterTest implements WithAssertions {
                     .filterTolerance(null)
                     .build();
 
-            ColumnInfos dto = SpreadsheetConfigMapper.toColumnDto(entity);
+            ColumnInfos dto = CommonFiltersMapper.toColumnDto(entity);
 
             assertThat(dto)
                     .as("DTO conversion result")
@@ -197,7 +198,7 @@ public class DtoConverterTest implements WithAssertions {
                     0.1,
                     true);
 
-            ColumnEntity column = SpreadsheetConfigMapper.toColumnEntity(dto);
+            ColumnEntity column = CommonFiltersMapper.toColumnEntity(dto);
 
             assertThat(column)
                     .as("Entity conversion result")
@@ -230,8 +231,8 @@ public class DtoConverterTest implements WithAssertions {
                     null,
                     true);
 
-            ColumnEntity entity = SpreadsheetConfigMapper.toColumnEntity(dto);
-            ColumnInfos convertedDto = SpreadsheetConfigMapper.toColumnDto(entity);
+            ColumnEntity entity = CommonFiltersMapper.toColumnEntity(dto);
+            ColumnInfos convertedDto = CommonFiltersMapper.toColumnDto(entity);
 
             assertThat(convertedDto)
                     .as("Round-trip conversion result")
@@ -252,7 +253,7 @@ public class DtoConverterTest implements WithAssertions {
                     .label("TestGlobalFilter")
                     .build();
 
-            GlobalFilterInfos dto = SpreadsheetConfigMapper.toGlobalFilterDto(entity);
+            GlobalFilterInfos dto = CommonFiltersMapper.toGlobalFilterDto(entity);
 
             assertThat(dto)
                     .as("DTO conversion result")
@@ -268,7 +269,7 @@ public class DtoConverterTest implements WithAssertions {
             UUID filterId = UUID.randomUUID();
             GlobalFilterInfos dto = GlobalFilterInfos.builder().id(uuid).uuid(filterId).filterType("country").label("TestGlobalFilter").recent(false).build();
 
-            GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
+            GlobalFilterEntity entity = CommonFiltersMapper.toGlobalFilterEntity(dto);
 
             assertThat(entity)
                     .as("Entity conversion result")

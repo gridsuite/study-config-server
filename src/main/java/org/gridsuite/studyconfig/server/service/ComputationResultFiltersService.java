@@ -18,6 +18,7 @@ import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
+import org.gridsuite.studyconfig.server.mapper.CommonFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFilterRepository;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
@@ -89,7 +90,7 @@ public class ComputationResultFiltersService {
         ComputationResultFilterEntity entity = findEntityById(id);
         entity.getGlobalFilters().clear();
         entity.getGlobalFilters().addAll(globalFilters.stream()
-                .map(ComputationResultFiltersMapper::toGlobalFilterEntity)
+                .map(CommonFiltersMapper::toGlobalFilterEntity)
                 .toList());
     }
 
