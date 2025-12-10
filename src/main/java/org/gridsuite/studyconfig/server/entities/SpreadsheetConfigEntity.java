@@ -47,8 +47,14 @@ public class SpreadsheetConfigEntity {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "spreadsheet_config_global_filter",
-            joinColumns = @JoinColumn(name = "spreadsheet_config_id"),
-            inverseJoinColumns = @JoinColumn(name = "global_filter_id")
+            joinColumns = @JoinColumn(
+                    name = "spreadsheet_config_id",
+                    foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter_spreadsheet_config")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "global_filter_id",
+                    foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter_global_filter")
+            )
     )
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();

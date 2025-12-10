@@ -8,7 +8,6 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.gridsuite.studyconfig.server.constants.ComputationSubType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +30,8 @@ public class ColumnsFiltersEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "filter_tab")
-    private ComputationSubType computationSubType;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "column_filters_id", foreignKey = @ForeignKey(name = "fk_column_filters"))
+    @JoinColumn(name = "columns_filters_id", foreignKey = @ForeignKey(name = "fk_column_filters"))
     @OrderColumn(name = "column_order")
     @Builder.Default
     private List<ColumnEntity> columns = new ArrayList<>();

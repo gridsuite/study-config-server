@@ -8,11 +8,9 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.gridsuite.studyconfig.server.constants.ComputationType;
+import org.gridsuite.studyconfig.server.constants.ComputationSubType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -31,20 +29,24 @@ public class ComputationResultFilterEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "computation_type")
-    private ComputationType computationType;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_id", foreignKey = @ForeignKey(name = "fk_columns_filters_computation_result"))
-    @OrderColumn(name = "column_order")
+    @JoinColumn(name = "computation_result_filter_id", foreignKey = @ForeignKey(name = "fk_columns_filters_computation_result"))
+    @MapKeyEnumerated(EnumType.STRING)
+    @MapKeyColumn(name = "computation_sub_type")
     @Builder.Default
-    private List<ColumnsFiltersEntity> columnsFilters = new ArrayList<>();
+    private Map<ComputationSubType, ColumnsFiltersEntity> columnsFilters = new EnumMap<>(ComputationSubType.class);
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "computation_result_global_filter",
-            joinColumns = @JoinColumn(name = "computation_result_id"),
-            inverseJoinColumns = @JoinColumn(name = "global_filter_id")
+            joinColumns = @JoinColumn(
+                    name = "computation_result_filter_id",
+                    foreignKey = @ForeignKey(name = "fk_computation_result_filter_global_filter_computation_result_filter")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "global_filter_id",
+                    foreignKey = @ForeignKey(name = "fk_computation_result_filter_global_filter_global_filter")
+            )
     )
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();

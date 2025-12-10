@@ -8,9 +8,10 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.gridsuite.studyconfig.server.constants.ComputationType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,8 +33,9 @@ public class ComputationResultFiltersEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "computation_result_filters_id", foreignKey = @ForeignKey(name = "fk_computation_result_filters"))
-    @OrderColumn(name = "order_index")
+    @MapKeyEnumerated(EnumType.STRING)
+    @MapKeyColumn(name = "computation_type")
     @Builder.Default
-    private List<ComputationResultFilterEntity> computationResultFilter = new ArrayList<>();
+    private Map<ComputationType, ComputationResultFilterEntity> computationResultFilter = new EnumMap<>(ComputationType.class);
 
 }

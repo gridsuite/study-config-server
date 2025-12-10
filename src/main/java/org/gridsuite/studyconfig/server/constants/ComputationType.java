@@ -12,14 +12,10 @@ package org.gridsuite.studyconfig.server.constants;
 
 public enum ComputationType {
     LOAD_FLOW,
+    PCC_MIN,
     SECURITY_ANALYSIS,
     SENSITIVITY_ANALYSIS,
     SHORT_CIRCUIT,
     VOLTAGE_INITIALIZATION,
-    DYNAMIC_SIMULATION,
-    DYNAMIC_SECURITY_ANALYSIS,
-    SHORT_CIRCUIT_ONE_BUS,
-    STATE_ESTIMATION,
-    PCC_MIN
 }
 

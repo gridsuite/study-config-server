@@ -1,135 +1,88 @@
 {
-  "computationResultFilters": [
-    {
-      "computationType": "LOAD_FLOW",
-      "columnsFilters": [
-        {
-          "computationSubType": "LOADFLOW_CURRENT_LIMIT_VIOLATION",
-          "columns": []
+  "computationResultFilters": {
+    "LOAD_FLOW": [
+      {
+        "columnsFilters": {
+          "LOADFLOW_CURRENT_LIMIT_VIOLATION": {
+            "columns": []
+          },
+          "LOADFLOW_VOLTAGE_LIMIT_VIOLATION": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "LOADFLOW_VOLTAGE_LIMIT_VIOLATION",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "SECURITY_ANALYSIS",
-      "columnsFilters": [
-        {
-          "computationSubType": "SECURITY_ANALYSIS_RESULT_N",
-          "columns": []
+        "globalFilters": []
+      }
+    ],
+    "SECURITY_ANALYSIS": [
+      {
+        "columnsFilters": {
+          "SECURITY_ANALYSIS_RESULT_N": {
+            "columns": []
+          },
+          "SECURITY_ANALYSIS_RESULT_N_K": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "SECURITY_ANALYSIS_RESULT_NMK",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "SENSITIVITY_ANALYSIS",
-      "columnsFilters": [
-        {
-          "computationSubType": "SENSITIVITY_AT_NODE_N",
-          "columns": []
+        "globalFilters": []
+      }
+    ],
+    "SENSITIVITY_ANALYSIS": [
+      {
+        "columnsFilters": {
+          "SENSITIVITY_IN_DELTA_MW_N": {
+            "columns": []
+          },
+          "SENSITIVITY_IN_DELTA_MW_N_K": {
+            "columns": []
+          },
+          "SENSITIVITY_IN_DELTA_A_N": {
+            "columns": []
+          },
+          "SENSITIVITY_IN_DELTA_A_N_K": {
+            "columns": []
+          },
+          "SENSITIVITY_AT_NODE_N": {
+            "columns": []
+          },
+          "SENSITIVITY_AT_NODE_N_K": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "SENSITIVITY_AT_NODE_NMK",
-          "columns": []
+        "globalFilters": []
+      }
+    ],
+    "SHORT_CIRCUIT": [
+      {
+        "columnsFilters": {
+          "ONE_BUS": {
+            "columns": []
+          },
+          "ALL_BUS": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "SENSITIVITY_IN_DELTA_A_N",
-          "columns": []
+        "globalFilters": []
+      }
+    ],
+    "VOLTAGE_INITIALIZATION": [
+      {
+        "columnsFilters": {
+          "VOLTAGE_INITIALIZATION": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "SENSITIVITY_IN_DELTA_MW_N",
-          "columns": []
+        "globalFilters": []
+      }
+    ],
+    "PCC_MIN": [
+      {
+        "columnsFilters": {
+          "PCCMIN_RESULT": {
+            "columns": []
+          }
         },
-        {
-          "computationSubType": "SENSITIVITY_IN_DELTA_A_NMK",
-          "columns": []
-        },
-        {
-          "computationSubType": "SENSITIVITY_IN_DELTA_MW_NMK",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "SHORT_CIRCUIT",
-      "columnsFilters": [
-        {
-          "computationSubType": "SHORT_CIRCUIT_ALL_BUSES",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "DYNAMIC_SIMULATION",
-      "columnsFilters": [
-        {
-          "computationSubType": "DYNAMIC_SIMULATION",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "DYNAMIC_SECURITY_ANALYSIS",
-      "columnsFilters": [
-        {
-          "computationSubType": "DYNAMIC_SECURITY_ANALYSIS",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "SHORT_CIRCUIT_ONE_BUS",
-      "columnsFilters": [
-        {
-          "computationSubType": "SHORT_CIRCUIT_ONE_BUS",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "STATE_ESTIMATION",
-      "columnsFilters": [
-        {
-          "computationSubType": "STATE_ESTIMATION",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "VOLTAGE_INITIALIZATION",
-      "columnsFilters": [
-        {
-          "computationSubType": "VOLTAGE_INITIALIZATION",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    },
-    {
-      "computationType": "PCC_MIN",
-      "columnsFilters": [
-        {
-          "computationSubType": "PCCMIN_RESULT",
-          "columns": []
-        }
-      ],
-      "globalFilters": []
-    }
-  ]
+        "globalFilters": []
+      }
+    ]
+  }
 }
-
-
-

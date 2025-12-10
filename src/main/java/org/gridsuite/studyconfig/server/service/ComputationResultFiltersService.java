@@ -9,10 +9,15 @@ package org.gridsuite.studyconfig.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.gridsuite.studyconfig.server.constants.ComputationType;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ComputationResultFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.*;
+import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFilterRepository;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
@@ -23,9 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -36,7 +40,6 @@ import java.util.UUID;
 public class ComputationResultFiltersService {
 
     private static final String COMPUTATION_FILTERS_NOT_FOUND = "not found";
-    private static final String COLUMN_NOT_FOUND = "column not found";
     private final ComputationResultFiltersRepository computationResultFiltersRepository;
     private final ComputationResultFilterRepository computationResultFilterRepository;
     @Value("classpath:default-computation-result-filters.json")
@@ -55,10 +58,13 @@ public class ComputationResultFiltersService {
 
     public UUID createDefaultComputationConfig(ComputationResultFiltersInfos dto) {
         ComputationResultFiltersEntity root = new ComputationResultFiltersEntity();
-        root.setComputationResultFilter(dto.computationResultFilters().stream()
-                .map(ComputationResultFiltersMapper::toEntity)
-                .toList());
-        return computationResultFiltersRepository.save(root).getId();
+        Map<ComputationType, ComputationResultFilterEntity> mappedFilters = dto.computationResultFilters().entrySet()
+                .stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
+                    List<ComputationResultFilterInfos> list = e.getValue();
+                    return ComputationResultFiltersMapper.toEntity(list.getFirst());
+                }, (a, b) -> a, () -> new EnumMap<>(ComputationType.class)));
+        root.setComputationResultFilter(mappedFilters);
+        return computationResultFiltersRepository.saveAndFlush(root).getId();
     }
 
     private ComputationResultFiltersInfos readComputationResultFiltersInfos() throws IOException {
@@ -71,9 +77,11 @@ public class ComputationResultFiltersService {
     public ComputationResultFiltersInfos getComputingResultFilters(UUID id) {
         ComputationResultFiltersEntity entity = computationResultFiltersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + id));
-        return new ComputationResultFiltersInfos(entity.getId(), entity.getComputationResultFilter().stream()
-                .map(ComputationResultFiltersMapper::toDto)
-                .toList());
+
+        Map<ComputationType, List<ComputationResultFilterInfos>> groupedFilters = entity.getComputationResultFilter()
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> List.of(ComputationResultFiltersMapper.toDto(e.getValue()))));
+        return new ComputationResultFiltersInfos(entity.getId(), groupedFilters);
     }
 
     @Transactional
@@ -88,7 +96,7 @@ public class ComputationResultFiltersService {
     @Transactional
     public void updateColumn(UUID id, UUID columnId, ColumnInfos dto) {
         ComputationResultFilterEntity entity = findEntityById(id);
-        ColumnsFiltersEntity wrapper = entity.getColumnsFilters().stream()
+        ColumnsFiltersEntity wrapper = entity.getColumnsFilters().values().stream()
                 .filter(w -> w.getId().equals(columnId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Column wrapper not found: " + columnId));
@@ -121,6 +129,6 @@ public class ComputationResultFiltersService {
     }
 
     private EntityNotFoundException entityNotFoundException(UUID id) {
-        return new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
+        return new EntityNotFoundException("ComputationResultFilter not found with id: " + id);
     }
 }

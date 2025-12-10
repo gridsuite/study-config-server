@@ -6,14 +6,20 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.gridsuite.studyconfig.server.constants.ComputationSubType;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.ColumnsFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFilterInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.*;
+import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
+import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -23,47 +29,51 @@ public final class ComputationResultFiltersMapper {
     private ComputationResultFiltersMapper() { }
 
     public static ComputationResultFilterInfos toDto(ComputationResultFilterEntity entity) {
+        Map<ComputationSubType, ColumnsFiltersInfos> columnsFiltersMap = entity.getColumnsFilters().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new ColumnsFiltersInfos(
+                                e.getValue().getId(),
+                                e.getValue().getColumns().stream()
+                                        .map(SpreadsheetConfigMapper::toColumnDto)
+                                        .toList()
+                        ),
+                        (a, b) -> a,
+                        () -> new EnumMap<>(ComputationSubType.class)
+                ));
+
+        List<GlobalFilterInfos> globalFiltersList = entity.getGlobalFilters().stream()
+                .map(SpreadsheetConfigMapper::toGlobalFilterDto)
+                .toList();
+
         return new ComputationResultFilterInfos(
                 entity.getId(),
-                entity.getComputationType(),
-                entity.getColumnsFilters().stream()
-                        .map(ComputationResultFiltersMapper::toColumnsFiltersDto)
-                        .toList(),
-                entity.getGlobalFilters().stream()
-                        .map(SpreadsheetConfigMapper::toGlobalFilterDto)
-                        .toList()
+                columnsFiltersMap,
+                globalFiltersList
         );
-    }
-
-    public static ColumnsFiltersInfos toColumnsFiltersDto(ColumnsFiltersEntity entity) {
-        return ColumnsFiltersInfos.builder()
-                .id(entity.getId())
-                .computationSubType(entity.getComputationSubType())
-                .columns(entity.getColumns().stream()
-                        .map(SpreadsheetConfigMapper::toColumnDto)
-                        .toList())
-                .build();
     }
 
     public static ComputationResultFilterEntity toEntity(ComputationResultFilterInfos filter) {
 
-        List<ColumnsFiltersEntity> tabs = new ArrayList<>();
+        Map<ComputationSubType, ColumnsFiltersEntity> columnsFiltersMap = new EnumMap<>(ComputationSubType.class);
 
-        for (ColumnsFiltersInfos tab : filter.columnsFilters()) {
+        filter.columnsFilters().forEach((subType, cfi) -> {
 
-            List<ColumnEntity> colEntities = tab.columns().stream()
+            List<ColumnEntity> columns = cfi.columns().stream()
                     .map(ComputationResultFiltersMapper::toColumnEntity)
                     .toList();
 
-            tabs.add(ColumnsFiltersEntity.builder()
-                    .computationSubType(tab.computationSubType())
-                    .columns(colEntities)
-                    .build());
-        }
+            ColumnsFiltersEntity entity = ColumnsFiltersEntity.builder()
+                    .id(cfi.id())
+                    .columns(columns)
+                    .build();
+
+            columnsFiltersMap.put(subType, entity);
+        });
 
         return ComputationResultFilterEntity.builder()
-                .computationType(filter.computationType())
-                .columnsFilters(tabs)
+                .id(filter.id())
+                .columnsFilters(columnsFiltersMap)
                 .globalFilters(filter.globalFilters().stream()
                         .map(ComputationResultFiltersMapper::toGlobalFilterEntity)
                         .toList())
