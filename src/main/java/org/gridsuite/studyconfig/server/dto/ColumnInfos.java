@@ -6,12 +6,11 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
-import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.constants.ColumnType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+
+import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -38,23 +37,11 @@ public record ColumnInfos(
     @Schema(description = "Column dependencies")
     String dependencies,
 
-    @Schema(description = "Column id")
-    String id,
-
-    @Schema(description = "Filter data type")
-    String filterDataType,
-
-    @Schema(description = "Filter type")
-    String filterType,
-
-    @Schema(description = "Filter value")
-    String filterValue,
-
-    @Schema(description = "Filter tolerance for numeric comparisons")
-    Double filterTolerance,
-
     @Schema(description = "Column visibility", defaultValue = "true")
-    Boolean visible
+    Boolean visible,
+
+    @Schema(description = "Column filter")
+    ColumnFilterInfos columnFilterInfos
 ) {
     public ColumnInfos {
         if (visible == null) {
