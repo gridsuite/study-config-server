@@ -34,7 +34,7 @@ public class ComputationResultFilterEntity {
     @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "computation_sub_type")
     @Builder.Default
-    private Map<ComputationSubType, ColumnsFiltersEntity> columnsFilters = new EnumMap<>(ComputationSubType.class);
+    private Map<ComputationSubType, ComputationResultColumnsFiltersEntity> columnsFilters = new EnumMap<>(ComputationSubType.class);
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(

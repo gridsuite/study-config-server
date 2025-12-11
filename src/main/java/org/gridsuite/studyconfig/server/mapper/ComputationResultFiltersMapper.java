@@ -10,8 +10,8 @@ import org.gridsuite.studyconfig.server.constants.ComputationSubType;
 import org.gridsuite.studyconfig.server.dto.ColumnsFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFilterInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
-import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultColumnsFiltersEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
 
 import java.util.EnumMap;
@@ -31,7 +31,7 @@ public final class ComputationResultFiltersMapper {
                 .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
                         e -> new ColumnsFiltersInfos(
                                 e.getValue().getId(),
-                                e.getValue().getColumns().stream().map(CommonFiltersMapper::toColumnDto).toList()),
+                                e.getValue().getColumns().stream().map(CommonFiltersMapper::toColumnFilterDto).toList()),
                         (a, b) -> a,
                         () -> new EnumMap<>(ComputationSubType.class)
                 ));
@@ -49,20 +49,20 @@ public final class ComputationResultFiltersMapper {
 
     public static ComputationResultFilterEntity toEntity(ComputationResultFilterInfos computationResultFilterInfos) {
 
-        Map<ComputationSubType, ColumnsFiltersEntity> columnsFiltersMap = new EnumMap<>(ComputationSubType.class);
+        Map<ComputationSubType, ComputationResultColumnsFiltersEntity> columnsFiltersMap = new EnumMap<>(ComputationSubType.class);
 
         computationResultFilterInfos.columnsFilters().forEach((subType, columnsFiltersInfos) -> {
 
-            List<ColumnEntity> columns = columnsFiltersInfos.columns().stream()
-                    .map(CommonFiltersMapper::toColumnEntity)
+            List<ColumnFilterEntity> columns = columnsFiltersInfos.columns().stream()
+                    .map(CommonFiltersMapper::toColumnFilterEntity)
                     .toList();
 
-            ColumnsFiltersEntity columnsFiltersEntity = ColumnsFiltersEntity.builder()
+            ComputationResultColumnsFiltersEntity computationResultColumnsFiltersEntity = ComputationResultColumnsFiltersEntity.builder()
                     .id(columnsFiltersInfos.id())
                     .columns(columns)
                     .build();
 
-            columnsFiltersMap.put(subType, columnsFiltersEntity);
+            columnsFiltersMap.put(subType, computationResultColumnsFiltersEntity);
         });
 
         return ComputationResultFilterEntity.builder()

@@ -10,12 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.constants.ComputationType;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
-import org.gridsuite.studyconfig.server.entities.ColumnsFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultColumnsFiltersEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
 import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
 import org.gridsuite.studyconfig.server.mapper.CommonFiltersMapper;
@@ -95,32 +95,27 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void updateColumn(UUID id, UUID columnId, ColumnInfos dto) {
+    public void updateColumn(UUID id, UUID columnId, ColumnFilterInfos dto) {
         ComputationResultFilterEntity entity = findEntityById(id);
-        ColumnsFiltersEntity wrapper = entity.getColumnsFilters().values().stream()
+        ComputationResultColumnsFiltersEntity wrapper = entity.getColumnsFilters().values().stream()
                 .filter(w -> w.getId().equals(columnId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Column wrapper not found: " + columnId));
         if (wrapper.getColumns() == null) {
             wrapper.setColumns(new ArrayList<>());
         }
-        ColumnEntity column = wrapper.getColumns().stream().filter(c -> c.getId().equals(dto.id())).findFirst()
+        ColumnFilterEntity column = wrapper.getColumns().stream().filter(
+                c -> c.getColumnId().equals(dto.columnId())).findFirst()
                 .orElseGet(() -> {
-                    ColumnEntity newCol = new ColumnEntity();
+                    ColumnFilterEntity newCol = new ColumnFilterEntity();
                     wrapper.getColumns().add(newCol);
                     return newCol;
                 });
-        column.setId(dto.id());
-        column.setName(dto.name());
-        column.setType(dto.type());
-        column.setPrecision(dto.precision());
-        column.setFormula(dto.formula());
-        column.setDependencies(dto.dependencies());
+        column.setColumnId(dto.columnId());
         column.setFilterDataType(dto.filterDataType());
         column.setFilterType(dto.filterType());
         column.setFilterValue(dto.filterValue());
         column.setFilterTolerance(dto.filterTolerance());
-        column.setVisible(dto.visible());
         computationResultFilterRepository.save(entity);
     }
 

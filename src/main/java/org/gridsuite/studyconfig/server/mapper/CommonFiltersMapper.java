@@ -1,15 +1,26 @@
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 
+/**
+ * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
+ */
 public final class CommonFiltersMapper {
 
     private CommonFiltersMapper() { }
 
-    public static ColumnInfos toColumnDto(ColumnEntity entity) {
+    public static ColumnInfos toColumnDto(SpreadsheetColumnEntity entity) {
         return new ColumnInfos(
                 entity.getUuid(),
                 entity.getName(),
@@ -17,28 +28,43 @@ public final class CommonFiltersMapper {
                 entity.getPrecision(),
                 entity.getFormula(),
                 entity.getDependencies(),
-                entity.getId(),
-                entity.getFilterDataType(),
-                entity.getFilterType(),
-                entity.getFilterValue(),
-                entity.getFilterTolerance(),
-                entity.isVisible()
+                entity.isVisible(),
+                entity.getColumnFilter() == null ? null : toColumnFilterDto(entity.getColumnFilter())
         );
     }
 
-    public static ColumnEntity toColumnEntity(ColumnInfos dto) {
-        return ColumnEntity.builder()
+    public static ColumnFilterInfos toColumnFilterDto(ColumnFilterEntity entity) {
+        return new ColumnFilterInfos(
+                entity.getUuid(),
+                entity.getColumnId(),
+                entity.getFilterDataType(),
+                entity.getFilterType(),
+                entity.getFilterValue(),
+                entity.getFilterTolerance()
+        );
+    }
+
+    public static SpreadsheetColumnEntity toColumnEntity(ColumnInfos dto) {
+        return SpreadsheetColumnEntity.builder()
                 .name(dto.name())
                 .type(dto.type())
                 .precision(dto.precision())
                 .formula(dto.formula())
                 .dependencies(dto.dependencies())
-                .id(dto.id())
+                .visible(dto.visible())
+                .columnFilter(dto.columnFilterInfos() == null
+                        ? null
+                        : toColumnFilterEntity(dto.columnFilterInfos()))
+                .build();
+    }
+
+    public static ColumnFilterEntity toColumnFilterEntity(ColumnFilterInfos dto) {
+        return ColumnFilterEntity.builder()
+                .columnId(dto.columnId())
                 .filterDataType(dto.filterDataType())
                 .filterType(dto.filterType())
                 .filterValue(dto.filterValue())
                 .filterTolerance(dto.filterTolerance())
-                .visible(dto.visible())
                 .build();
     }
 

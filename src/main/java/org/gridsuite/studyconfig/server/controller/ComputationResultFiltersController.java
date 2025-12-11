@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
@@ -74,7 +74,7 @@ public class ComputationResultFiltersController {
     public ResponseEntity<Void> updateColumn(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
-            @Valid @RequestBody ColumnInfos dto) {
+            @Valid @RequestBody ColumnFilterInfos dto) {
         computationGlobalFiltersService.updateColumn(id, columnId, dto);
         return ResponseEntity.noContent().build();
     }

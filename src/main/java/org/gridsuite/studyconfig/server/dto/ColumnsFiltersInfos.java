@@ -17,6 +17,6 @@ public record ColumnsFiltersInfos(
     UUID id,
 
     @Schema(description = "Columns")
-    List<ColumnInfos> columns
+    List<ColumnFilterInfos> columns
 ) { }
 

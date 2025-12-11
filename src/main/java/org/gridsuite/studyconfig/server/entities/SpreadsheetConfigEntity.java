@@ -42,7 +42,7 @@ public class SpreadsheetConfigEntity {
     @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_columns"))
     @OrderColumn(name = "column_order")
     @Builder.Default
-    private List<ColumnEntity> columns = new ArrayList<>();
+    private List<SpreadsheetColumnEntity> columns = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
@@ -65,6 +65,6 @@ public class SpreadsheetConfigEntity {
 
     public void resetFilters() {
         this.globalFilters.clear();
-        getColumns().forEach(ColumnEntity::resetFilter);
+        getColumns().forEach(SpreadsheetColumnEntity::resetColumn);
     }
 }

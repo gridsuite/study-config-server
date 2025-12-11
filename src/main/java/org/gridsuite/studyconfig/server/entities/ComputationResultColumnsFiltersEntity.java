@@ -17,13 +17,13 @@ import java.util.UUID;
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @Entity
-@Table(name = "columns_filters")
+@Table(name = "computation_result_columns_filters")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ColumnsFiltersEntity {
+public class ComputationResultColumnsFiltersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,5 +34,5 @@ public class ColumnsFiltersEntity {
     @JoinColumn(name = "columns_filters_id", foreignKey = @ForeignKey(name = "fk_column_filters"))
     @OrderColumn(name = "column_order")
     @Builder.Default
-    private List<ColumnEntity> columns = new ArrayList<>();
+    private List<ColumnFilterEntity> columns = new ArrayList<>();
 }
