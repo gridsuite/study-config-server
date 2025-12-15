@@ -68,6 +68,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- overrides of imports -->
+            <dependency>
+                <groupId>com.powsybl</groupId>
+                <artifactId>powsybl-ws-commons</artifactId>
+                <version>1.34.0</version>
+            </dependency>
 
             <!-- imports -->
             <dependency>

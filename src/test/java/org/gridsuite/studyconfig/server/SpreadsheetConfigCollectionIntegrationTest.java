@@ -29,7 +29,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -213,7 +215,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid))
-                .andExpect(status().isNotFound());
+            .andExpect(content().string(containsString("SpreadsheetConfigCollection not found with id:")))
+            .andReturn();
     }
 
     @Test
@@ -325,7 +328,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + nonExistentUuid + "/spreadsheet-configs")
                 .content(newConfigJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(content().string(containsString("SpreadsheetConfigCollection not found with id:")))
+                .andReturn();
     }
 
     @Test
@@ -335,7 +339,8 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         UUID nonExistentConfigId = UUID.randomUUID();
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs/" + nonExistentConfigId))
-                .andExpect(status().isNotFound());
+            .andExpect(content().string(containsString("Spreadsheet configuration not found in collection")))
+            .andReturn();
     }
 
     @Test
