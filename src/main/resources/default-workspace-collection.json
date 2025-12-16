@@ -1,0 +1,60 @@
+{
+  "workspaces": [
+    {
+      "name": "Workspace 1",
+      "focusedPanelId": null,
+      "nextZIndex": 3,
+      "nextOrderIndex": 3,
+      "panels": [
+        {
+          "type": "TREE",
+          "title": "Tree",
+          "position": {
+            "x": 0.0,
+            "y": 0.0
+          },
+          "size": {
+            "width": 0.75,
+            "height": 1.0
+          },
+          "zIndex": 1,
+          "isMinimized": false,
+          "isMaximized": false,
+          "isPinned": false,
+          "isClosed": false
+        },
+        {
+          "type": "NODE_EDITOR",
+          "title": "Modifications",
+          "position": {
+            "x": 0.75,
+            "y": 0.0
+          },
+          "size": {
+            "width": 0.25,
+            "height": 1.0
+          },
+          "zIndex": 2,
+          "isMinimized": false,
+          "isMaximized": false,
+          "isPinned": false,
+          "isClosed": false
+        }
+      ]
+    },
+    {
+      "name": "Workspace 2",
+      "focusedPanelId": null,
+      "nextZIndex": 1,
+      "nextOrderIndex": 1,
+      "panels": []
+    },
+    {
+      "name": "Workspace 3",
+      "focusedPanelId": null,
+      "nextZIndex": 1,
+      "nextOrderIndex": 1,
+      "panels": []
+    }
+  ]
+}

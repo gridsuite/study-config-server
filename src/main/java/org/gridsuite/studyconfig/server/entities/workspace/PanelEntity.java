@@ -1,0 +1,94 @@
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package org.gridsuite.studyconfig.server.entities.workspace;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.gridsuite.studyconfig.server.entities.AbstractManuallyAssignedIdentifierEntity;
+
+import java.util.UUID;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "panel")
+public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> {
+
+    @Id
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PanelType type;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "position_x", nullable = false)
+    private double positionX;
+
+    @Column(name = "position_y", nullable = false)
+    private double positionY;
+
+    @Column(name = "size_width", nullable = false)
+    private double sizeWidth;
+
+    @Column(name = "size_height", nullable = false)
+    private double sizeHeight;
+
+    @Column(name = "z_index", nullable = false)
+    private int zIndex;
+
+    @Column(name = "order_index", nullable = false)
+    private int orderIndex;
+
+    @Column(name = "is_minimized", nullable = false)
+    private boolean isMinimized;
+
+    @Column(name = "is_maximized", nullable = false)
+    private boolean isMaximized;
+
+    @Column(name = "is_pinned", nullable = false)
+    private boolean isPinned;
+
+    @Column(name = "is_closed", nullable = false)
+    private boolean isClosed;
+
+    @Column(name = "restore_position_x")
+    private Double restorePositionX;
+
+    @Column(name = "restore_position_y")
+    private Double restorePositionY;
+
+    @Column(name = "restore_size_width")
+    private Double restoreSizeWidth;
+
+    @Column(name = "restore_size_height")
+    private Double restoreSizeHeight;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "metadata_id", foreignKey = @ForeignKey(name = "fk_panel_metadata"))
+    private AbstractPanelMetadataEntity metadata;
+
+    public enum PanelType {
+        TREE,
+        SPREADSHEET,
+        LOGS,
+        RESULTS,
+        PARAMETERS,
+        SLD_VOLTAGE_LEVEL,
+        SLD_SUBSTATION,
+        NAD,
+        MAP,
+        NODE_EDITOR,
+        EVENT_SCENARIO
+    }
+}
