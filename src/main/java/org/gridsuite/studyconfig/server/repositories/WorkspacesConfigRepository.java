@@ -6,12 +6,12 @@
  */
 package org.gridsuite.studyconfig.server.repositories;
 
-import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceCollectionEntity;
+import org.gridsuite.studyconfig.server.entities.workspace.WorkspacesConfigEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 @Repository
-public interface WorkspaceCollectionRepository extends JpaRepository<WorkspaceCollectionEntity, UUID> {
+public interface WorkspacesConfigRepository extends JpaRepository<WorkspacesConfigEntity, UUID> {
 }

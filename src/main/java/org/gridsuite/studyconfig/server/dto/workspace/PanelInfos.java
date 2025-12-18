@@ -8,7 +8,7 @@ package org.gridsuite.studyconfig.server.dto.workspace;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.gridsuite.studyconfig.server.entities.workspace.PanelEntity;
+import org.gridsuite.studyconfig.server.entities.workspace.PanelType;
 
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public record PanelInfos(
     UUID id,
 
     @Schema(description = "Panel type")
-    PanelEntity.PanelType type,
+    PanelType type,
 
     @Schema(description = "Panel title")
     String title,
@@ -29,9 +29,6 @@ public record PanelInfos(
 
     @Schema(description = "Panel size")
     PanelSizeInfos size,
-
-    @Schema(description = "Z-index")
-    int zIndex,
 
     @Schema(description = "Order index for panel ordering")
     int orderIndex,

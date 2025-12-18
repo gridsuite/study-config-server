@@ -8,15 +8,17 @@ package org.gridsuite.studyconfig.server.dto.workspace;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
 import java.util.UUID;
 
-@Schema(name = "WorkspaceCollectionDto", description = "Workspace collection")
-public record WorkspaceCollectionInfos(
-    @Schema(description = "Workspace collection ID")
+@Schema(name = "WorkspaceMetadata", description = "Lightweight workspace metadata")
+public record WorkspaceMetadata(
+    @Schema(description = "Workspace ID")
     UUID id,
 
-    @Schema(description = "List of workspaces")
-    List<WorkspaceInfos> workspaces
+    @Schema(description = "Workspace name")
+    String name,
+
+    @Schema(description = "Number of panels in the workspace")
+    int panelCount
 ) {
 }

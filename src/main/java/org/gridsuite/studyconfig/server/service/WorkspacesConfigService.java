@@ -9,10 +9,15 @@ package org.gridsuite.studyconfig.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.workspace.*;
-import org.gridsuite.studyconfig.server.entities.workspace.*;
+import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspacesConfigInfos;
+import org.gridsuite.studyconfig.server.entities.workspace.PanelEntity;
+import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
+import org.gridsuite.studyconfig.server.entities.workspace.WorkspacesConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.WorkspaceMapper;
-import org.gridsuite.studyconfig.server.repositories.WorkspaceCollectionRepository;
+import org.gridsuite.studyconfig.server.repositories.WorkspacesConfigRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -26,59 +31,38 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class WorkspaceCollectionService {
+public class WorkspacesConfigService {
 
-    private final WorkspaceCollectionRepository workspaceCollectionRepository;
+    private final WorkspacesConfigRepository workspacesConfigRepository;
     private final ObjectMapper objectMapper;
 
-    @Value("classpath:default-workspace-collection.json")
-    private Resource defaultWorkspaceCollectionResource;
+    @Value("classpath:default-workspaces-config.json")
+    private Resource defaultWorkspacesConfigResource;
 
-    private static final String WORKSPACE_COLLECTION_NOT_FOUND = "WorkspaceCollection not found with id: ";
+    private static final String WORKSPACES_CONFIG_NOT_FOUND = "WorkspacesConfig not found with id: ";
     private static final String WORKSPACE_NOT_FOUND = "Workspace not found with id: ";
-    private static final String PANEL_NOT_FOUND = "Panel not found with id: ";
 
-    @Transactional(readOnly = true)
-    public WorkspaceCollectionInfos getWorkspaceCollection(UUID id) {
-        WorkspaceCollectionEntity entity = workspaceCollectionRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + id));
-        return WorkspaceMapper.toDto(entity);
-    }
-
-    public UUID createWorkspaceCollection(WorkspaceCollectionInfos dto) {
-        WorkspaceCollectionEntity entity = WorkspaceMapper.toEntity(dto);
-        return workspaceCollectionRepository.save(entity).getId();
+    private UUID createWorkspacesConfig(WorkspacesConfigInfos dto) {
+        WorkspacesConfigEntity entity = WorkspaceMapper.toEntity(dto);
+        return workspacesConfigRepository.save(entity).getId();
     }
 
     @Transactional
-    public void updateWorkspaceCollection(UUID id, WorkspaceCollectionInfos dto) {
-        WorkspaceCollectionEntity entity = workspaceCollectionRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + id));
-
-        entity.getWorkspaces().clear();
-        if (dto.workspaces() != null) {
-            entity.getWorkspaces().addAll(dto.workspaces().stream()
-                .map(WorkspaceMapper::toWorkspaceEntity)
-                .toList());
+    public void deleteWorkspacesConfig(UUID id) {
+        if (!workspacesConfigRepository.existsById(id)) {
+            throw new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + id);
         }
+        workspacesConfigRepository.deleteById(id);
     }
 
     @Transactional
-    public void deleteWorkspaceCollection(UUID id) {
-        if (!workspaceCollectionRepository.existsById(id)) {
-            throw new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + id);
-        }
-        workspaceCollectionRepository.deleteById(id);
-    }
+    public UUID duplicateWorkspacesConfig(UUID id) {
+        WorkspacesConfigEntity source = workspacesConfigRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + id));
 
-    @Transactional
-    public UUID duplicateWorkspaceCollection(UUID id) {
-        WorkspaceCollectionEntity source = workspaceCollectionRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + id));
-
-        WorkspaceCollectionInfos dto = WorkspaceMapper.toDto(source);
+        WorkspacesConfigInfos dto = WorkspaceMapper.toDto(source);
         // Clear all IDs to ensure new entities are created
-        WorkspaceCollectionInfos dtoWithoutIds = new WorkspaceCollectionInfos(
+        WorkspacesConfigInfos dtoWithoutIds = new WorkspacesConfigInfos(
             null,
             dto.workspaces().stream()
                 .map(w -> new WorkspaceInfos(
@@ -91,7 +75,7 @@ public class WorkspaceCollectionService {
                             p.title(),
                             p.position(),
                             p.size(),
-                            p.zIndex(),
+
                             p.orderIndex(),
                             p.isMinimized(),
                             p.isMaximized(),
@@ -105,25 +89,29 @@ public class WorkspaceCollectionService {
                 ))
                 .toList()
         );
-        WorkspaceCollectionEntity entity = WorkspaceMapper.toEntity(dtoWithoutIds);
-        return workspaceCollectionRepository.save(entity).getId();
+        WorkspacesConfigEntity entity = WorkspaceMapper.toEntity(dtoWithoutIds);
+        return workspacesConfigRepository.save(entity).getId();
     }
 
     @Transactional(readOnly = true)
-    public List<WorkspaceInfos> getWorkspaces(UUID collectionId) {
-        WorkspaceCollectionEntity entity = workspaceCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + collectionId));
+    public List<WorkspaceMetadata> getWorkspacesMetadata(UUID configId) {
+        WorkspacesConfigEntity entity = workspacesConfigRepository.findById(configId)
+            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + configId));
         return entity.getWorkspaces().stream()
-            .map(WorkspaceMapper::toWorkspaceDto)
+            .map(workspace -> new WorkspaceMetadata(
+                workspace.getId(),
+                workspace.getName(),
+                workspace.getPanels().size()
+            ))
             .toList();
     }
 
     @Transactional(readOnly = true)
-    public WorkspaceInfos getWorkspace(UUID collectionId, UUID workspaceId) {
-        WorkspaceCollectionEntity collection = workspaceCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + collectionId));
+    public WorkspaceInfos getWorkspace(UUID configId, UUID workspaceId) {
+        WorkspacesConfigEntity config = workspacesConfigRepository.findById(configId)
+            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + configId));
 
-        WorkspaceEntity workspace = collection.getWorkspaces().stream()
+        WorkspaceEntity workspace = config.getWorkspaces().stream()
             .filter(w -> w.getId().equals(workspaceId))
             .findFirst()
             .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_NOT_FOUND + workspaceId));
@@ -132,48 +120,30 @@ public class WorkspaceCollectionService {
     }
 
     @Transactional
-    public void updateWorkspace(UUID collectionId, UUID workspaceId, WorkspaceInfos dto) {
-        WorkspaceCollectionEntity collection = workspaceCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + collectionId));
+    public void renameWorkspace(UUID configId, UUID workspaceId, String name) {
+        WorkspacesConfigEntity config = workspacesConfigRepository.findById(configId)
+            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + configId));
 
-        WorkspaceEntity workspace = collection.getWorkspaces().stream()
+        WorkspaceEntity workspace = config.getWorkspaces().stream()
             .filter(w -> w.getId().equals(workspaceId))
             .findFirst()
             .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_NOT_FOUND + workspaceId));
 
-        workspace.setName(dto.name());
-
-        workspace.getPanels().clear();
-        if (dto.panels() != null) {
-            workspace.getPanels().addAll(dto.panels().stream()
-                .map(WorkspaceMapper::toPanelEntity)
-                .toList());
-        }
+        workspace.setName(name);
     }
 
     @Transactional(readOnly = true)
-    public List<PanelInfos> getPanels(UUID collectionId, UUID workspaceId, List<UUID> panelIds) {
-        WorkspaceEntity workspace = findWorkspace(collectionId, workspaceId);
+    public List<PanelInfos> getPanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
+        WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         return workspace.getPanels().stream()
             .filter(p -> panelIds == null || panelIds.isEmpty() || panelIds.contains(p.getId()))
             .map(WorkspaceMapper::toPanelDto)
             .toList();
     }
 
-    @Transactional(readOnly = true)
-    public PanelInfos getPanel(UUID collectionId, UUID workspaceId, UUID panelId) {
-        WorkspaceEntity workspace = findWorkspace(collectionId, workspaceId);
-        PanelEntity panel = workspace.getPanels().stream()
-            .filter(p -> p.getId().equals(panelId))
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException(PANEL_NOT_FOUND + panelId));
-
-        return WorkspaceMapper.toPanelDto(panel);
-    }
-
     @Transactional
-    public void createOrUpdatePanels(UUID collectionId, UUID workspaceId, List<PanelInfos> panels) {
-        WorkspaceEntity workspace = findWorkspace(collectionId, workspaceId);
+    public void createOrUpdatePanels(UUID configId, UUID workspaceId, List<PanelInfos> panels) {
+        WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
 
         for (PanelInfos panelDto : panels) {
             if (panelDto.id() != null) {
@@ -199,8 +169,8 @@ public class WorkspaceCollectionService {
     }
 
     @Transactional
-    public void deletePanels(UUID collectionId, UUID workspaceId, List<UUID> panelIds) {
-        WorkspaceEntity workspace = findWorkspace(collectionId, workspaceId);
+    public void deletePanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
+        WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
     }
 
@@ -211,7 +181,6 @@ public class WorkspaceCollectionService {
         panel.setPositionY(dto.position().y());
         panel.setSizeWidth(dto.size().width());
         panel.setSizeHeight(dto.size().height());
-        panel.setZIndex(dto.zIndex());
         panel.setOrderIndex(dto.orderIndex());
         panel.setMinimized(dto.isMinimized());
         panel.setMaximized(dto.isMaximized());
@@ -242,7 +211,6 @@ public class WorkspaceCollectionService {
                 dto.title(),
                 dto.position(),
                 dto.size(),
-                dto.zIndex(),
                 dto.orderIndex(),
                 dto.isMinimized(),
                 dto.isMaximized(),
@@ -259,22 +227,22 @@ public class WorkspaceCollectionService {
         }
     }
 
-    public UUID createDefaultWorkspaceCollection() {
+    public UUID createDefaultWorkspacesConfig() {
         try {
-            WorkspaceCollectionInfos defaultCollection = readDefaultWorkspaceCollection();
-            return createWorkspaceCollection(defaultCollection);
+            WorkspacesConfigInfos defaultConfig = readDefaultWorkspacesConfig();
+            return createWorkspacesConfig(defaultConfig);
         } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read default workspace collection", e);
+            throw new UncheckedIOException("Failed to read default workspaces config", e);
         }
     }
 
-    private WorkspaceCollectionInfos readDefaultWorkspaceCollection() throws IOException {
-        try (InputStream inputStream = defaultWorkspaceCollectionResource.getInputStream()) {
-            WorkspaceCollectionInfos collection = objectMapper.readValue(inputStream, WorkspaceCollectionInfos.class);
+    private WorkspacesConfigInfos readDefaultWorkspacesConfig() throws IOException {
+        try (InputStream inputStream = defaultWorkspacesConfigResource.getInputStream()) {
+            WorkspacesConfigInfos config = objectMapper.readValue(inputStream, WorkspacesConfigInfos.class);
             // Generate UUIDs for panels that don't have them
-            return new WorkspaceCollectionInfos(
-                collection.id(),
-                collection.workspaces().stream()
+            return new WorkspacesConfigInfos(
+                config.id(),
+                config.workspaces().stream()
                     .map(workspace -> new WorkspaceInfos(
                         workspace.id(),
                         workspace.name(),
@@ -286,7 +254,7 @@ public class WorkspaceCollectionService {
                                     panel.title(),
                                     panel.position(),
                                     panel.size(),
-                                    panel.zIndex(),
+
                                     panel.orderIndex(),
                                     panel.isMinimized(),
                                     panel.isMaximized(),
@@ -305,11 +273,11 @@ public class WorkspaceCollectionService {
         }
     }
 
-    private WorkspaceEntity findWorkspace(UUID collectionId, UUID workspaceId) {
-        WorkspaceCollectionEntity collection = workspaceCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_COLLECTION_NOT_FOUND + collectionId));
+    private WorkspaceEntity findWorkspace(UUID configId, UUID workspaceId) {
+        WorkspacesConfigEntity config = workspacesConfigRepository.findById(configId)
+            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + configId));
 
-        return collection.getWorkspaces().stream()
+        return config.getWorkspaces().stream()
             .filter(w -> w.getId().equals(workspaceId))
             .findFirst()
             .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_NOT_FOUND + workspaceId));

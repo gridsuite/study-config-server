@@ -44,9 +44,6 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
     @Column(name = "size_height", nullable = false)
     private double sizeHeight;
 
-    @Column(name = "z_index", nullable = false)
-    private int zIndex;
-
     @Column(name = "order_index", nullable = false)
     private int orderIndex;
 
@@ -77,18 +74,4 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "metadata_id", foreignKey = @ForeignKey(name = "fk_panel_metadata"))
     private AbstractPanelMetadataEntity metadata;
-
-    public enum PanelType {
-        TREE,
-        SPREADSHEET,
-        LOGS,
-        RESULTS,
-        PARAMETERS,
-        SLD_VOLTAGE_LEVEL,
-        SLD_SUBSTATION,
-        NAD,
-        MAP,
-        NODE_EDITOR,
-        EVENT_SCENARIO
-    }
 }

@@ -19,8 +19,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "workspace_collection")
-public class WorkspaceCollectionEntity {
+@Table(name = "workspaces_config")
+public class WorkspacesConfigEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +28,7 @@ public class WorkspaceCollectionEntity {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_collection_id", foreignKey = @ForeignKey(name = "fk_workspace_collection"))
+    @JoinColumn(name = "workspaces_config_id", foreignKey = @ForeignKey(name = "fk_workspaces_config"))
     @OrderColumn(name = "workspace_order")
     @Builder.Default
     private List<WorkspaceEntity> workspaces = new ArrayList<>();

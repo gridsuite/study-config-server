@@ -16,8 +16,8 @@ public final class WorkspaceMapper {
     private WorkspaceMapper() {
     }
 
-    public static WorkspaceCollectionInfos toDto(WorkspaceCollectionEntity entity) {
-        return new WorkspaceCollectionInfos(
+    public static WorkspacesConfigInfos toDto(WorkspacesConfigEntity entity) {
+        return new WorkspacesConfigInfos(
             entity.getId(),
             entity.getWorkspaces().stream()
                 .map(WorkspaceMapper::toWorkspaceDto)
@@ -25,8 +25,8 @@ public final class WorkspaceMapper {
         );
     }
 
-    public static WorkspaceCollectionEntity toEntity(WorkspaceCollectionInfos dto) {
-        WorkspaceCollectionEntity entity = WorkspaceCollectionEntity.builder()
+    public static WorkspacesConfigEntity toEntity(WorkspacesConfigInfos dto) {
+        WorkspacesConfigEntity entity = WorkspacesConfigEntity.builder()
             .id(dto.id())
             .build();
 
@@ -90,7 +90,6 @@ public final class WorkspaceMapper {
             entity.getTitle(),
             new PanelPositionInfos(entity.getPositionX(), entity.getPositionY()),
             new PanelSizeInfos(entity.getSizeWidth(), entity.getSizeHeight()),
-            entity.getZIndex(),
             entity.getOrderIndex(),
             entity.isMinimized(),
             entity.isMaximized(),
@@ -113,7 +112,6 @@ public final class WorkspaceMapper {
             .positionY(dto.position().y())
             .sizeWidth(dto.size().width())
             .sizeHeight(dto.size().height())
-            .zIndex(dto.zIndex())
             .orderIndex(dto.orderIndex())
             .isMinimized(dto.isMinimized())
             .isMaximized(dto.isMaximized())
