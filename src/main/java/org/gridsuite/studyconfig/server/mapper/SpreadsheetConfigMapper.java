@@ -6,10 +6,10 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
@@ -108,6 +108,8 @@ public final class SpreadsheetConfigMapper {
                 .recent(entity.isRecent())
                 .equipmentType(entity.getEquipmentType())
                 .path(entity.getPath())
+            .minValue(entity.getMinValue())
+            .maxValue(entity.getMaxValue())
                 .build();
 
     }
@@ -121,6 +123,8 @@ public final class SpreadsheetConfigMapper {
                 .recent(dto.recent())
                 .equipmentType(dto.equipmentType())
                 .path(dto.path())
+            .minValue(dto.minValue())
+            .maxValue(dto.maxValue())
                 .build();
     }
 }
