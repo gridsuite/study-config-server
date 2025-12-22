@@ -6,29 +6,38 @@
  */
 package org.gridsuite.studyconfig.server.dto.workspace;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
-@Schema(name = "NADPanelMetadataDto", description = "NAD panel metadata")
-public record NADPanelMetadataInfos(
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(name = "NADPanelDto", description = "NAD panel configuration")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class NADPanelInfos extends PanelInfos {
     @Schema(description = "NAD configuration UUID")
-    UUID nadConfigUuid,
+    private UUID nadConfigUuid;
 
     @Schema(description = "Filter UUID")
-    UUID filterUuid,
+    private UUID filterUuid;
 
     @Schema(description = "Current filter UUID")
-    UUID currentFilterUuid,
+    private UUID currentFilterUuid;
 
     @Schema(description = "Saved workspace configuration UUID")
-    UUID savedWorkspaceConfigUuid,
+    private UUID savedWorkspaceConfigUuid;
 
     @Schema(description = "Voltage level IDs to omit")
-    List<String> voltageLevelToOmitIds,
+    private List<String> voltageLevelToOmitIds;
 
     @Schema(description = "Navigation history")
-    List<String> nadNavigationHistory
-) implements PanelMetadataInfos {
+    private List<String> navigationHistory;
 }

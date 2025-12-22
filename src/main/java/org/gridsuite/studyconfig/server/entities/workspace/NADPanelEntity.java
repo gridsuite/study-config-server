@@ -8,18 +8,20 @@ package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@DiscriminatorValue("NAD")
-public class NADPanelMetadataEntity extends AbstractPanelMetadataEntity {
+@Table(name = "nad_panel")
+public class NADPanelEntity extends PanelEntity {
 
     @Column(name = "nad_config_uuid")
     private UUID nadConfigUuid;
@@ -34,13 +36,15 @@ public class NADPanelMetadataEntity extends AbstractPanelMetadataEntity {
     private UUID savedWorkspaceConfigUuid;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "nad_voltage_level_to_omit", joinColumns = @JoinColumn(name = "metadata_id"))
+    @CollectionTable(name = "nad_panel_voltage_level_to_omit", joinColumns = @JoinColumn(name = "panel_id"))
     @Column(name = "voltage_level_id")
+    @Builder.Default
     private List<String> voltageLevelToOmitIds = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "nad_navigation_history", joinColumns = @JoinColumn(name = "metadata_id"))
+    @CollectionTable(name = "nad_panel_navigation_history", joinColumns = @JoinColumn(name = "panel_id"))
     @Column(name = "voltage_level_id")
     @OrderColumn(name = "position")
-    private List<String> nadNavigationHistory = new ArrayList<>();
+    @Builder.Default
+    private List<String> navigationHistory = new ArrayList<>();
 }

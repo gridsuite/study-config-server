@@ -6,20 +6,29 @@
  */
 package org.gridsuite.studyconfig.server.dto.workspace;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
-@Schema(name = "SLDPanelMetadataDto", description = "SLD panel metadata")
-public record SLDPanelMetadataInfos(
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(name = "SLDPanelDto", description = "SLD panel configuration")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SLDPanelInfos extends PanelInfos {
     @Schema(description = "Diagram ID (voltage level or substation)")
-    String diagramId,
+    private String diagramId;
 
     @Schema(description = "Parent NAD panel ID (if this SLD is associated with a NAD)")
-    UUID parentNadPanelId,
+    private UUID parentNadPanelId;
 
-    @Schema(description = "Navigation history (null for substation SLDs)")
-    List<String> sldNavigationHistory
-) implements PanelMetadataInfos {
+    @Schema(description = "Navigation history")
+    private List<String> navigationHistory;
 }

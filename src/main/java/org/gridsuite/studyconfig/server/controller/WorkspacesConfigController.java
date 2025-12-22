@@ -72,12 +72,12 @@ public class WorkspacesConfigController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/workspaces/metadata")
+    @GetMapping("/{id}/workspaces")
     @Operation(summary = "Get workspaces metadata",
             description = "Retrieves lightweight metadata for all workspaces (id, name, panel count)")
     @ApiResponse(responseCode = "200", description = "Workspaces metadata retrieved")
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
-    public ResponseEntity<List<WorkspaceMetadata>> getWorkspacesMetadata(
+    public ResponseEntity<List<WorkspaceMetadata>> getWorkspaces(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id) {
         return ResponseEntity.ok(workspacesConfigService.getWorkspacesMetadata(id));
     }

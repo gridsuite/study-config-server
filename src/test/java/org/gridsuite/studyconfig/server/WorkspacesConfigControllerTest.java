@@ -52,7 +52,7 @@ class WorkspacesConfigControllerTest {
             WorkspaceMapper.toEntity(createWorkspacesConfig())
         );
 
-        MvcResult mockMvcResult = mockMvc.perform(get("/v1/workspaces-configs/{id}/workspaces/metadata", config.getId()))
+        MvcResult mockMvcResult = mockMvc.perform(get("/v1/workspaces-configs/{id}/workspaces", config.getId()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -162,20 +162,16 @@ class WorkspacesConfigControllerTest {
         UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
 
         PanelInfos newPanel = createPanel("TREE");
-        UUID panelId = newPanel.id() != null ? newPanel.id() : UUID.randomUUID();
-        PanelInfos panelWithId = new PanelInfos(panelId, newPanel.type(), newPanel.title(), newPanel.position(),
-            newPanel.size(), newPanel.orderIndex(), newPanel.isMinimized(), newPanel.isMaximized(),
-            newPanel.isPinned(), newPanel.isClosed(), newPanel.restorePosition(), newPanel.restoreSize(), newPanel.metadata());
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(panelWithId))))
+                .content(objectMapper.writeValueAsString(List.of(newPanel))))
             .andExpect(status().isNoContent());
 
-        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
+        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(newPanel.getId()));
         PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
-        assertThat(panelToCheck.type()).isEqualTo(PanelType.TREE);
+        assertThat(panelToCheck.getType()).isEqualTo(PanelType.TREE);
     }
 
     @Test
@@ -187,21 +183,17 @@ class WorkspacesConfigControllerTest {
         UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
         UUID panelId = workspacesConfig.getWorkspaces().get(0).getPanels().get(0).getId();
 
-        PanelInfos updatedPanel = new PanelInfos(
-            panelId,
-            PanelType.TREE,
-            "Tree Panel",
-            new PanelPositionInfos(0.5, 0.5),
-            new PanelSizeInfos(0.3, 0.3),
-            0,
-            true,
-            false,
-            false,
-            false,
-            null,
-            null,
-            null
-        );
+        PanelInfos updatedPanel = new PanelInfos();
+        updatedPanel.setId(panelId);
+        updatedPanel.setType(PanelType.TREE);
+        updatedPanel.setTitle("Tree Panel");
+        updatedPanel.setPosition(new PanelPositionInfos(0.5, 0.5));
+        updatedPanel.setSize(new PanelSizeInfos(0.3, 0.3));
+        updatedPanel.setOrderIndex(0);
+        updatedPanel.setMinimized(true);
+        updatedPanel.setMaximized(false);
+        updatedPanel.setPinned(false);
+        updatedPanel.setClosed(false);
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
@@ -211,7 +203,7 @@ class WorkspacesConfigControllerTest {
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
         PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
-        assertThat(panelToCheck.position().x()).isEqualTo(0.5);
+        assertThat(panelToCheck.getPosition().x()).isEqualTo(0.5);
         assertThat(panelToCheck.isMinimized()).isTrue();
     }
 
@@ -243,22 +235,19 @@ class WorkspacesConfigControllerTest {
         UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
         UUID panelId = workspacesConfig.getWorkspaces().get(0).getPanels().get(0).getId();
 
-        PanelInfos updatedPanel = new PanelInfos(
-            panelId,
-            PanelType.TREE,
-            "Tree Panel",
-            new PanelPositionInfos(0.5, 0.5),
-            new PanelSizeInfos(0.3, 0.3),
-
-            0,
-            false,
-            true,
-            true,
-            false,
-            new PanelPositionInfos(0.2, 0.2),
-            new PanelSizeInfos(0.6, 0.6),
-            null
-        );
+        PanelInfos updatedPanel = new PanelInfos();
+        updatedPanel.setId(panelId);
+        updatedPanel.setType(PanelType.TREE);
+        updatedPanel.setTitle("Tree Panel");
+        updatedPanel.setPosition(new PanelPositionInfos(0.5, 0.5));
+        updatedPanel.setSize(new PanelSizeInfos(0.3, 0.3));
+        updatedPanel.setOrderIndex(0);
+        updatedPanel.setMinimized(false);
+        updatedPanel.setMaximized(true);
+        updatedPanel.setPinned(true);
+        updatedPanel.setClosed(false);
+        updatedPanel.setRestorePosition(new PanelPositionInfos(0.2, 0.2));
+        updatedPanel.setRestoreSize(new PanelSizeInfos(0.6, 0.6));
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
@@ -268,10 +257,10 @@ class WorkspacesConfigControllerTest {
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
         PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
-        assertThat(panelToCheck.restorePosition()).isNotNull();
-        assertThat(panelToCheck.restorePosition().x()).isEqualTo(0.2);
-        assertThat(panelToCheck.restoreSize()).isNotNull();
-        assertThat(panelToCheck.restoreSize().width()).isEqualTo(0.6);
+        assertThat(panelToCheck.getRestorePosition()).isNotNull();
+        assertThat(panelToCheck.getRestorePosition().x()).isEqualTo(0.2);
+        assertThat(panelToCheck.getRestoreSize()).isNotNull();
+        assertThat(panelToCheck.getRestoreSize().width()).isEqualTo(0.6);
         assertThat(panelToCheck.isMaximized()).isTrue();
         assertThat(panelToCheck.isPinned()).isTrue();
     }
@@ -284,46 +273,35 @@ class WorkspacesConfigControllerTest {
         );
         UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
 
-        SLDPanelMetadataInfos sldMetadata = new SLDPanelMetadataInfos(
-            "voltage-level-123",
-            null,
-            List.of("diagram1", "diagram2", "diagram3")
-        );
-
-        PanelInfos sldPanel = new PanelInfos(
-            null,
-            PanelType.SLD_VOLTAGE_LEVEL,
-            "SLD with Metadata",
-            new PanelPositionInfos(0.0, 0.0),
-            new PanelSizeInfos(0.5, 1.0),
-            0,
-            false,
-            false,
-            false,
-            false,
-            null,
-            null,
-            sldMetadata
-        );
-        UUID panelId = UUID.randomUUID();
-        PanelInfos sldPanelWithId = new PanelInfos(panelId, sldPanel.type(), sldPanel.title(), sldPanel.position(),
-            sldPanel.size(), sldPanel.orderIndex(), sldPanel.isMinimized(), sldPanel.isMaximized(),
-            sldPanel.isPinned(), sldPanel.isClosed(), sldPanel.restorePosition(), sldPanel.restoreSize(), sldPanel.metadata());
+        SLDPanelInfos sldPanel = new SLDPanelInfos();
+        sldPanel.setId(UUID.randomUUID());
+        sldPanel.setType(PanelType.SLD_VOLTAGE_LEVEL);
+        sldPanel.setTitle("SLD with Metadata");
+        sldPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
+        sldPanel.setSize(new PanelSizeInfos(0.5, 1.0));
+        sldPanel.setOrderIndex(0);
+        sldPanel.setMinimized(false);
+        sldPanel.setMaximized(false);
+        sldPanel.setPinned(false);
+        sldPanel.setClosed(false);
+        sldPanel.setDiagramId("voltage-level-123");
+        sldPanel.setParentNadPanelId(null);
+        sldPanel.setNavigationHistory(List.of("diagram1", "diagram2", "diagram3"));
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(sldPanelWithId))))
+                .content(objectMapper.writeValueAsString(List.of(sldPanel))))
             .andExpect(status().isNoContent());
 
-        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
+        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(sldPanel.getId()));
         PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.get(0);
-        assertThat(retrievedPanel.metadata()).isNotNull();
-        assertThat(retrievedPanel.metadata()).isInstanceOf(SLDPanelMetadataInfos.class);
+        assertThat(retrievedPanel).isNotNull();
+        assertThat(retrievedPanel).isInstanceOf(SLDPanelInfos.class);
 
-        SLDPanelMetadataInfos retrievedMetadata = (SLDPanelMetadataInfos) retrievedPanel.metadata();
-        assertThat(retrievedMetadata.diagramId()).isEqualTo("voltage-level-123");
-        assertThat(retrievedMetadata.sldNavigationHistory()).containsExactlyElementsOf(sldMetadata.sldNavigationHistory());
+        SLDPanelInfos retrievedSldPanel = (SLDPanelInfos) retrievedPanel;
+        assertThat(retrievedSldPanel.getDiagramId()).isEqualTo("voltage-level-123");
+        assertThat(retrievedSldPanel.getNavigationHistory()).containsExactly("diagram1", "diagram2", "diagram3");
     }
 
     @Test
@@ -333,118 +311,47 @@ class WorkspacesConfigControllerTest {
         );
         UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
 
-        NADPanelMetadataInfos nadMetadata = new NADPanelMetadataInfos(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            UUID.randomUUID(),
-            List.of("voltage1", "voltage2"),
-            List.of("nav1", "nav2", "nav3")
-        );
+        UUID nadConfigUuid = UUID.randomUUID();
+        UUID filterUuid = UUID.randomUUID();
+        UUID currentFilterUuid = UUID.randomUUID();
+        UUID savedWorkspaceConfigUuid = UUID.randomUUID();
 
-        PanelInfos nadPanel = new PanelInfos(
-            null,
-            PanelType.NAD,
-            "NAD with Metadata",
-            new PanelPositionInfos(0.0, 0.0),
-            new PanelSizeInfos(0.5, 1.0),
-            0,
-            false,
-            false,
-            false,
-            false,
-            null,
-            null,
-            nadMetadata
-        );
-        UUID panelId = UUID.randomUUID();
-        PanelInfos nadPanelWithId = new PanelInfos(panelId, nadPanel.type(), nadPanel.title(), nadPanel.position(),
-            nadPanel.size(), nadPanel.orderIndex(), nadPanel.isMinimized(), nadPanel.isMaximized(),
-            nadPanel.isPinned(), nadPanel.isClosed(), nadPanel.restorePosition(), nadPanel.restoreSize(), nadPanel.metadata());
+        NADPanelInfos nadPanel = new NADPanelInfos();
+        nadPanel.setId(UUID.randomUUID());
+        nadPanel.setType(PanelType.NAD);
+        nadPanel.setTitle("NAD with Metadata");
+        nadPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
+        nadPanel.setSize(new PanelSizeInfos(0.5, 1.0));
+        nadPanel.setOrderIndex(0);
+        nadPanel.setMinimized(false);
+        nadPanel.setMaximized(false);
+        nadPanel.setPinned(false);
+        nadPanel.setClosed(false);
+        nadPanel.setNadConfigUuid(nadConfigUuid);
+        nadPanel.setFilterUuid(filterUuid);
+        nadPanel.setCurrentFilterUuid(currentFilterUuid);
+        nadPanel.setSavedWorkspaceConfigUuid(savedWorkspaceConfigUuid);
+        nadPanel.setVoltageLevelToOmitIds(List.of("voltage1", "voltage2"));
+        nadPanel.setNavigationHistory(List.of("nav1", "nav2", "nav3"));
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(nadPanelWithId))))
+                .content(objectMapper.writeValueAsString(List.of(nadPanel))))
             .andExpect(status().isNoContent());
 
-        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
+        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(nadPanel.getId()));
         PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.get(0);
-        assertThat(retrievedPanel.metadata()).isNotNull();
-        assertThat(retrievedPanel.metadata()).isInstanceOf(NADPanelMetadataInfos.class);
+        assertThat(retrievedPanel).isNotNull();
+        assertThat(retrievedPanel).isInstanceOf(NADPanelInfos.class);
 
-        NADPanelMetadataInfos retrievedMetadata = (NADPanelMetadataInfos) retrievedPanel.metadata();
-        assertThat(retrievedMetadata.nadConfigUuid()).isEqualTo(nadMetadata.nadConfigUuid());
-        assertThat(retrievedMetadata.filterUuid()).isEqualTo(nadMetadata.filterUuid());
-        assertThat(retrievedMetadata.currentFilterUuid()).isEqualTo(nadMetadata.currentFilterUuid());
-        assertThat(retrievedMetadata.savedWorkspaceConfigUuid()).isEqualTo(nadMetadata.savedWorkspaceConfigUuid());
-        assertThat(retrievedMetadata.voltageLevelToOmitIds()).containsExactlyElementsOf(nadMetadata.voltageLevelToOmitIds());
-        assertThat(retrievedMetadata.nadNavigationHistory()).containsExactlyElementsOf(nadMetadata.nadNavigationHistory());
-    }
-
-    @Test
-    void testRemovePanelMetadata() throws Exception {
-        // Create a panel with metadata
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
-
-        SLDPanelMetadataInfos sldMetadata = new SLDPanelMetadataInfos("diagram-id", null, List.of("nav1"));
-        PanelInfos panelWithMetadata = new PanelInfos(
-            null,
-            PanelType.SLD_SUBSTATION,
-            "SLD Panel",
-            new PanelPositionInfos(0.0, 0.0),
-            new PanelSizeInfos(0.5, 1.0),
-            0,
-            false,
-            false,
-            false,
-            false,
-            null,
-            null,
-            sldMetadata
-        );
-        UUID panelId = UUID.randomUUID();
-        PanelInfos panelWithId = new PanelInfos(panelId, panelWithMetadata.type(), panelWithMetadata.title(), panelWithMetadata.position(),
-            panelWithMetadata.size(), panelWithMetadata.orderIndex(), panelWithMetadata.isMinimized(), panelWithMetadata.isMaximized(),
-            panelWithMetadata.isPinned(), panelWithMetadata.isClosed(), panelWithMetadata.restorePosition(),
-            panelWithMetadata.restoreSize(), panelWithMetadata.metadata());
-
-        mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
-                workspacesConfig.getId(), workspaceId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(panelWithId))))
-            .andExpect(status().isNoContent());
-
-        // Update to remove metadata
-        PanelInfos updatedPanel = new PanelInfos(
-            panelId,
-            PanelType.TREE,
-            "Panel without Metadata",
-            new PanelPositionInfos(0.5, 0.5),
-            new PanelSizeInfos(0.3, 0.3),
-            2,
-
-            false,
-            false,
-            false,
-            false,
-            null,
-            null,
-            null
-        );
-
-        mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
-                workspacesConfig.getId(), workspaceId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(updatedPanel))))
-            .andExpect(status().isNoContent());
-
-        List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
-        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
-        assertThat(panelToCheck.metadata()).isNull();
+        NADPanelInfos retrievedNadPanel = (NADPanelInfos) retrievedPanel;
+        assertThat(retrievedNadPanel.getNadConfigUuid()).isEqualTo(nadConfigUuid);
+        assertThat(retrievedNadPanel.getFilterUuid()).isEqualTo(filterUuid);
+        assertThat(retrievedNadPanel.getCurrentFilterUuid()).isEqualTo(currentFilterUuid);
+        assertThat(retrievedNadPanel.getSavedWorkspaceConfigUuid()).isEqualTo(savedWorkspaceConfigUuid);
+        assertThat(retrievedNadPanel.getVoltageLevelToOmitIds()).containsExactly("voltage1", "voltage2");
+        assertThat(retrievedNadPanel.getNavigationHistory()).containsExactly("nav1", "nav2", "nav3");
     }
 
     // Helper methods
@@ -478,20 +385,17 @@ class WorkspacesConfigControllerTest {
 
     private PanelInfos createPanel(String type) {
         PanelType panelType = PanelType.valueOf(type);
-        return new PanelInfos(
-            UUID.randomUUID(),
-            panelType,
-            type + " Panel",
-            new PanelPositionInfos(0.0, 0.0),
-            new PanelSizeInfos(0.5, 1.0),
-            0,
-            false,
-            false,
-            false,
-            false,
-            null,
-            null,
-            null
-        );
+        PanelInfos panel = new PanelInfos();
+        panel.setId(UUID.randomUUID());
+        panel.setType(panelType);
+        panel.setTitle(type + " Panel");
+        panel.setPosition(new PanelPositionInfos(0.0, 0.0));
+        panel.setSize(new PanelSizeInfos(0.5, 1.0));
+        panel.setOrderIndex(0);
+        panel.setMinimized(false);
+        panel.setMaximized(false);
+        panel.setPinned(false);
+        panel.setClosed(false);
+        return panel;
     }
 }

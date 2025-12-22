@@ -8,17 +8,19 @@ package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.entities.AbstractManuallyAssignedIdentifierEntity;
 
 import java.util.UUID;
 
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "panel")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> {
 
     @Id
@@ -70,8 +72,4 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
 
     @Column(name = "restore_size_height")
     private Double restoreSizeHeight;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "metadata_id", foreignKey = @ForeignKey(name = "fk_panel_metadata"))
-    private AbstractPanelMetadataEntity metadata;
 }

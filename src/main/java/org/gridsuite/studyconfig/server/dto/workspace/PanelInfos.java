@@ -7,51 +7,74 @@
 package org.gridsuite.studyconfig.server.dto.workspace;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.gridsuite.studyconfig.server.entities.workspace.PanelType;
 
 import java.util.UUID;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "type",
+    visible = true
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = NADPanelInfos.class, name = "NAD"),
+    @JsonSubTypes.Type(value = SLDPanelInfos.class, name = "SLD_VOLTAGE_LEVEL"),
+    @JsonSubTypes.Type(value = SLDPanelInfos.class, name = "SLD_SUBSTATION"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "TREE"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "SPREADSHEET"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "LOGS"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "RESULTS"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "PARAMETERS"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "MAP"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "NODE_EDITOR"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "EVENT_SCENARIO")
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(name = "PanelDto", description = "Panel configuration")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record PanelInfos(
+public class PanelInfos {
     @Schema(description = "Panel ID")
-    UUID id,
+    private UUID id;
 
     @Schema(description = "Panel type")
-    PanelType type,
+    private PanelType type;
 
     @Schema(description = "Panel title")
-    String title,
+    private String title;
 
     @Schema(description = "Panel position")
-    PanelPositionInfos position,
+    private PanelPositionInfos position;
 
     @Schema(description = "Panel size")
-    PanelSizeInfos size,
+    private PanelSizeInfos size;
 
     @Schema(description = "Order index for panel ordering")
-    int orderIndex,
+    private int orderIndex;
 
     @Schema(description = "Is minimized")
-    boolean isMinimized,
+    private boolean isMinimized;
 
     @Schema(description = "Is maximized")
-    boolean isMaximized,
+    private boolean isMaximized;
 
     @Schema(description = "Is pinned")
-    boolean isPinned,
+    private boolean isPinned;
 
     @Schema(description = "Is closed")
-    boolean isClosed,
+    private boolean isClosed;
 
     @Schema(description = "Restore position")
-    PanelPositionInfos restorePosition,
+    private PanelPositionInfos restorePosition;
 
     @Schema(description = "Restore size")
-    PanelSizeInfos restoreSize,
-
-    @Schema(description = "Panel metadata specific to panel type")
-    PanelMetadataInfos metadata
-) {
+    private PanelSizeInfos restoreSize;
 }
