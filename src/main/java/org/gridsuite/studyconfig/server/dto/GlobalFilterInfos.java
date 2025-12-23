@@ -49,7 +49,15 @@ public record GlobalFilterInfos(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter path")
-    String path
+    String path,
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "Voltage level filter minimum range value")
+    Integer minValue,
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "Voltage level filter maximum range value")
+    Integer maxValue
 
 ) {
 }
