@@ -8,3 +8,4 @@ powsybl-ws:
 
 study-config:
   nad-positions-generation-default-mode: GEOGRAPHICAL_COORDINATES
+  base-map: mapbox

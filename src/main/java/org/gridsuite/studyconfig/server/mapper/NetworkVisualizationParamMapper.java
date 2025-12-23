@@ -42,8 +42,9 @@ public final class NetworkVisualizationParamMapper {
 
     }
 
-    public static NetworkVisualizationParamEntity toEntity(NetworkVisualizationParamInfos dto) {
+    public static NetworkVisualizationParamEntity toEntity(NetworkVisualizationParamInfos dto, String defaultMapBase) {
         NetworkVisualizationParamEntity entity = new NetworkVisualizationParamEntity();
+        entity.setMapBaseMap(defaultMapBase);
         updateEntity(entity, dto);
         return entity;
     }
