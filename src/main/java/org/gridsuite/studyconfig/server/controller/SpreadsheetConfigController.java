@@ -101,6 +101,18 @@ public class SpreadsheetConfigController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/sort")
+    @Operation(summary = "Update a spreadsheet configuration sort",
+            description = "Updates an existing spreadsheet configuration")
+    @ApiResponse(responseCode = "204", description = "Configuration updated")
+    @ApiResponse(responseCode = "404", description = "Configuration not found")
+    public ResponseEntity<Void> updateSpreadsheetConfigSort(
+            @Parameter(description = "ID of the configuration to update") @PathVariable UUID id,
+            @Valid @RequestBody SortConfig dto) {
+        spreadsheetConfigService.updateSpreadsheetConfigSort(id, dto);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}/name")
     @Operation(summary = "Rename a spreadsheet configuration",
             description = "Updates the name of an existing spreadsheet configuration")

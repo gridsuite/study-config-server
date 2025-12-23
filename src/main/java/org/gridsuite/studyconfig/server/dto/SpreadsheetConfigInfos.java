@@ -36,5 +36,8 @@ public record SpreadsheetConfigInfos(
     List<GlobalFilterInfos> globalFilters,
 
     @Schema(description = "List of node aliases")
-    List<String> nodeAliases
+    List<String> nodeAliases,
+
+    @Schema(description = "Sort configuration")
+    SortConfig sortConfig
 ) { }
