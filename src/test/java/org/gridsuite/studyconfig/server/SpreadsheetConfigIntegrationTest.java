@@ -8,7 +8,6 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.dto.*;
@@ -24,9 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +70,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(createdConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFieldsMatchingRegexes(".*(id|uuid|columnId)$")
                 .isEqualTo(configToCreate);
         assertThat(createdConfig.id()).isNotNull();
     }
@@ -98,7 +97,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(receivedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFieldsMatchingRegexes(".*(id|uuid|columnId)$")
                 .isEqualTo(configToRead);
         assertThat(receivedConfig.id()).isEqualTo(configUuid);
     }
@@ -171,7 +170,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(retrievedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "columns.id", "globalFilters.id", "id")
+                .ignoringFieldsMatchingRegexes(".*(id|uuid|columnId)$")
                 .isEqualTo(updatedConfig);
     }
 
@@ -220,7 +219,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
         assertThat(duplicatedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFieldsMatchingRegexes(".*(id|uuid|columnId)$")
                 .isEqualTo(configToCreate);
         assertThat(duplicatedConfig.id()).isNotEqualTo(configUuid);
     }
@@ -239,7 +238,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, List.of(), null, List.of());
         UUID configId = saveAndReturnId(config);
 
-        ColumnInfos columnToCreate = new ColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", null, null, null, null, true);
+        ColumnInfos columnToCreate = new ColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", true, new ColumnFilterInfos(null, "newId", null, null, null, null));
 
         MvcResult result = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
                 .content(mapper.writeValueAsString(columnToCreate))
@@ -252,12 +251,12 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos createdColumn = getColumn(configId, columnId);
         assertThat(createdColumn)
                 .usingRecursiveComparison()
-                .ignoringFields("uuid")
+                .ignoringFieldsMatchingRegexes(".*(uuid)$")
                 .isEqualTo(columnToCreate);
 
         // Create a column with a filter
-        ColumnInfos columnWithFilter = new ColumnInfos(null, "new_column_with_filter", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId",
-                "text", "equals", "test-value", null, true);
+        ColumnInfos columnWithFilter = new ColumnInfos(null, "new_column_with_filter", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", true,
+                new ColumnFilterInfos(null, "newId", "text", "equals", "test-value", null));
 
         MvcResult resultWithFilter = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
                 .content(mapper.writeValueAsString(columnWithFilter))
@@ -269,7 +268,7 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos createdColumnWithFilter = getColumn(configId, columnWithFilterId);
         assertThat(createdColumnWithFilter)
                 .usingRecursiveComparison()
-                .ignoringFields("uuid")
+                .ignoringFieldsMatchingRegexes(".*(uuid)$")
                 .isEqualTo(columnWithFilter);
     }
 
@@ -281,8 +280,8 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
         UUID columnId = savedConfig.columns().get(0).uuid();
 
-        ColumnInfos columnUpdate = new ColumnInfos(columnId, "updated_column", ColumnType.TEXT, null, "new_formula", "[]", "updatedId",
-                "text", "equals", "updated-value", null, true);
+        ColumnInfos columnUpdate = new ColumnInfos(columnId, "updated_column", ColumnType.TEXT, null, "new_formula", "[]", true,
+                new ColumnFilterInfos(null, "updatedId", "text", "equals", "updated-value", null));
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId)
                 .content(mapper.writeValueAsString(columnUpdate))
@@ -290,7 +289,9 @@ class SpreadsheetConfigIntegrationTest {
                 .andExpect(status().isNoContent());
 
         ColumnInfos updatedColumn = getColumn(configId, columnId);
-        assertThat(updatedColumn).isEqualTo(columnUpdate);
+        assertThat(updatedColumn).usingRecursiveComparison()
+                .ignoringFieldsMatchingRegexes("columnFilterInfos.uuid")
+                .isEqualTo(columnUpdate);
     }
 
     @Test
@@ -329,7 +330,7 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
 
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.id() + "_1", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.columnFilterInfos().columnId() + "_1", duplicatedColumnInfos.columnFilterInfos().columnId());
         assertEquals(columnInfos.name() + "_1", duplicatedColumnInfos.name());
         assertThat(columnInfos.visible()).isEqualTo(duplicatedColumnInfos.visible());
         assertThat(columnInfos.formula()).isEqualTo(duplicatedColumnInfos.formula());
@@ -342,7 +343,7 @@ class SpreadsheetConfigIntegrationTest {
         assertThat(configAfterDuplicate.columns()).hasSize(6);
         duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.id() + "_2", duplicatedColumnInfos.id());
+        assertEquals(columnInfos.columnFilterInfos().columnId() + "_2", duplicatedColumnInfos.columnFilterInfos().columnId());
         assertEquals(columnInfos.name() + "_2", duplicatedColumnInfos.name());
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
@@ -399,9 +400,9 @@ class SpreadsheetConfigIntegrationTest {
     void testUpdateColumnStates() throws Exception {
         // Create config with multiple columns
         List<ColumnInfos> columns = Arrays.asList(
-                new ColumnInfos(null, "col1", ColumnType.TEXT, null, "formula1", null, "id1", null, null, null, null, true),
-                new ColumnInfos(null, "col2", ColumnType.NUMBER, 2, "formula2", null, "id2", null, null, null, null, true),
-                new ColumnInfos(null, "col3", ColumnType.BOOLEAN, null, "formula3", null, "id3", null, null, null, null, false)
+                new ColumnInfos(null, "col1", ColumnType.TEXT, null, "formula1", null, true, new ColumnFilterInfos(null, "id1", null, null, null, null)),
+                new ColumnInfos(null, "col2", ColumnType.NUMBER, 2, "formula2", null, true, new ColumnFilterInfos(null, "id2", null, null, null, null)),
+                new ColumnInfos(null, "col3", ColumnType.BOOLEAN, null, "formula3", null, false, new ColumnFilterInfos(null, "id3", null, null, null, null))
         );
 
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, columns, null, List.of());
@@ -505,7 +506,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(renamedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("name", "columns.uuid", "id", "columns.id")
+                .ignoringFieldsMatchingRegexes(".*(name|id|uuid|columnId)$")
                 .isEqualTo(configToRename);
     }
 
@@ -558,7 +559,7 @@ class SpreadsheetConfigIntegrationTest {
         // Initial config should have filters set
         SpreadsheetConfigInfos initialConfig = getSpreadsheetConfig(configId);
         assertThat(initialConfig.globalFilters()).hasSize(2);
-        assertThat(initialConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", "test-value");
+        assertThat(initialConfig.columns().getFirst().columnFilterInfos()).hasFieldOrPropertyWithValue("filterValue", "test-value");
 
         // Call the endpoint to reset the filters
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + "/reset-filters")
@@ -568,7 +569,7 @@ class SpreadsheetConfigIntegrationTest {
         // Verify the filters (global or column based) were reset
         SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
         assertThat(updatedConfig.globalFilters()).isEmpty();
-        assertThat(updatedConfig.columns().getFirst()).hasFieldOrPropertyWithValue("filterValue", null);
+        assertThat(updatedConfig.columns().getFirst().columnFilterInfos()).hasFieldOrPropertyWithValue("filterValue", null);
     }
 
     @Test
@@ -586,42 +587,48 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<ColumnInfos> createColumns() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", null, null, null, null, true),
-                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB", null, null, null, null, true),
-                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC", null, null, null, null, true),
-                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD", null, null, null, null, true)
+                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", true,
+                        new ColumnFilterInfos(null, "idA", null, null, null, null)),
+                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, true,
+                        new ColumnFilterInfos(null, "idB", null, null, null, null)),
+                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", true,
+                        new ColumnFilterInfos(null, "idC", null, null, null, null)),
+                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, true,
+                        new ColumnFilterInfos(null, "idD", null, null, null, null))
         );
     }
 
     private List<ColumnInfos> createColumnsWithFilters() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA",
-                        "text", "equals", "test-value", null, true),
-                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB",
-                        "number", "greaterThan", "100", 0.5, true),
-                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC",
-                        "text", "startsWith", "prefix", null, true),
-                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD",
-                        null, null, null, null, true)
+                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", true,
+                        new ColumnFilterInfos(null, "idA", "text", "equals", "test-value", null)),
+                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, true, new ColumnFilterInfos(null, "idB",
+                        "number", "greaterThan", "100", 0.5)),
+                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", true, new ColumnFilterInfos(null, "idC",
+                        "text", "startsWith", "prefix", null)),
+                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, true, new ColumnFilterInfos(null, "idD",
+                        null, null, null, null))
         );
     }
 
     private List<ColumnInfos> createUpdatedColumns() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX", null, null, null, null, true),
-                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY", null, null, null, null, true),
-                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ", null, null, null, null, true)
+                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", true, new ColumnFilterInfos(null, "idX", null, null, null, null)),
+                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, true, new ColumnFilterInfos(null, "idY", null, null, null, null)),
+                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", true, new ColumnFilterInfos(null, "idZ", null, null, null, null))
         );
     }
 
     private List<ColumnInfos> createUpdatedColumnsWithFilters() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX",
-                        "text", "contains", "updated-value", null, true),
-                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY",
-                        "number", "lessThan", "50", 0.1, true),
-                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ",
-                        null, null, null, null, true)  // No filter on this column
+                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", true,
+                        new ColumnFilterInfos(null, "idX",
+                        "text", "contains", "updated-value", null)),
+                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, true,
+                        new ColumnFilterInfos(null, "idY",
+                        "number", "lessThan", "50", 0.1)),
+                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", true,
+                        new ColumnFilterInfos(null, "idZ", null, null, null, null))  // No filter on this column
         );
     }
 
