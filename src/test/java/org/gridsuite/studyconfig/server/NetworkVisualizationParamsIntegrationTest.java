@@ -25,10 +25,12 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode.GEOGRAPHICAL_COORDINATES;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -107,7 +109,8 @@ class NetworkVisualizationParamsIntegrationTest {
         mockMvc.perform(delete(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid))
                 .andExpect(status().isNoContent());
         mockMvc.perform(get(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/" + paramsUuid))
-                .andExpect(status().isNotFound());
+                .andExpect(content().string(containsString("NetworkVisualizationParam not found with id:")))
+                .andReturn();
         assertThat(networkVisualizationParamRepository.existsById(paramsUuid)).isFalse();
     }
 
