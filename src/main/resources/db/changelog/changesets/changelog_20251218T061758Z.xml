@@ -44,9 +44,6 @@
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="panelPK"/>
             </column>
-            <column name="is_closed" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
             <column name="is_maximized" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
@@ -54,9 +51,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="is_pinned" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
-            <column name="order_index" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="position_x" type="FLOAT(53)">

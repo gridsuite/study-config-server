@@ -14,11 +14,9 @@
             "width": 0.75,
             "height": 1.0
           },
-          "orderIndex": 0,
           "isMinimized": false,
           "isMaximized": false,
-          "isPinned": false,
-          "isClosed": false
+          "isPinned": false
         },
         {
           "type": "NODE_EDITOR",
@@ -31,11 +29,9 @@
             "width": 0.25,
             "height": 1.0
           },
-          "orderIndex": 1,
           "isMinimized": false,
           "isMaximized": false,
-          "isPinned": false,
-          "isClosed": false
+          "isPinned": false
         }
       ]
     },

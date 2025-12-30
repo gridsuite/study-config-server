@@ -16,7 +16,6 @@ import org.gridsuite.studyconfig.server.dto.workspace.WorkspacesConfigInfos;
 import org.gridsuite.studyconfig.server.entities.workspace.PanelEntity;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspacesConfigEntity;
-import org.gridsuite.studyconfig.server.mapper.WorkspaceMapper;
 import org.gridsuite.studyconfig.server.repositories.WorkspacesConfigRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -43,8 +42,7 @@ public class WorkspacesConfigService {
     private static final String WORKSPACE_NOT_FOUND = "Workspace not found with id: ";
 
     private UUID createWorkspacesConfig(WorkspacesConfigInfos dto) {
-        WorkspacesConfigEntity entity = WorkspaceMapper.toEntity(dto);
-        return workspacesConfigRepository.save(entity).getId();
+        return workspacesConfigRepository.save(new WorkspacesConfigEntity(dto)).getId();
     }
 
     @Transactional
@@ -57,8 +55,7 @@ public class WorkspacesConfigService {
 
     @Transactional
     public UUID duplicateWorkspacesConfig(UUID id) {
-        WorkspacesConfigEntity source = findWorkspacesConfig(id);
-        WorkspacesConfigInfos dto = WorkspaceMapper.toDto(source);
+        WorkspacesConfigInfos dto = findWorkspacesConfig(id).toDto();
         // Clear all IDs to ensure new entities are created
         WorkspacesConfigInfos dtoWithoutIds = new WorkspacesConfigInfos(
             null,
@@ -72,14 +69,13 @@ public class WorkspacesConfigService {
                 ))
                 .toList()
         );
-        WorkspacesConfigEntity entity = WorkspaceMapper.toEntity(dtoWithoutIds);
-        return workspacesConfigRepository.save(entity).getId();
+        return workspacesConfigRepository.save(new WorkspacesConfigEntity(dtoWithoutIds)).getId();
     }
 
     private PanelInfos clonePanelWithId(PanelInfos panel, UUID id) {
-        PanelEntity entity = WorkspaceMapper.toPanelEntity(panel);
+        PanelEntity entity = PanelEntity.toEntity(panel);
         entity.setId(id);
-        return WorkspaceMapper.toPanelDto(entity);
+        return entity.toDto();
     }
 
     @Transactional(readOnly = true)
@@ -96,8 +92,7 @@ public class WorkspacesConfigService {
 
     @Transactional(readOnly = true)
     public WorkspaceInfos getWorkspace(UUID configId, UUID workspaceId) {
-        WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
-        return WorkspaceMapper.toWorkspaceDto(workspace);
+        return findWorkspace(configId, workspaceId).toDto();
     }
 
     @Transactional
@@ -111,7 +106,7 @@ public class WorkspacesConfigService {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         return workspace.getPanels().stream()
             .filter(p -> panelIds == null || panelIds.isEmpty() || panelIds.contains(p.getId()))
-            .map(WorkspaceMapper::toPanelDto)
+            .map(PanelEntity::toDto)
             .toList();
     }
 
@@ -120,22 +115,15 @@ public class WorkspacesConfigService {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
 
         for (PanelInfos panelDto : panels) {
-            if (panelDto.getId() != null) {
-                // Update existing panel
-                PanelEntity existingPanel = workspace.getPanels().stream()
-                    .filter(p -> p.getId().equals(panelDto.getId()))
-                    .findFirst()
-                    .orElse(null);
-
+            if (panelDto.getId() != null) {  // Update existing panel
+                PanelEntity existingPanel = workspace.getPanel(panelDto.getId());
                 if (existingPanel != null) {
-                    // Update existing entity
-                    updatePanelEntity(existingPanel, panelDto);
+                    existingPanel.update(panelDto);
                     continue;
                 }
             }
             // Create new panel (either no ID provided or ID doesn't exist)
-            PanelEntity newPanel = WorkspaceMapper.toPanelEntity(panelDto);
-            workspace.getPanels().add(newPanel);
+            workspace.getPanels().add(PanelEntity.toEntity(panelDto));
         }
     }
 
@@ -143,14 +131,6 @@ public class WorkspacesConfigService {
     public void deletePanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
-    }
-
-    private void updatePanelEntity(PanelEntity panel, PanelInfos dto) {
-        UUID originalId = panel.getId();
-        PanelEntity updatedPanel = WorkspaceMapper.toPanelEntity(dto);
-        updatedPanel.setId(originalId);
-
-        WorkspaceMapper.copyFieldsFromEntityToEntity(updatedPanel, panel);
     }
 
     public UUID createDefaultWorkspacesConfig() {

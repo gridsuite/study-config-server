@@ -7,13 +7,16 @@
 package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -33,6 +36,32 @@ public class WorkspaceEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id", foreignKey = @ForeignKey(name = "fk_workspace"))
     @OrderColumn(name = "panel_order")
-    @Builder.Default
     private List<PanelEntity> panels = new ArrayList<>();
+
+    public WorkspaceEntity(WorkspaceInfos dto) {
+        id = dto.id();
+        name = dto.name();
+        if (dto.panels() != null) {
+            setPanels(dto.panels().stream()
+                .map(PanelEntity::toEntity)
+                .toList());
+        }
+    }
+
+    public WorkspaceInfos toDto() {
+        return new WorkspaceInfos(
+            getId(),
+            getName(),
+            getPanels().stream()
+                .map(PanelEntity::toDto)
+                .toList()
+        );
+    }
+
+    public PanelEntity getPanel(UUID uuid) {
+        return getPanels().stream()
+            .filter(p -> p.getId().equals(uuid))
+            .findFirst()
+            .orElse(null);
+    }
 }

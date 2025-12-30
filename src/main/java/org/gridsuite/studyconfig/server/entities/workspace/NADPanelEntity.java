@@ -7,14 +7,17 @@
 package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.gridsuite.studyconfig.server.dto.workspace.NADPanelInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -38,13 +41,48 @@ public class NADPanelEntity extends PanelEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "nad_panel_voltage_level_to_omit", joinColumns = @JoinColumn(name = "panel_id"))
     @Column(name = "voltage_level_id")
-    @Builder.Default
     private List<String> voltageLevelToOmitIds = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "nad_panel_navigation_history", joinColumns = @JoinColumn(name = "panel_id"))
     @Column(name = "voltage_level_id")
     @OrderColumn(name = "position")
-    @Builder.Default
     private List<String> navigationHistory = new ArrayList<>();
+
+    public NADPanelEntity(NADPanelInfos dto) {
+        super(dto);
+        initEntity(dto);
+    }
+
+    @Override
+    public void update(PanelInfos dto) {
+        super.update(dto);
+        initEntity((NADPanelInfos) dto);
+    }
+
+    private void initEntity(NADPanelInfos dto) {
+        nadConfigUuid = dto.getNadConfigUuid();
+        filterUuid = dto.getFilterUuid();
+        currentFilterUuid = dto.getCurrentFilterUuid();
+        savedWorkspaceConfigUuid = dto.getSavedWorkspaceConfigUuid();
+        if (dto.getVoltageLevelToOmitIds() != null) {
+            voltageLevelToOmitIds = new ArrayList<>(dto.getVoltageLevelToOmitIds());
+        }
+        if (dto.getNavigationHistory() != null) {
+            navigationHistory = new ArrayList<>(dto.getNavigationHistory());
+        }
+    }
+
+    @Override
+    public NADPanelInfos toDto() {
+        NADPanelInfos dto = new NADPanelInfos();
+        iniDto(dto);
+        dto.setNadConfigUuid(getNadConfigUuid());
+        dto.setFilterUuid(getFilterUuid());
+        dto.setCurrentFilterUuid(getCurrentFilterUuid());
+        dto.setSavedWorkspaceConfigUuid(getSavedWorkspaceConfigUuid());
+        dto.setVoltageLevelToOmitIds(getVoltageLevelToOmitIds());
+        dto.setNavigationHistory(getNavigationHistory());
+        return dto;
+    }
 }

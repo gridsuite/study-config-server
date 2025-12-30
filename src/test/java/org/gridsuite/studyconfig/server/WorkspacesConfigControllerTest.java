@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.dto.workspace.*;
 import org.gridsuite.studyconfig.server.entities.workspace.PanelType;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspacesConfigEntity;
-import org.gridsuite.studyconfig.server.mapper.WorkspaceMapper;
 import org.gridsuite.studyconfig.server.repositories.WorkspacesConfigRepository;
 import org.gridsuite.studyconfig.server.service.WorkspacesConfigService;
 import org.junit.jupiter.api.Test;
@@ -48,9 +47,7 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testGetWorkspacesMetadata() throws Exception {
-        WorkspacesConfigEntity config = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
+        WorkspacesConfigEntity config = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
 
         MvcResult mockMvcResult = mockMvc.perform(get("/v1/workspaces-configs/{id}/workspaces", config.getId()))
             .andExpect(status().isOk())
@@ -67,9 +64,7 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testDeleteWorkspacesConfig() throws Exception {
-        WorkspacesConfigEntity config = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
+        WorkspacesConfigEntity config = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
 
         mockMvc.perform(delete("/v1/workspaces-configs/{id}", config.getId()))
             .andExpect(status().isNoContent());
@@ -79,10 +74,8 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testGetWorkspace() throws Exception {
-        WorkspacesConfigEntity config = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = config.getWorkspaces().get(0).getId();
+        WorkspacesConfigEntity config = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
+        UUID workspaceId = config.getWorkspaces().getFirst().getId();
 
         MvcResult mockMvcResult = mockMvc.perform(get("/v1/workspaces-configs/{id}/workspaces/{workspaceId}", config.getId(), workspaceId))
             .andExpect(status().isOk())
@@ -98,10 +91,8 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testRenameWorkspace() throws Exception {
-        WorkspacesConfigEntity config = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = config.getWorkspaces().get(0).getId();
+        WorkspacesConfigEntity config = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
+        UUID workspaceId = config.getWorkspaces().getFirst().getId();
 
         mockMvc.perform(put("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/name", config.getId(), workspaceId)
                 .contentType(MediaType.TEXT_PLAIN)
@@ -114,10 +105,7 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testDuplicateWorkspacesConfig() throws Exception {
-        WorkspacesConfigEntity originalWorkspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-
+        WorkspacesConfigEntity originalWorkspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
         MvcResult mockMvcResult = mockMvc.perform(post("/v1/workspaces-configs")
                 .param("duplicateFrom", originalWorkspacesConfig.getId().toString()))
             .andExpect(status().isCreated())
@@ -149,17 +137,15 @@ class WorkspacesConfigControllerTest {
         List<WorkspaceMetadata> workspacesMetadata = workspacesConfigService.getWorkspacesMetadata(workspacesConfigUuid);
         assertThat(workspacesMetadata).hasSize(3);
         // First workspace should have Tree and Node Editor panels
-        UUID firstWorkspaceId = workspacesMetadata.get(0).id();
+        UUID firstWorkspaceId = workspacesMetadata.getFirst().id();
         List<PanelInfos> firstWorkspacePanels = workspacesConfigService.getPanels(workspacesConfigUuid, firstWorkspaceId, List.of());
         assertThat(firstWorkspacePanels).hasSize(2);
     }
 
     @Test
     void testCreatePanel() throws Exception {
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
 
         PanelInfos newPanel = createPanel("TREE");
 
@@ -170,18 +156,16 @@ class WorkspacesConfigControllerTest {
             .andExpect(status().isNoContent());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(newPanel.getId()));
-        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
+        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.getFirst();
         assertThat(panelToCheck.getType()).isEqualTo(PanelType.TREE);
     }
 
     @Test
     void testUpdatePanel() throws Exception {
-        WorkspacesConfigInfos workspacesConfigInfos = createWorkspacesConfigWithPanel();
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(workspacesConfigInfos)
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
-        UUID panelId = workspacesConfig.getWorkspaces().get(0).getPanels().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfigWithPanel()));
+
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
+        UUID panelId = workspacesConfig.getWorkspaces().getFirst().getPanels().getFirst().getId();
 
         PanelInfos updatedPanel = new PanelInfos();
         updatedPanel.setId(panelId);
@@ -189,11 +173,9 @@ class WorkspacesConfigControllerTest {
         updatedPanel.setTitle("Tree Panel");
         updatedPanel.setPosition(new PanelPositionInfos(0.5, 0.5));
         updatedPanel.setSize(new PanelSizeInfos(0.3, 0.3));
-        updatedPanel.setOrderIndex(0);
         updatedPanel.setMinimized(true);
         updatedPanel.setMaximized(false);
         updatedPanel.setPinned(false);
-        updatedPanel.setClosed(false);
 
         mockMvc.perform(post("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
@@ -202,19 +184,17 @@ class WorkspacesConfigControllerTest {
             .andExpect(status().isNoContent());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
-        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
+        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.getFirst();
         assertThat(panelToCheck.getPosition().x()).isEqualTo(0.5);
         assertThat(panelToCheck.isMinimized()).isTrue();
     }
 
     @Test
     void testDeletePanel() throws Exception {
-        WorkspacesConfigInfos workspacesConfigInfos = createWorkspacesConfigWithPanel();
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(workspacesConfigInfos)
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
-        UUID panelId = workspacesConfig.getWorkspaces().get(0).getPanels().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfigWithPanel()));
+
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
+        UUID panelId = workspacesConfig.getWorkspaces().getFirst().getPanels().getFirst().getId();
 
         mockMvc.perform(delete("/v1/workspaces-configs/{id}/workspaces/{workspaceId}/panels",
                 workspacesConfig.getId(), workspaceId)
@@ -228,12 +208,9 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testUpdatePanelWithRestorePositionAndSize() throws Exception {
-        WorkspacesConfigInfos workspacesConfigInfos = createWorkspacesConfigWithPanel();
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(workspacesConfigInfos)
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
-        UUID panelId = workspacesConfig.getWorkspaces().get(0).getPanels().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfigWithPanel()));
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
+        UUID panelId = workspacesConfig.getWorkspaces().getFirst().getPanels().getFirst().getId();
 
         PanelInfos updatedPanel = new PanelInfos();
         updatedPanel.setId(panelId);
@@ -241,11 +218,9 @@ class WorkspacesConfigControllerTest {
         updatedPanel.setTitle("Tree Panel");
         updatedPanel.setPosition(new PanelPositionInfos(0.5, 0.5));
         updatedPanel.setSize(new PanelSizeInfos(0.3, 0.3));
-        updatedPanel.setOrderIndex(0);
         updatedPanel.setMinimized(false);
         updatedPanel.setMaximized(true);
         updatedPanel.setPinned(true);
-        updatedPanel.setClosed(false);
         updatedPanel.setRestorePosition(new PanelPositionInfos(0.2, 0.2));
         updatedPanel.setRestoreSize(new PanelSizeInfos(0.6, 0.6));
 
@@ -256,7 +231,7 @@ class WorkspacesConfigControllerTest {
             .andExpect(status().isNoContent());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(panelId));
-        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.get(0);
+        PanelInfos panelToCheck = panels.isEmpty() ? null : panels.getFirst();
         assertThat(panelToCheck.getRestorePosition()).isNotNull();
         assertThat(panelToCheck.getRestorePosition().x()).isEqualTo(0.2);
         assertThat(panelToCheck.getRestoreSize()).isNotNull();
@@ -268,10 +243,8 @@ class WorkspacesConfigControllerTest {
     // Metadata tests
     @Test
     void testPanelWithSLDMetadata() throws Exception {
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
 
         SLDPanelInfos sldPanel = new SLDPanelInfos();
         sldPanel.setId(UUID.randomUUID());
@@ -279,11 +252,9 @@ class WorkspacesConfigControllerTest {
         sldPanel.setTitle("SLD with Metadata");
         sldPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
         sldPanel.setSize(new PanelSizeInfos(0.5, 1.0));
-        sldPanel.setOrderIndex(0);
         sldPanel.setMinimized(false);
         sldPanel.setMaximized(false);
         sldPanel.setPinned(false);
-        sldPanel.setClosed(false);
         sldPanel.setDiagramId("voltage-level-123");
         sldPanel.setParentNadPanelId(null);
         sldPanel.setNavigationHistory(List.of("diagram1", "diagram2", "diagram3"));
@@ -295,9 +266,10 @@ class WorkspacesConfigControllerTest {
             .andExpect(status().isNoContent());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(sldPanel.getId()));
-        PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.get(0);
-        assertThat(retrievedPanel).isNotNull();
-        assertThat(retrievedPanel).isInstanceOf(SLDPanelInfos.class);
+        PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.getFirst();
+        assertThat(retrievedPanel)
+            .isNotNull()
+            .isInstanceOf(SLDPanelInfos.class);
 
         SLDPanelInfos retrievedSldPanel = (SLDPanelInfos) retrievedPanel;
         assertThat(retrievedSldPanel.getDiagramId()).isEqualTo("voltage-level-123");
@@ -306,10 +278,8 @@ class WorkspacesConfigControllerTest {
 
     @Test
     void testPanelWithNADMetadata() throws Exception {
-        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(
-            WorkspaceMapper.toEntity(createWorkspacesConfig())
-        );
-        UUID workspaceId = workspacesConfig.getWorkspaces().get(0).getId();
+        WorkspacesConfigEntity workspacesConfig = workspacesConfigRepository.save(new WorkspacesConfigEntity(createWorkspacesConfig()));
+        UUID workspaceId = workspacesConfig.getWorkspaces().getFirst().getId();
 
         UUID nadConfigUuid = UUID.randomUUID();
         UUID filterUuid = UUID.randomUUID();
@@ -322,11 +292,10 @@ class WorkspacesConfigControllerTest {
         nadPanel.setTitle("NAD with Metadata");
         nadPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
         nadPanel.setSize(new PanelSizeInfos(0.5, 1.0));
-        nadPanel.setOrderIndex(0);
         nadPanel.setMinimized(false);
         nadPanel.setMaximized(false);
         nadPanel.setPinned(false);
-        nadPanel.setClosed(false);
+
         nadPanel.setNadConfigUuid(nadConfigUuid);
         nadPanel.setFilterUuid(filterUuid);
         nadPanel.setCurrentFilterUuid(currentFilterUuid);
@@ -341,9 +310,10 @@ class WorkspacesConfigControllerTest {
             .andExpect(status().isNoContent());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(workspacesConfig.getId(), workspaceId, List.of(nadPanel.getId()));
-        PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.get(0);
-        assertThat(retrievedPanel).isNotNull();
-        assertThat(retrievedPanel).isInstanceOf(NADPanelInfos.class);
+        PanelInfos retrievedPanel = panels.isEmpty() ? null : panels.getFirst();
+        assertThat(retrievedPanel)
+            .isNotNull()
+            .isInstanceOf(NADPanelInfos.class);
 
         NADPanelInfos retrievedNadPanel = (NADPanelInfos) retrievedPanel;
         assertThat(retrievedNadPanel.getNadConfigUuid()).isEqualTo(nadConfigUuid);
@@ -391,11 +361,9 @@ class WorkspacesConfigControllerTest {
         panel.setTitle(type + " Panel");
         panel.setPosition(new PanelPositionInfos(0.0, 0.0));
         panel.setSize(new PanelSizeInfos(0.5, 1.0));
-        panel.setOrderIndex(0);
         panel.setMinimized(false);
         panel.setMaximized(false);
         panel.setPinned(false);
-        panel.setClosed(false);
         return panel;
     }
 }

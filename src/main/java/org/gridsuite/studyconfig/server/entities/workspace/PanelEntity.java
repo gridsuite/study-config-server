@@ -7,13 +7,15 @@
 package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.gridsuite.studyconfig.server.dto.workspace.*;
 import org.gridsuite.studyconfig.server.entities.AbstractManuallyAssignedIdentifierEntity;
 
 import java.util.UUID;
 
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -46,9 +48,6 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
     @Column(name = "size_height", nullable = false)
     private double sizeHeight;
 
-    @Column(name = "order_index", nullable = false)
-    private int orderIndex;
-
     @Column(name = "is_minimized", nullable = false)
     private boolean isMinimized;
 
@@ -57,9 +56,6 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
 
     @Column(name = "is_pinned", nullable = false)
     private boolean isPinned;
-
-    @Column(name = "is_closed", nullable = false)
-    private boolean isClosed;
 
     @Column(name = "restore_position_x")
     private Double restorePositionX;
@@ -72,4 +68,64 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
 
     @Column(name = "restore_size_height")
     private Double restoreSizeHeight;
+
+    public static PanelEntity toEntity(PanelInfos dto) {
+        return switch (dto) {
+            case NADPanelInfos nad -> new NADPanelEntity(nad);
+            case SLDPanelInfos sld -> new SLDPanelEntity(sld);
+            default -> new PanelEntity(dto);
+        };
+    }
+
+    public PanelEntity(PanelInfos dto) {
+        id = dto.getId();
+        type = dto.getType();
+        initEntity(dto);
+    }
+
+    public void update(PanelInfos dto) {
+        initEntity(dto);
+    }
+
+    private void initEntity(PanelInfos dto) {
+        title = dto.getTitle();
+        positionX = dto.getPosition().x();
+        positionY = dto.getPosition().y();
+        sizeWidth = dto.getSize().width();
+        sizeHeight = dto.getSize().height();
+        isMinimized = dto.isMinimized();
+        isMaximized = dto.isMaximized();
+        isPinned = dto.isPinned();
+        if (dto.getRestorePosition() != null) {
+            restorePositionX = dto.getRestorePosition().x();
+            restorePositionY = dto.getRestorePosition().y();
+        }
+        if (dto.getRestoreSize() != null) {
+            restoreSizeWidth = dto.getRestoreSize().width();
+            restoreSizeHeight = dto.getRestoreSize().height();
+        }
+    }
+
+    protected void iniDto(PanelInfos dto) {
+        dto.setId(getId());
+        dto.setType(getType());
+        dto.setTitle(getTitle());
+        dto.setPosition(new PanelPositionInfos(getPositionX(), getPositionY()));
+        dto.setSize(new PanelSizeInfos(getSizeWidth(), getSizeHeight()));
+        dto.setMinimized(isMinimized());
+        dto.setMaximized(isMaximized());
+        dto.setPinned(isPinned());
+        if (getRestorePositionX() != null) {
+            dto.setRestorePosition(new PanelPositionInfos(getRestorePositionX(), getRestorePositionY()));
+        }
+        if (getRestoreSizeWidth() != null) {
+            dto.setRestoreSize(new PanelSizeInfos(getRestoreSizeWidth(), getRestoreSizeHeight()));
+        }
+    }
+
+    public PanelInfos toDto() {
+        PanelInfos dto = new PanelInfos();
+        iniDto(dto);
+        return dto;
+    }
 }

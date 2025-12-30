@@ -7,14 +7,17 @@
 package org.gridsuite.studyconfig.server.entities.workspace;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.SLDPanelInfos;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -33,6 +36,34 @@ public class SLDPanelEntity extends PanelEntity {
     @CollectionTable(name = "sld_panel_navigation_history", joinColumns = @JoinColumn(name = "panel_id"))
     @Column(name = "voltage_level_id")
     @OrderColumn(name = "position")
-    @Builder.Default
     private List<String> navigationHistory = new ArrayList<>();
+
+    public SLDPanelEntity(SLDPanelInfos dto) {
+        super(dto);
+        initEntity(dto);
+    }
+
+    @Override
+    public void update(PanelInfos dto) {
+        super.update(dto);
+        initEntity((SLDPanelInfos) dto);
+    }
+
+    private void initEntity(SLDPanelInfos dto) {
+        diagramId = dto.getDiagramId();
+        parentNadPanelId = dto.getParentNadPanelId();
+        if (dto.getNavigationHistory() != null) {
+            navigationHistory = new ArrayList<>(dto.getNavigationHistory());
+        }
+    }
+
+    @Override
+    public SLDPanelInfos toDto() {
+        SLDPanelInfos dto = new SLDPanelInfos();
+        iniDto(dto);
+        dto.setDiagramId(getDiagramId());
+        dto.setParentNadPanelId(getParentNadPanelId());
+        dto.setNavigationHistory(getNavigationHistory());
+        return dto;
+    }
 }

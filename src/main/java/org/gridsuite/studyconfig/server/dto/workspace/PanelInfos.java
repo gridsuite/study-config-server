@@ -57,10 +57,7 @@ public class PanelInfos {
     @Schema(description = "Panel size")
     private PanelSizeInfos size;
 
-    @Schema(description = "Order index for panel ordering")
-    private int orderIndex;
-
-    @Schema(description = "Is minimized")
+    @Schema(description = "Is minimized (to dock for NAD/SLD, hidden for toggle panels)")
     private boolean isMinimized;
 
     @Schema(description = "Is maximized")
@@ -68,9 +65,6 @@ public class PanelInfos {
 
     @Schema(description = "Is pinned")
     private boolean isPinned;
-
-    @Schema(description = "Is closed")
-    private boolean isClosed;
 
     @Schema(description = "Restore position")
     private PanelPositionInfos restorePosition;
