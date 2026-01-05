@@ -16,6 +16,6 @@ public enum PanelType {
     SLD_SUBSTATION,
     NAD,
     MAP,
-    NODE_EDITOR,
+    MODIFICATIONS,
     EVENT_SCENARIO
 }

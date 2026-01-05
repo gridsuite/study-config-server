@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -46,8 +47,9 @@ public class WorkspacesConfigController {
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
     public ResponseEntity<UUID> duplicateWorkspacesConfig(
-            @Parameter(description = "UUID of the workspaces config to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
-        UUID newId = workspacesConfigService.duplicateWorkspacesConfig(id);
+            @Parameter(description = "UUID of the workspaces config to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id,
+            @Parameter(description = "Mapping of old NAD config UUIDs to new ones") @RequestBody(required = false) Map<UUID, UUID> nadConfigMapping) {
+        UUID newId = workspacesConfigService.duplicateWorkspacesConfig(id, nadConfigMapping != null ? nadConfigMapping : Map.of());
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }
 
@@ -136,6 +138,17 @@ public class WorkspacesConfigController {
             @Parameter(description = "List of panel IDs to delete") @Valid @RequestBody List<UUID> panelIds) {
         workspacesConfigService.deletePanels(id, workspaceId, panelIds);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/saved-nad-config-uuids")
+    @Operation(summary = "Get all saved NAD config UUIDs",
+            description = "Returns all saved NAD config UUIDs from all workspace panels")
+    @ApiResponse(responseCode = "200", description = "Saved NAD config UUIDs retrieved")
+    @ApiResponse(responseCode = "404", description = "Workspaces config not found")
+    public ResponseEntity<List<UUID>> getAllSavedNadConfigUuids(
+            @Parameter(description = "ID of the workspaces config") @PathVariable UUID id) {
+        List<UUID> uuids = workspacesConfigService.getAllSavedNadConfigUuids(id);
+        return ResponseEntity.ok(uuids);
     }
 
 }

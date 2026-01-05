@@ -70,11 +70,16 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
     private Double restoreSizeHeight;
 
     public static PanelEntity toEntity(PanelInfos dto) {
-        return switch (dto) {
+        PanelEntity entity = switch (dto) {
             case NADPanelInfos nad -> new NADPanelEntity(nad);
             case SLDPanelInfos sld -> new SLDPanelEntity(sld);
             default -> new PanelEntity(dto);
         };
+        // Ensure ID is set for entities that require manual assignment
+        if (entity.getId() == null) {
+            entity.setId(UUID.randomUUID());
+        }
+        return entity;
     }
 
     public PanelEntity(PanelInfos dto) {

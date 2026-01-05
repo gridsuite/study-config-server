@@ -13,7 +13,9 @@ import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspacesConfigInfos;
+import org.gridsuite.studyconfig.server.entities.workspace.NADPanelEntity;
 import org.gridsuite.studyconfig.server.entities.workspace.PanelEntity;
+import org.gridsuite.studyconfig.server.entities.workspace.SLDPanelEntity;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspacesConfigEntity;
 import org.gridsuite.studyconfig.server.repositories.WorkspacesConfigRepository;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -54,9 +58,12 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public UUID duplicateWorkspacesConfig(UUID id) {
+    public UUID duplicateWorkspacesConfig(UUID id, Map<UUID, UUID> nadConfigMapping) {
         WorkspacesConfigInfos dto = findWorkspacesConfig(id).toDto();
-        // Clear all IDs to ensure new entities are created
+
+        // Build panel ID mapping (old -> new) to update SLD references to NAD panels
+        Map<UUID, UUID> panelIdMapping = new java.util.HashMap<>();
+
         WorkspacesConfigInfos dtoWithoutIds = new WorkspacesConfigInfos(
             null,
             dto.workspaces().stream()
@@ -64,7 +71,7 @@ public class WorkspacesConfigService {
                     null,
                     w.name(),
                     w.panels().stream()
-                        .map(p -> clonePanelWithId(p, null))
+                        .map(p -> clonePanelWithMapping(p, nadConfigMapping, panelIdMapping))
                         .toList()
                 ))
                 .toList()
@@ -72,9 +79,35 @@ public class WorkspacesConfigService {
         return workspacesConfigRepository.save(new WorkspacesConfigEntity(dtoWithoutIds)).getId();
     }
 
-    private PanelInfos clonePanelWithId(PanelInfos panel, UUID id) {
+    private PanelInfos clonePanelWithMapping(PanelInfos panel, Map<UUID, UUID> nadConfigMapping, Map<UUID, UUID> panelIdMapping) {
         PanelEntity entity = PanelEntity.toEntity(panel);
-        entity.setId(id);
+        UUID oldId = entity.getId();
+        UUID newId = UUID.randomUUID();
+        entity.setId(newId);  // Force new ID for cloned panel
+
+        // Track panel ID mapping
+        if (oldId != null) {
+            panelIdMapping.put(oldId, newId);
+        }
+
+        // Update NAD config UUID if mapping exists
+        if (entity instanceof NADPanelEntity nadPanel && nadPanel.getSavedWorkspaceConfigUuid() != null) {
+            UUID oldUuid = nadPanel.getSavedWorkspaceConfigUuid();
+            UUID newUuid = nadConfigMapping.get(oldUuid);
+            if (newUuid != null) {
+                nadPanel.setSavedWorkspaceConfigUuid(newUuid);
+            }
+        }
+
+        // Update parent NAD panel ID if this is an associated SLD
+        if (entity instanceof SLDPanelEntity sldPanel && sldPanel.getParentNadPanelId() != null) {
+            UUID oldParentId = sldPanel.getParentNadPanelId();
+            UUID newParentId = panelIdMapping.get(oldParentId);
+            if (newParentId != null) {
+                sldPanel.setParentNadPanelId(newParentId);
+            }
+        }
+
         return entity.toDto();
     }
 
@@ -128,9 +161,30 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public void deletePanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
+    public List<UUID> deletePanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
+
+        // Collect saved NAD config UUIDs before deletion
+        List<UUID> savedNadConfigUuids = workspace.getPanels().stream()
+            .filter(p -> panelIds.contains(p.getId()))
+            .filter(NADPanelEntity.class::isInstance)
+            .map(p -> ((NADPanelEntity) p).getSavedWorkspaceConfigUuid())
+            .filter(Objects::nonNull)
+            .toList();
+
         workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
+        return savedNadConfigUuids;
+    }
+
+    @Transactional(readOnly = true)
+    public List<UUID> getAllSavedNadConfigUuids(UUID configId) {
+        WorkspacesConfigEntity entity = findWorkspacesConfig(configId);
+        return entity.getWorkspaces().stream()
+            .flatMap(workspace -> workspace.getPanels().stream())
+            .filter(NADPanelEntity.class::isInstance)
+            .map(panel -> ((NADPanelEntity) panel).getSavedWorkspaceConfigUuid())
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     public UUID createDefaultWorkspacesConfig() {
@@ -145,7 +199,6 @@ public class WorkspacesConfigService {
     private WorkspacesConfigInfos readDefaultWorkspacesConfig() throws IOException {
         try (InputStream inputStream = defaultWorkspacesConfigResource.getInputStream()) {
             WorkspacesConfigInfos config = objectMapper.readValue(inputStream, WorkspacesConfigInfos.class);
-            // Generate UUIDs for panels that don't have them
             return new WorkspacesConfigInfos(
                 config.id(),
                 config.workspaces().stream()
@@ -153,7 +206,7 @@ public class WorkspacesConfigService {
                         workspace.id(),
                         workspace.name(),
                         workspace.panels().stream()
-                            .map(panel -> panel.getId() == null ? clonePanelWithId(panel, UUID.randomUUID()) : panel)
+                            .map(panel -> PanelEntity.toEntity(panel).toDto())
                             .toList()
                     ))
                     .toList()

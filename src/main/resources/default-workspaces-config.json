@@ -19,7 +19,7 @@
           "isPinned": false
         },
         {
-          "type": "NODE_EDITOR",
+          "type": "MODIFICATIONS",
           "title": "Modifications",
           "position": {
             "x": 0.75,

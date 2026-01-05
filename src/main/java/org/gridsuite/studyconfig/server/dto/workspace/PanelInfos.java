@@ -33,7 +33,7 @@ import java.util.UUID;
     @JsonSubTypes.Type(value = PanelInfos.class, name = "RESULTS"),
     @JsonSubTypes.Type(value = PanelInfos.class, name = "PARAMETERS"),
     @JsonSubTypes.Type(value = PanelInfos.class, name = "MAP"),
-    @JsonSubTypes.Type(value = PanelInfos.class, name = "NODE_EDITOR"),
+    @JsonSubTypes.Type(value = PanelInfos.class, name = "MODIFICATIONS"),
     @JsonSubTypes.Type(value = PanelInfos.class, name = "EVENT_SCENARIO")
 })
 @Data
