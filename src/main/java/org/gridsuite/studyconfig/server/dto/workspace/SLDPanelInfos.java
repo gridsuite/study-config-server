@@ -27,6 +27,7 @@ public class SLDPanelInfos extends PanelInfos {
     private String diagramId;
 
     @Schema(description = "Parent NAD panel ID (if this SLD is associated with a NAD)")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     private UUID parentNadPanelId;
 
     @Schema(description = "Navigation history")

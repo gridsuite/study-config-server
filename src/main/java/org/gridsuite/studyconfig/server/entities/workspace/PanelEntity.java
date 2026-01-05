@@ -49,13 +49,13 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
     private double sizeHeight;
 
     @Column(name = "is_minimized", nullable = false)
-    private boolean isMinimized;
+    private boolean minimized;
 
     @Column(name = "is_maximized", nullable = false)
-    private boolean isMaximized;
+    private boolean maximized;
 
     @Column(name = "is_pinned", nullable = false)
-    private boolean isPinned;
+    private boolean pinned;
 
     @Column(name = "restore_position_x")
     private Double restorePositionX;
@@ -98,9 +98,9 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
         positionY = dto.getPosition().y();
         sizeWidth = dto.getSize().width();
         sizeHeight = dto.getSize().height();
-        isMinimized = dto.isMinimized();
-        isMaximized = dto.isMaximized();
-        isPinned = dto.isPinned();
+        minimized = dto.isMinimized();
+        maximized = dto.isMaximized();
+        pinned = dto.isPinned();
         if (dto.getRestorePosition() != null) {
             restorePositionX = dto.getRestorePosition().x();
             restorePositionY = dto.getRestorePosition().y();

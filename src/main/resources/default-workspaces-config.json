@@ -14,9 +14,9 @@
             "width": 0.75,
             "height": 1.0
           },
-          "isMinimized": false,
-          "isMaximized": false,
-          "isPinned": false
+          "minimized": false,
+          "maximized": false,
+          "pinned": false
         },
         {
           "type": "MODIFICATIONS",
@@ -29,9 +29,9 @@
             "width": 0.25,
             "height": 1.0
           },
-          "isMinimized": false,
-          "isMaximized": false,
-          "isPinned": false
+          "minimized": false,
+          "maximized": false,
+          "pinned": false
         }
       ]
     },
