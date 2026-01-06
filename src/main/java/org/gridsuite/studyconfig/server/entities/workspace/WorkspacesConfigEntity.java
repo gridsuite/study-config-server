@@ -15,6 +15,7 @@ import org.gridsuite.studyconfig.server.dto.workspace.WorkspacesConfigInfos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -51,5 +52,19 @@ public class WorkspacesConfigEntity {
                 .map(WorkspaceEntity::toDto)
                 .toList()
         );
+    }
+
+    public WorkspacesConfigEntity duplicate() {
+        WorkspacesConfigEntity cloned = new WorkspacesConfigEntity();
+        cloned.setWorkspaces(this.workspaces.stream()
+            .map(WorkspaceEntity::duplicate)
+            .toList());
+        return cloned;
+    }
+
+    public Optional<WorkspaceEntity> getWorkspace(UUID workspaceId) {
+        return getWorkspaces().stream()
+            .filter(w -> w.getId().equals(workspaceId))
+            .findFirst();
     }
 }

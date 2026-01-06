@@ -55,21 +55,18 @@ public class NADPanelEntity extends PanelEntity {
     }
 
     @Override
-    public void update(PanelInfos dto) {
-        super.update(dto);
-        initEntity((NADPanelInfos) dto);
-    }
-
-    private void initEntity(NADPanelInfos dto) {
-        nadConfigUuid = dto.getNadConfigUuid();
-        filterUuid = dto.getFilterUuid();
-        currentFilterUuid = dto.getCurrentFilterUuid();
-        savedWorkspaceConfigUuid = dto.getSavedWorkspaceConfigUuid();
-        if (dto.getVoltageLevelToOmitIds() != null) {
-            voltageLevelToOmitIds = new ArrayList<>(dto.getVoltageLevelToOmitIds());
+    protected void initEntity(PanelInfos dto) {
+        super.initEntity(dto);
+        NADPanelInfos nadDto = (NADPanelInfos) dto;
+        nadConfigUuid = nadDto.getNadConfigUuid();
+        filterUuid = nadDto.getFilterUuid();
+        currentFilterUuid = nadDto.getCurrentFilterUuid();
+        savedWorkspaceConfigUuid = nadDto.getSavedWorkspaceConfigUuid();
+        if (nadDto.getVoltageLevelToOmitIds() != null) {
+            voltageLevelToOmitIds = new ArrayList<>(nadDto.getVoltageLevelToOmitIds());
         }
-        if (dto.getNavigationHistory() != null) {
-            navigationHistory = new ArrayList<>(dto.getNavigationHistory());
+        if (nadDto.getNavigationHistory() != null) {
+            navigationHistory = new ArrayList<>(nadDto.getNavigationHistory());
         }
     }
 

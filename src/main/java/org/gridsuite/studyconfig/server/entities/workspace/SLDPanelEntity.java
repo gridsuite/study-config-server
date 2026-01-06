@@ -44,16 +44,13 @@ public class SLDPanelEntity extends PanelEntity {
     }
 
     @Override
-    public void update(PanelInfos dto) {
-        super.update(dto);
-        initEntity((SLDPanelInfos) dto);
-    }
-
-    private void initEntity(SLDPanelInfos dto) {
-        diagramId = dto.getDiagramId();
-        parentNadPanelId = dto.getParentNadPanelId();
-        if (dto.getNavigationHistory() != null) {
-            navigationHistory = new ArrayList<>(dto.getNavigationHistory());
+    protected void initEntity(PanelInfos dto) {
+        super.initEntity(dto);
+        SLDPanelInfos sldDto = (SLDPanelInfos) dto;
+        diagramId = sldDto.getDiagramId();
+        parentNadPanelId = sldDto.getParentNadPanelId();
+        if (sldDto.getNavigationHistory() != null) {
+            navigationHistory = new ArrayList<>(sldDto.getNavigationHistory());
         }
     }
 

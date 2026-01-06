@@ -12,9 +12,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -58,10 +62,43 @@ public class WorkspaceEntity {
         );
     }
 
-    public PanelEntity getPanel(UUID uuid) {
-        return getPanels().stream()
+    public Optional<PanelEntity> getPanel(UUID uuid) {
+        return panels.stream()
             .filter(p -> p.getId().equals(uuid))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
+    }
+
+    public WorkspaceMetadata toMetadata(int panelCount) {
+        return new WorkspaceMetadata(getId(), getName(), panelCount);
+    }
+
+    public WorkspaceEntity duplicate() {
+        WorkspaceEntity copy = new WorkspaceEntity();
+        copy.setName(this.name);
+
+        Map<UUID, UUID> oldToNew = new HashMap<>();
+
+        // duplicate all panels and track ID changes
+        List<PanelEntity> copiedPanels = this.panels.stream()
+            .map(panel -> {
+                UUID oldId = panel.getId();
+                PanelEntity newPanel = panel.duplicate();
+                oldToNew.put(oldId, newPanel.getId());
+                return newPanel;
+            })
+            .toList();
+
+        // fix SLD parent references
+        copiedPanels.stream()
+            .filter(SLDPanelEntity.class::isInstance)
+            .map(SLDPanelEntity.class::cast)
+            .forEach(sld -> {
+                if (sld.getParentNadPanelId() != null) {
+                    sld.setParentNadPanelId(oldToNew.get(sld.getParentNadPanelId()));
+                }
+            });
+
+        copy.setPanels(copiedPanels);
+        return copy;
     }
 }

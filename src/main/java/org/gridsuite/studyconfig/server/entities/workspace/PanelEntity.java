@@ -92,7 +92,7 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
         initEntity(dto);
     }
 
-    private void initEntity(PanelInfos dto) {
+    protected void initEntity(PanelInfos dto) {
         title = dto.getTitle();
         positionX = dto.getPosition().x();
         positionY = dto.getPosition().y();
@@ -132,5 +132,11 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
         PanelInfos dto = new PanelInfos();
         iniDto(dto);
         return dto;
+    }
+
+    public PanelEntity duplicate() {
+        PanelInfos dto = this.toDto();
+        dto.setId(null);
+        return PanelEntity.toEntity(dto);
     }
 }

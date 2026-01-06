@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -47,10 +48,9 @@ public class WorkspacesConfigController {
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
     public ResponseEntity<UUID> duplicateWorkspacesConfig(
-            @Parameter(description = "UUID of the workspaces config to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id,
-            @Parameter(description = "Mapping of old NAD config UUIDs to new ones") @RequestBody(required = false) Map<UUID, UUID> nadConfigMapping) {
-        UUID newId = workspacesConfigService.duplicateWorkspacesConfig(id, nadConfigMapping != null ? nadConfigMapping : Map.of());
-        return ResponseEntity.status(HttpStatus.CREATED).body(newId);
+            @Parameter(description = "UUID of the workspaces config to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(workspacesConfigService.duplicateWorkspacesConfig(id));
     }
 
     @PostMapping(value = "/default")
@@ -59,8 +59,8 @@ public class WorkspacesConfigController {
     @ApiResponse(responseCode = "201", description = "Default workspaces config created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     public ResponseEntity<UUID> createDefaultWorkspacesConfig() {
-        UUID id = workspacesConfigService.createDefaultWorkspacesConfig();
-        return ResponseEntity.status(HttpStatus.CREATED).body(id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(workspacesConfigService.createDefaultWorkspacesConfig());
     }
 
     @DeleteMapping("/{id}")
@@ -112,8 +112,8 @@ public class WorkspacesConfigController {
     public ResponseEntity<List<PanelInfos>> getPanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
-            @Parameter(description = "Optional list of panel IDs to retrieve") @RequestParam(required = false) List<UUID> ids) {
-        return ResponseEntity.ok(workspacesConfigService.getPanels(id, workspaceId, ids));
+            @Parameter(description = "Optional list of panel IDs to retrieve") @RequestParam(required = false) Set<UUID> panelIds) {
+        return ResponseEntity.ok(workspacesConfigService.getPanels(id, workspaceId, panelIds));
     }
 
     @PostMapping("/{id}/workspaces/{workspaceId}/panels")
@@ -140,15 +140,32 @@ public class WorkspacesConfigController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/saved-nad-config-uuids")
-    @Operation(summary = "Get all saved NAD config UUIDs",
-            description = "Returns all saved NAD config UUIDs from all workspace panels")
-    @ApiResponse(responseCode = "200", description = "Saved NAD config UUIDs retrieved")
-    @ApiResponse(responseCode = "404", description = "Workspaces config not found")
-    public ResponseEntity<List<UUID>> getAllSavedNadConfigUuids(
-            @Parameter(description = "ID of the workspaces config") @PathVariable UUID id) {
-        List<UUID> uuids = workspacesConfigService.getAllSavedNadConfigUuids(id);
-        return ResponseEntity.ok(uuids);
+    @PostMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/saved-nad-config")
+    @Operation(summary = "Save a NAD configuration",
+            description = "Creates or updates a NAD configuration and updates the panel reference")
+    @ApiResponse(responseCode = "201", description = "NAD config saved",
+            content = @Content(schema = @Schema(implementation = UUID.class)))
+    @ApiResponse(responseCode = "404", description = "Workspace or panel not found")
+    public ResponseEntity<UUID> saveNadConfig(
+            @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
+            @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
+            @Parameter(description = "ID of the panel") @PathVariable UUID panelId,
+            @Parameter(description = "NAD config data") @RequestBody Map<String, Object> nadConfigData) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(workspacesConfigService.saveNadConfig(id, workspaceId, panelId, nadConfigData));
+    }
+
+    @DeleteMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/saved-nad-config")
+    @Operation(summary = "Delete a NAD configuration",
+            description = "Deletes a NAD configuration and clears panel reference")
+    @ApiResponse(responseCode = "204", description = "NAD config deleted")
+    @ApiResponse(responseCode = "404", description = "Panel not found or no NAD config to delete")
+    public ResponseEntity<Void> deleteNadConfig(
+            @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
+            @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
+            @Parameter(description = "ID of the panel") @PathVariable UUID panelId) {
+        workspacesConfigService.deleteNadConfig(id, workspaceId, panelId);
+        return ResponseEntity.noContent().build();
     }
 
 }
