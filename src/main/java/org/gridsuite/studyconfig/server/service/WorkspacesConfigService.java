@@ -39,7 +39,13 @@ public class WorkspacesConfigService {
     @Transactional
     public void deleteWorkspacesConfig(UUID id) {
         WorkspacesConfigEntity entity = findWorkspacesConfig(id);
+        List<UUID> nadConfigUuids = getNadPanels(entity).stream()
+            .map(NADPanelEntity::getSavedWorkspaceConfigUuid)
+            .toList();
         workspacesConfigRepository.delete(entity);
+        if (!nadConfigUuids.isEmpty()) {
+            singleLineDiagramService.deleteNadConfigs(nadConfigUuids);
+        }
     }
 
     @Transactional
