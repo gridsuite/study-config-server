@@ -24,9 +24,9 @@ import java.util.UUID;
 public class SingleLineDiagramService {
 
     private static final String API_VERSION = "v1";
-    private static final String NETWORK_AREA_DIAGRAM_CONFIGS_ENDPOINT = "/network-area-diagram/configs";
-    private static final String CONFIG_ENDPOINT = "/config/{configUuid}";
-    private static final String CONFIGS_ENDPOINT = "/configs";
+    private static final String NETWORK_AREA_DIAGRAM = "network-area-diagram";
+    private static final String CONFIGS = "configs";
+    private static final String CONFIG = "config";
 
     private final RestTemplate restTemplate;
     private String singleLineDiagramServerBaseUri;
@@ -38,14 +38,15 @@ public class SingleLineDiagramService {
     }
 
     public UUID createOrUpdateNadConfig(Map<String, Object> nadConfigData) {
-        String path = UriComponentsBuilder.fromPath("/" + API_VERSION + NETWORK_AREA_DIAGRAM_CONFIGS_ENDPOINT)
+        String path = UriComponentsBuilder.newInstance()
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
                 .toUriString();
         return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, nadConfigData, UUID.class);
     }
 
     public void deleteNadConfig(UUID configUuid) {
-        String path = UriComponentsBuilder.fromPath("/" + API_VERSION + CONFIG_ENDPOINT)
-                .buildAndExpand(configUuid)
+        String path = UriComponentsBuilder.newInstance()
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG, configUuid.toString())
                 .toUriString();
         restTemplate.delete(singleLineDiagramServerBaseUri + path);
     }
@@ -55,14 +56,16 @@ public class SingleLineDiagramService {
             return;
         }
 
-        String path = UriComponentsBuilder.fromPath("/" + API_VERSION + CONFIGS_ENDPOINT)
+        String path = UriComponentsBuilder.newInstance()
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
                 .toUriString();
         HttpEntity<List<UUID>> requestEntity = new HttpEntity<>(configUuids);
         restTemplate.exchange(singleLineDiagramServerBaseUri + path, HttpMethod.DELETE, requestEntity, Void.class);
     }
 
     public UUID duplicateNadConfig(UUID sourceConfigUuid) {
-        String path = UriComponentsBuilder.fromPath("/" + API_VERSION + NETWORK_AREA_DIAGRAM_CONFIGS_ENDPOINT)
+        String path = UriComponentsBuilder.newInstance()
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
                 .queryParam("duplicateFrom", sourceConfigUuid)
                 .toUriString();
         return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, null, UUID.class);
