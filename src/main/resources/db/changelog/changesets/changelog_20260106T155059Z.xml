@@ -1,17 +1,28 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="labidiayo (generated)" id="1766038691210-6">
+    <changeSet author="labidiayo (generated)" id="1767714685566-6">
         <createTable tableName="nad_panel">
+            <column name="current_filter_uuid" type="UUID"/>
+            <column name="filter_uuid" type="UUID"/>
+            <column name="nad_config_uuid" type="UUID"/>
+            <column name="saved_workspace_config_uuid" type="UUID"/>
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panelPK"/>
             </column>
-            <column name="nad_config_uuid" type="UUID"/>
-            <column name="filter_uuid" type="UUID"/>
-            <column name="current_filter_uuid" type="UUID"/>
-            <column name="saved_workspace_config_uuid" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-7">
+    <changeSet author="labidiayo (generated)" id="1767714685566-7">
+        <createTable tableName="nad_panel_navigation_history">
+            <column name="panel_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panel_navigation_historyPK"/>
+            </column>
+            <column name="voltage_level_id" type="VARCHAR(255)"/>
+            <column name="position" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panel_navigation_historyPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1767714685566-8">
         <createTable tableName="nad_panel_voltage_level_to_omit">
             <column name="panel_id" type="UUID">
                 <constraints nullable="false"/>
@@ -19,27 +30,7 @@
             <column name="voltage_level_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-7a">
-        <createTable tableName="nad_panel_initial_voltage_levels">
-            <column name="panel_id" type="UUID">
-                <constraints nullable="false"/>
-            </column>
-            <column name="voltage_level_id" type="VARCHAR(255)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-7b">
-        <createTable tableName="nad_panel_navigation_history">
-            <column name="panel_id" type="UUID">
-                <constraints nullable="false"/>
-            </column>
-            <column name="voltage_level_id" type="VARCHAR(255)"/>
-            <column name="position" type="INT">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey tableName="nad_panel_navigation_history" columnNames="panel_id,position" constraintName="nad_panel_navigation_historyPK"/>
-    </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-8">
+    <changeSet author="labidiayo (generated)" id="1767714685566-9">
         <createTable tableName="panel">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="panelPK"/>
@@ -79,28 +70,29 @@
             <column name="panel_order" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-9">
+    <changeSet author="labidiayo (generated)" id="1767714685566-10">
         <createTable tableName="sld_panel">
+            <column name="diagram_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_nad_panel_id" type="UUID"/>
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panelPK"/>
             </column>
-            <column name="diagram_id" type="VARCHAR(255)"/>
-            <column name="parent_nad_panel_id" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-10">
+    <changeSet author="labidiayo (generated)" id="1767714685566-11">
         <createTable tableName="sld_panel_navigation_history">
             <column name="panel_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panel_navigation_historyPK"/>
             </column>
             <column name="voltage_level_id" type="VARCHAR(255)"/>
             <column name="position" type="INT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panel_navigation_historyPK"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="sld_panel_navigation_history" columnNames="panel_id,position" constraintName="sld_panel_navigation_historyPK"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-11">
+    <changeSet author="labidiayo (generated)" id="1767714685566-12">
         <createTable tableName="workspace">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="workspacePK"/>
@@ -112,35 +104,37 @@
             <column name="workspace_order" type="INT"/>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-12">
+    <changeSet author="labidiayo (generated)" id="1767714685566-13">
         <createTable tableName="workspaces_config">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="workspaces_configPK"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-13">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="nad_panel" constraintName="fk_nad_panel_panel" referencedColumnNames="id" referencedTableName="panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-14">
+        <createIndex indexName="idx_panel_workspace_id" tableName="panel">
+            <column name="workspace_id"/>
+        </createIndex>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-14">
-        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_voltage_level_to_omit" constraintName="fk_nad_voltage_level_to_omit" referencedColumnNames="id" referencedTableName="nad_panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-15">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_navigation_history" constraintName="FKe000fbaeoeykwh5ykkmc0yf53" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="nad_panel" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-15">
-        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_initial_voltage_levels" constraintName="fk_nad_initial_voltage_levels" referencedColumnNames="id" referencedTableName="nad_panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-16">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_voltage_level_to_omit" constraintName="FKgmbl0m1dax4w5k57i7lwo692x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="nad_panel" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-16">
-        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_navigation_history" constraintName="fk_nad_navigation_history" referencedColumnNames="id" referencedTableName="nad_panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-17">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="sld_panel" constraintName="FKi40ma1nohpc4ea36qca5xx70q" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="panel" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-17">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="sld_panel" constraintName="fk_sld_panel_panel" referencedColumnNames="id" referencedTableName="panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-18">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="nad_panel" constraintName="FKkvu3rbm9k4erh0jmjeh5krycf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="panel" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-18">
-        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="sld_panel_navigation_history" constraintName="fk_sld_navigation_history" referencedColumnNames="id" referencedTableName="sld_panel"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-19">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="sld_panel_navigation_history" constraintName="FKt9okg5ogqtp232ndvlyc9ew2n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="sld_panel" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-19">
-        <addForeignKeyConstraint baseColumnNames="workspace_id" baseTableName="panel" constraintName="fk_workspace" referencedColumnNames="id" referencedTableName="workspace"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-20">
+        <addForeignKeyConstraint baseColumnNames="workspace_id" baseTableName="panel" constraintName="fk_workspace" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="workspace" validate="true"/>
     </changeSet>
-    <changeSet author="labidiayo (generated)" id="1766038691210-20">
-        <addForeignKeyConstraint baseColumnNames="workspaces_config_id" baseTableName="workspace" constraintName="fk_workspaces_config" referencedColumnNames="id" referencedTableName="workspaces_config"/>
+    <changeSet author="labidiayo (generated)" id="1767714685566-21">
+        <addForeignKeyConstraint baseColumnNames="workspaces_config_id" baseTableName="workspace" constraintName="fk_workspaces_config" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="workspaces_config" validate="true"/>
     </changeSet>
 </databaseChangeLog>

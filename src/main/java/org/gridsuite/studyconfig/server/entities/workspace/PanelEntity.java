@@ -21,7 +21,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "panel")
+@Table(name = "panel", indexes = {
+    @Index(name = "idx_panel_workspace_id", columnList = "workspace_id")
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> {
 
