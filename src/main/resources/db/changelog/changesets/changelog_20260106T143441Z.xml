@@ -2,11 +2,9 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="deharbemat" id="1767710089293-1">
         <comment>Switch voltage level and substation filters from genericFilter filter_type to substationOrVoltageLevelFilter</comment>
-        <sql dbms="postgresql">
-            UPDATE spreadsheet_global_filter
-            SET filter_type = 'substationOrVoltageLevelFilter'
-            WHERE (equipment_type = 'VOLTAGE_LEVEL' OR equipment_type = 'SUBSTATION')
-            AND filter_type = 'genericFilter';
-        </sql>
+        <update tableName="spreadsheet_global_filter">
+            <column name="filter_type" value="substationOrVoltageLevelFilter" />
+            <where>(equipment_type = 'VOLTAGE_LEVEL' OR equipment_type = 'SUBSTATION') AND filter_type = 'genericFilter'</where>
+        </update>
     </changeSet>
 </databaseChangeLog>
