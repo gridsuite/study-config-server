@@ -64,6 +64,7 @@ public class SpreadsheetColumnEntity {
                 .precision(getPrecision())
                 .formula(getFormula())
                 .dependencies(getDependencies())
+                .visible(isVisible())
                 .columnFilter(getColumnFilter() != null ? getColumnFilter().copy() : null)
                 .build();
     }

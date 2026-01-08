@@ -10,7 +10,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
+import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.junit.jupiter.api.AfterEach;
@@ -22,10 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +62,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testCreate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1", "alias2"));
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1", "alias2"), null);
 
         UUID configUuid = postSpreadsheetConfig(configToCreate);
         SpreadsheetConfigInfos createdConfig = getSpreadsheetConfig(configUuid);
@@ -77,7 +76,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testCreateWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos invalidConfig = new SpreadsheetConfigInfos(null, "Battery", null, createColumns(), null, List.of());
+        SpreadsheetConfigInfos invalidConfig = new SpreadsheetConfigInfos(null, "Battery", null, createColumns(), null, List.of(), null);
 
         String invalidConfigJson = mapper.writeValueAsString(invalidConfig);
 
@@ -89,7 +88,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testRead() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, "Battery", SheetType.BUS, createColumnsWithFilters(), createGlobalFilters(), List.of("alias"));
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, "Battery", SheetType.BUS, createColumnsWithFilters(), createGlobalFilters(), List.of("alias"), null);
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -104,7 +103,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetMetadata() throws Exception {
-        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, "Battery", SheetType.BUS, createColumnsWithFilters(), createGlobalFilters(), List.of());
+        SpreadsheetConfigInfos configToRead = new SpreadsheetConfigInfos(null, "Battery", SheetType.BUS, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
 
         UUID configUuid = saveAndReturnId(configToRead);
 
@@ -137,11 +136,11 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of());
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigInfos invalidUpdate = new SpreadsheetConfigInfos(configUuid, "Test", null, createUpdatedColumns(), null, List.of());
+        SpreadsheetConfigInfos invalidUpdate = new SpreadsheetConfigInfos(configUuid, "Test", null, createUpdatedColumns(), null, List.of(), null);
 
         String invalidUpdateJson = mapper.writeValueAsString(invalidUpdate);
 
@@ -153,11 +152,11 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdate() throws Exception {
-        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1"));
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1"), null);
 
         UUID configUuid = saveAndReturnId(configToUpdate);
 
-        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, "Bus", SheetType.BUS, createUpdatedColumnsWithFilters(), createUpdatedGlobalFilters(), List.of("newAlias"));
+        SpreadsheetConfigInfos updatedConfig = new SpreadsheetConfigInfos(configUuid, "Bus", SheetType.BUS, createUpdatedColumnsWithFilters(), createUpdatedGlobalFilters(), List.of("newAlias"), null);
 
         String updatedConfigJson = mapper.writeValueAsString(updatedConfig);
 
@@ -176,7 +175,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDelete() throws Exception {
-        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of());
+        SpreadsheetConfigInfos configToDelete = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
 
         UUID configUuid = saveAndReturnId(configToDelete);
 
@@ -198,8 +197,8 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetAll() throws Exception {
-        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of());
-        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, "Bus", SheetType.BUS, createUpdatedColumnsWithFilters(), createUpdatedGlobalFilters(), List.of());
+        SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
+        SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, "Bus", SheetType.BUS, createUpdatedColumnsWithFilters(), createUpdatedGlobalFilters(), List.of(), null);
 
         saveAndReturnId(config1);
         saveAndReturnId(config2);
@@ -211,7 +210,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDuplicate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1,", "alias2"));
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1,", "alias2"), new SortConfig("idB", SortDirection.DESC.name().toLowerCase()));
         UUID configUuid = postSpreadsheetConfig(configToCreate);
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);
@@ -235,7 +234,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testCreateColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, List.of(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, List.of(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         ColumnInfos columnToCreate = new ColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", true, new ColumnFilterInfos(null, "newId", null, null, null, null));
@@ -274,7 +273,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
@@ -296,7 +295,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDeleteColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
@@ -314,7 +313,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDuplicateColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
@@ -352,7 +351,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testGetColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
@@ -365,7 +364,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testReorderColumns() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "ReorderTest", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "ReorderTest", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         // get the saved config to retrieve column UUIDs
@@ -405,7 +404,7 @@ class SpreadsheetConfigIntegrationTest {
                 new ColumnInfos(null, "col3", ColumnType.BOOLEAN, null, "formula3", null, false, new ColumnFilterInfos(null, "id3", null, null, null, null))
         );
 
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, columns, null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, columns, null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         // Get the saved config to retrieve column UUIDs
@@ -449,7 +448,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateColumnStatesInvalidColumn() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         UUID nonExistentColumnId = UUID.randomUUID();
@@ -478,7 +477,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testUpdateColumnStatesWithInvalidData() throws Exception {
-        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, createColumns(), null, List.of());
+        SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
         // Missing required fields (columnId and visible are null)
@@ -492,7 +491,7 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testRenameSpreadsheetConfig() throws Exception {
-        SpreadsheetConfigInfos configToRename = new SpreadsheetConfigInfos(null, "OriginalName", SheetType.BATTERY, createColumns(), List.of(), List.of());
+        SpreadsheetConfigInfos configToRename = new SpreadsheetConfigInfos(null, "OriginalName", SheetType.BATTERY, createColumns(), List.of(), List.of(), null);
         UUID configUuid = saveAndReturnId(configToRename);
 
         String newName = "RenamedConfig";
@@ -520,10 +519,50 @@ class SpreadsheetConfigIntegrationTest {
     }
 
     @Test
+    void testUpdateSpreadsheetConfigSort() throws Exception {
+        SpreadsheetConfigInfos configToUpdate = new SpreadsheetConfigInfos(null, "OriginalName", SheetType.BATTERY, createColumns(), List.of(), List.of(), null);
+        UUID configUuid = saveAndReturnId(configToUpdate);
+        SortConfig sortConfig = new SortConfig("idA", "asc");
+        String sortConfigAsString = mapper.writeValueAsString(sortConfig);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/sort")
+                        .content(sortConfigAsString)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        SpreadsheetConfigEntity updatedSpreadsheetConfigEntity = spreadsheetConfigRepository.findById(configUuid).orElseThrow();
+        assertThat(updatedSpreadsheetConfigEntity.getSortColumnId()).isEqualTo("idA");
+        assertThat(updatedSpreadsheetConfigEntity.getSortDirection()).isEqualTo(SortDirection.ASC);
+
+        sortConfig = new SortConfig("idB", "desc");
+        sortConfigAsString = mapper.writeValueAsString(sortConfig);
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/sort")
+                        .content(sortConfigAsString)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        updatedSpreadsheetConfigEntity = spreadsheetConfigRepository.findById(configUuid).orElseThrow();
+        assertThat(updatedSpreadsheetConfigEntity.getSortColumnId()).isEqualTo("idB");
+        assertThat(updatedSpreadsheetConfigEntity.getSortDirection()).isEqualTo(SortDirection.DESC);
+    }
+
+    @Test
+    void testUpdateNonExistentSpreadsheetConfigSort() throws Exception {
+        UUID configUuid = UUID.randomUUID();
+        SortConfig sortConfig = new SortConfig("idA", "asc");
+        String sortConfigAsString = mapper.writeValueAsString(sortConfig);
+
+        mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/sort")
+                        .content(sortConfigAsString)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testSetGlobalFiltersForSpreadsheetConfig() throws Exception {
         // Create a spreadsheet config with existing global filters
         SpreadsheetConfigInfos configWithFilters = new SpreadsheetConfigInfos(
-                null, "ConfigWithFilters", SheetType.BATTERY, createColumns(), createGlobalFilters(), List.of());
+                null, "ConfigWithFilters", SheetType.BATTERY, createColumns(), createGlobalFilters(), List.of(), null);
         UUID configId = saveAndReturnId(configWithFilters);
 
         // Initial config should have two filters
@@ -553,7 +592,7 @@ class SpreadsheetConfigIntegrationTest {
     void testResetFiltersForSpreadsheetConfig() throws Exception {
         // Create a spreadsheet config with existing global filters
         SpreadsheetConfigInfos configWithFilters = new SpreadsheetConfigInfos(
-                null, "ConfigWithFilters", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of());
+                null, "ConfigWithFilters", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
         UUID configId = saveAndReturnId(configWithFilters);
 
         // Initial config should have filters set

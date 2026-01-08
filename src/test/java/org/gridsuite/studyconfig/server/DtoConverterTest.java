@@ -115,7 +115,8 @@ public class DtoConverterTest implements WithAssertions {
                     List.of(
                             GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").recent(false).build()
                     ),
-                    List.of()
+                    List.of(),
+                    null
             );
 
             SpreadsheetConfigEntity entity = SpreadsheetConfigMapper.toEntity(dto);

@@ -209,7 +209,7 @@
           "id": "p2"
         },
         {
-          "name": "q1 (MVar)",
+          "name": "q1 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q1",
@@ -217,7 +217,7 @@
           "id": "q1"
         },
         {
-          "name": "q2 (MVar)",
+          "name": "q2 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q2",
@@ -383,7 +383,7 @@
           "id": "p2"
         },
         {
-          "name": "q1 (MVar)",
+          "name": "q1 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q1",
@@ -391,7 +391,7 @@
           "id": "q1"
         },
         {
-          "name": "q2 (MVar)",
+          "name": "q2 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q2",
@@ -717,7 +717,7 @@
           "id": "p3"
         },
         {
-          "name": "q1 (MVar)",
+          "name": "q1 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q1",
@@ -725,7 +725,7 @@
           "id": "q1"
         },
         {
-          "name": "q2 (MVar)",
+          "name": "q2 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q2",
@@ -733,7 +733,7 @@
           "id": "q2"
         },
         {
-          "name": "q3 (MVar)",
+          "name": "q3 (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q3",
@@ -1003,7 +1003,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1051,7 +1051,7 @@
           "id": "targetV"
         },
         {
-          "name": "Target Q (MVar)",
+          "name": "Target Q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "targetQ",
@@ -1217,7 +1217,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1233,7 +1233,7 @@
           "id": "p0"
         },
         {
-          "name": "Constant Q (MVar)",
+          "name": "Constant Q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q0",
@@ -1303,7 +1303,7 @@
           "id": "terminalConnected"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1429,7 +1429,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1445,7 +1445,7 @@
           "id": "voltageSetpoint"
         },
         {
-          "name": "Reactive power set point (MVar)",
+          "name": "Reactive power set point (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "reactivePowerSetpoint",
@@ -1515,7 +1515,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1547,7 +1547,7 @@
           "id": "targetP"
         },
         {
-          "name": "Target Q (MVar)",
+          "name": "Target Q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "targetQ",
@@ -1775,7 +1775,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1869,7 +1869,7 @@
           "id": "p"
         },
         {
-          "name": "q (MVar)",
+          "name": "q (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "q",
@@ -1901,7 +1901,7 @@
           "id": "voltageSetpoint"
         },
         {
-          "name": "Reactive power set point (MVar)",
+          "name": "Reactive power set point (Mvar)",
           "type": "NUMBER",
           "precision": 1,
           "formula": "reactivePowerSetpoint",

@@ -9,6 +9,7 @@ package org.gridsuite.studyconfig.server.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.gridsuite.studyconfig.server.constants.SheetType;
+import org.gridsuite.studyconfig.server.constants.SortDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,13 @@ public class SpreadsheetConfigEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "config_node_aliases", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_node_aliases"))
     private List<String> nodeAliases;
+
+    @Column(name = "sort_column_id")
+    private String sortColumnId;
+
+    @Column(name = "sort_direction")
+    @Enumerated(EnumType.STRING)
+    private SortDirection sortDirection;
 
     public void resetFilters() {
         this.globalFilters.clear();

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
@@ -67,6 +68,10 @@ public class SpreadsheetConfigService {
         if (entity.getNodeAliases() != null) {
             duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
         }
+        if (entity.getSortColumnId() != null && entity.getSortDirection() != null) {
+            duplicate.setSortColumnId(entity.getSortColumnId());
+            duplicate.setSortDirection(entity.getSortDirection());
+        }
         duplicate.setColumns(entity.getColumns().stream()
                 .map(SpreadsheetColumnEntity::copy)
                 .toList());
@@ -123,6 +128,17 @@ public class SpreadsheetConfigService {
                     .map(CommonFiltersMapper::toGlobalFilterEntity)
                     .toList());
         }
+        if (dto.sortConfig() != null) {
+            entity.setSortColumnId(dto.sortConfig().colId());
+            entity.setSortDirection(SortDirection.valueOf(dto.sortConfig().sort().toUpperCase()));
+        }
+    }
+
+    @Transactional
+    public void updateSpreadsheetConfigSort(UUID id, SortConfig dto) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        entity.setSortColumnId(dto.colId());
+        entity.setSortDirection(SortDirection.valueOf(dto.sort().toUpperCase()));
     }
 
     @Transactional
@@ -254,6 +270,8 @@ public class SpreadsheetConfigService {
                     SpreadsheetConfigEntity configDuplicate = SpreadsheetConfigEntity.builder()
                             .name(config.getName())
                             .sheetType(config.getSheetType())
+                            .sortColumnId(config.getSortColumnId())
+                            .sortDirection(config.getSortDirection())
                             .build();
                     if (config.getNodeAliases() != null) {
                         configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
