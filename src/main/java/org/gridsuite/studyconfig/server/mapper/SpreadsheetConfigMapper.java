@@ -108,8 +108,8 @@ public final class SpreadsheetConfigMapper {
                 .recent(entity.isRecent())
                 .equipmentType(entity.getEquipmentType())
                 .path(entity.getPath())
-            .minValue(entity.getMinValue())
-            .maxValue(entity.getMaxValue())
+                .minValue(entity.getMinValue())
+                .maxValue(entity.getMaxValue())
                 .build();
 
     }
