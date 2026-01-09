@@ -84,6 +84,7 @@ public class ColumnEntity {
             .filterType(getFilterType())
             .filterValue(getFilterValue())
             .filterTolerance(getFilterTolerance())
+            .visible(isVisible())
             .build();
     }
 }

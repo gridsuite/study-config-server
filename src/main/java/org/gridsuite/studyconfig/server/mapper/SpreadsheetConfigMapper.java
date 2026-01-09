@@ -10,6 +10,8 @@ import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.studyconfig.server.constants.SortDirection;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
@@ -30,12 +32,13 @@ public final class SpreadsheetConfigMapper {
                 entity.getName(),
                 entity.getSheetType(),
                 entity.getColumns().stream()
-                    .map(SpreadsheetConfigMapper::toColumnDto)
-                    .toList(),
+                        .map(SpreadsheetConfigMapper::toColumnDto)
+                        .toList(),
                 entity.getGlobalFilters().stream()
-                    .map(SpreadsheetConfigMapper::toGlobalFilterDto)
-                    .toList(),
-                entity.getNodeAliases()
+                        .map(SpreadsheetConfigMapper::toGlobalFilterDto)
+                        .toList(),
+                entity.getNodeAliases(),
+                (entity.getSortColumnId() != null && entity.getSortDirection() != null) ? new SortConfig(entity.getSortColumnId(), entity.getSortDirection().name().toLowerCase()) : null
         );
     }
 
@@ -61,6 +64,10 @@ public final class SpreadsheetConfigMapper {
             entity.setGlobalFilters(dto.globalFilters().stream()
                     .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
                     .toList());
+        }
+        if (dto.sortConfig() != null) {
+            entity.setSortColumnId(dto.sortConfig().colId());
+            entity.setSortDirection(SortDirection.valueOf(dto.sortConfig().sort().toUpperCase()));
         }
 
         return entity;
