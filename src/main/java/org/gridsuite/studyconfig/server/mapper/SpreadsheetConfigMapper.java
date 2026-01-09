@@ -6,10 +6,6 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
-import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.dto.MetadataInfos;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
