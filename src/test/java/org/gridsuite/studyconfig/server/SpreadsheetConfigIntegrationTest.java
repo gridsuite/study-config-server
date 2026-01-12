@@ -30,10 +30,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -135,8 +133,7 @@ class SpreadsheetConfigIntegrationTest {
         UUID nonExistentUuid = UUID.randomUUID();
 
         mockMvc.perform(get(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -197,8 +194,7 @@ class SpreadsheetConfigIntegrationTest {
         UUID nonExistentUuid = UUID.randomUUID();
 
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -235,8 +231,7 @@ class SpreadsheetConfigIntegrationTest {
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_BASE)
                         .queryParam("duplicateFrom", nonExistentUuid.toString()))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -351,8 +346,7 @@ class SpreadsheetConfigIntegrationTest {
         assertEquals(columnInfos.name() + "_2", duplicatedColumnInfos.name());
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
-            .andExpect(content().string(containsString("Column not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -465,8 +459,7 @@ class SpreadsheetConfigIntegrationTest {
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/states")
                         .content(mapper.writeValueAsString(stateUpdates))
                         .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(containsString("Column not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -479,8 +472,7 @@ class SpreadsheetConfigIntegrationTest {
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + URI_COLUMN_BASE + "/states")
                         .content(mapper.writeValueAsString(stateUpdates))
                         .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -523,8 +515,7 @@ class SpreadsheetConfigIntegrationTest {
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid + "/name")
                 .content("NewName")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -590,8 +581,7 @@ class SpreadsheetConfigIntegrationTest {
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
                         .content(mapper.writeValueAsString(filtersToAdd))
                         .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(containsString("SpreadsheetConfig not found with id:")))
-            .andReturn();
+                .andExpect(status().isNotFound());
     }
 
     private List<ColumnInfos> createColumns() {
