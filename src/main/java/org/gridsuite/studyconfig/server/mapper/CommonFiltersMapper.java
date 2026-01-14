@@ -77,6 +77,8 @@ public final class CommonFiltersMapper {
                 .recent(entity.isRecent())
                 .equipmentType(entity.getEquipmentType())
                 .path(entity.getPath())
+                .minValue(entity.getMinValue())
+                .maxValue(entity.getMaxValue())
                 .build();
 
     }
@@ -90,6 +92,8 @@ public final class CommonFiltersMapper {
                 .recent(dto.recent())
                 .equipmentType(dto.equipmentType())
                 .path(dto.path())
+                .minValue(dto.minValue())
+                .maxValue(dto.maxValue())
                 .build();
     }
 }
