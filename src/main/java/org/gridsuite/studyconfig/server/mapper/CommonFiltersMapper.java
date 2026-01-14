@@ -36,7 +36,7 @@ public final class CommonFiltersMapper {
     public static ColumnFilterInfos toColumnFilterDto(ColumnFilterEntity entity) {
         return new ColumnFilterInfos(
                 entity.getUuid(),
-                entity.getColumnId(),
+                entity.getId(),
                 entity.getFilterDataType(),
                 entity.getFilterType(),
                 entity.getFilterValue(),
@@ -60,7 +60,7 @@ public final class CommonFiltersMapper {
 
     public static ColumnFilterEntity toColumnFilterEntity(ColumnFilterInfos dto) {
         return ColumnFilterEntity.builder()
-                .columnId(dto.columnId())
+                .id(dto.id())
                 .filterDataType(dto.filterDataType())
                 .filterType(dto.filterType())
                 .filterValue(dto.filterValue())

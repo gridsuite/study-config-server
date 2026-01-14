@@ -315,14 +315,14 @@ public class SpreadsheetConfigService {
             .filter(column -> column.getUuid().equals(columnId))
             .findFirst()
             .orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
-
-        spreadsheetColumnEntity.setName(dto.name());
-        spreadsheetColumnEntity.setType(dto.type());
-        spreadsheetColumnEntity.setPrecision(dto.precision());
-        spreadsheetColumnEntity.setFormula(dto.formula());
-        spreadsheetColumnEntity.setDependencies(dto.dependencies());
-        spreadsheetColumnEntity.setColumnFilter(CommonFiltersMapper.toColumnFilterEntity(dto.columnFilterInfos()));
-        spreadsheetColumnEntity.setVisible(dto.visible());
+        SpreadsheetColumnEntity updatedColumn = CommonFiltersMapper.toColumnEntity(dto);
+        spreadsheetColumnEntity.setName(updatedColumn.getName());
+        spreadsheetColumnEntity.setType(updatedColumn.getType());
+        spreadsheetColumnEntity.setPrecision(updatedColumn.getPrecision());
+        spreadsheetColumnEntity.setFormula(updatedColumn.getFormula());
+        spreadsheetColumnEntity.setDependencies(updatedColumn.getDependencies());
+        spreadsheetColumnEntity.setColumnFilter(updatedColumn.getColumnFilter());
+        spreadsheetColumnEntity.setVisible(updatedColumn.isVisible());
 
         spreadsheetConfigRepository.save(entity);
     }
@@ -373,7 +373,7 @@ public class SpreadsheetConfigService {
     }
 
     private Pair<String, String> getDuplicateIdAndNameCandidate(SpreadsheetConfigEntity entity, String columnId, String columnName) {
-        var existingColumnIds = entity.getColumns().stream().map(col -> col.getColumnFilter().getColumnId()).collect(Collectors.toSet());
+        var existingColumnIds = entity.getColumns().stream().map(col -> col.getColumnFilter().getId()).collect(Collectors.toSet());
         var existingColumnNames = entity.getColumns().stream().map(SpreadsheetColumnEntity::getName).collect(Collectors.toSet());
         String newColumnId = getUniqueValue(columnId, existingColumnIds);
         String newColumnName = getUniqueValue(columnName, existingColumnNames);
@@ -388,8 +388,8 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
         SpreadsheetColumnEntity columnCopy = spreadsheetColumnEntity.copy();
         columnCopy.setUuid(null);
-        Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getColumnFilter().getColumnId(), columnCopy.getName());
-        columnCopy.getColumnFilter().setColumnId(idAndName.getLeft());
+        Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getColumnFilter().getId(), columnCopy.getName());
+        columnCopy.getColumnFilter().setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());
         List<SpreadsheetColumnEntity> columns = entity.getColumns();
         columns.add(columns.indexOf(spreadsheetColumnEntity) + 1, columnCopy);

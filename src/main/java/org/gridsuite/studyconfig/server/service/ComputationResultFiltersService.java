@@ -97,25 +97,23 @@ public class ComputationResultFiltersService {
     @Transactional
     public void updateColumn(UUID id, UUID columnId, ColumnFilterInfos dto) {
         ComputationResultFilterEntity entity = findEntityById(id);
-        ComputationResultColumnsFiltersEntity wrapper = entity.getColumnsFilters().values().stream()
+        ComputationResultColumnsFiltersEntity columnFilterEntity = entity.getColumnsFilters().values().stream()
                 .filter(w -> w.getId().equals(columnId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Column wrapper not found: " + columnId));
-        if (wrapper.getColumns() == null) {
-            wrapper.setColumns(new ArrayList<>());
+        ColumnFilterEntity updatedColumn = CommonFiltersMapper.toColumnFilterEntity(dto);
+        Optional<ColumnFilterEntity> existingFilter = columnFilterEntity.getColumns().stream()
+                .filter(filter -> filter.getId().equals(updatedColumn.getId()))
+                .findFirst();
+        if (existingFilter.isPresent()) {
+            ColumnFilterEntity filterToUpdate = existingFilter.get();
+            filterToUpdate.setFilterDataType(updatedColumn.getFilterDataType());
+            filterToUpdate.setFilterType(updatedColumn.getFilterType());
+            filterToUpdate.setFilterValue(updatedColumn.getFilterValue());
+            filterToUpdate.setFilterTolerance(updatedColumn.getFilterTolerance());
+        } else {
+            columnFilterEntity.getColumns().add(updatedColumn);
         }
-        ColumnFilterEntity column = wrapper.getColumns().stream().filter(
-                c -> c.getColumnId().equals(dto.columnId())).findFirst()
-                .orElseGet(() -> {
-                    ColumnFilterEntity newCol = new ColumnFilterEntity();
-                    wrapper.getColumns().add(newCol);
-                    return newCol;
-                });
-        column.setColumnId(dto.columnId());
-        column.setFilterDataType(dto.filterDataType());
-        column.setFilterType(dto.filterType());
-        column.setFilterValue(dto.filterValue());
-        column.setFilterTolerance(dto.filterTolerance());
         computationResultFilterRepository.save(entity);
     }
 

@@ -28,8 +28,8 @@ public class ColumnFilterEntity {
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
-    private String columnId;
+    @Column(name = "column_id", nullable = false, columnDefinition = "varchar(255)")
+    private String id;
 
     @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
     private String filterDataType;
@@ -52,7 +52,7 @@ public class ColumnFilterEntity {
 
     public ColumnFilterEntity copy() {
         return ColumnFilterEntity.builder()
-                .columnId(getColumnId())
+                .id(getId())
                 .filterDataType(getFilterDataType())
                 .filterType(getFilterType())
                 .filterValue(getFilterValue())

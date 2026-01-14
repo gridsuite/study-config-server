@@ -329,7 +329,7 @@ class SpreadsheetConfigIntegrationTest {
         ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
 
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.columnFilterInfos().columnId() + "_1", duplicatedColumnInfos.columnFilterInfos().columnId());
+        assertEquals(columnInfos.columnFilterInfos().id() + "_1", duplicatedColumnInfos.columnFilterInfos().id());
         assertEquals(columnInfos.name() + "_1", duplicatedColumnInfos.name());
         assertThat(columnInfos.visible()).isEqualTo(duplicatedColumnInfos.visible());
         assertThat(columnInfos.formula()).isEqualTo(duplicatedColumnInfos.formula());
@@ -342,7 +342,7 @@ class SpreadsheetConfigIntegrationTest {
         assertThat(configAfterDuplicate.columns()).hasSize(6);
         duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
-        assertEquals(columnInfos.columnFilterInfos().columnId() + "_2", duplicatedColumnInfos.columnFilterInfos().columnId());
+        assertEquals(columnInfos.columnFilterInfos().id() + "_2", duplicatedColumnInfos.columnFilterInfos().id());
         assertEquals(columnInfos.name() + "_2", duplicatedColumnInfos.name());
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + UUID.randomUUID() + "/duplicate"))
@@ -480,8 +480,8 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, createColumns(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
-        // Missing required fields (columnId and visible are null)
-        String invalidJson = "[{\"columnId\": null, \"visible\": null, \"order\": 0}]";
+        // Missing required fields (id and visible are null)
+        String invalidJson = "[{\"id\": null, \"visible\": null, \"order\": 0}]";
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/states")
                         .content(invalidJson)

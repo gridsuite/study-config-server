@@ -20,7 +20,7 @@ public record ColumnFilterInfos(
     UUID uuid,
 
     @Schema(description = "Column id")
-    String columnId,
+    String id,
 
     @Schema(description = "Filter data type")
     String filterDataType,

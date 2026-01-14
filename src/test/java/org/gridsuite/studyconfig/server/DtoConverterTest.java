@@ -45,14 +45,14 @@ public class DtoConverterTest implements WithAssertions {
                                 .name("Column1")
                                 .formula("A+B")
                                 .columnFilter(ColumnFilterEntity.builder()
-                                        .columnId("id1")
+                                        .id("id1")
                                         .filterDataType("text")
                                         .filterType("contains")
                                         .filterValue("test").build())
                                 .visible(false)
                                 .build(),
                             SpreadsheetColumnEntity.builder().name("Column2").formula("C*D").columnFilter(ColumnFilterEntity.builder()
-                            .columnId("id2").build()).build()
+                            .id("id2").build()).build()
                     ))
                     .globalFilters(Arrays.asList(
                             GlobalFilterEntity.builder()
@@ -77,7 +77,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.columns()).hasSize(2);
                         assertThat(d.columns().get(0).name()).isEqualTo("Column1");
                         assertThat(d.columns().get(0).formula()).isEqualTo("A+B");
-                        assertThat(d.columns().get(0).columnFilterInfos().columnId()).isEqualTo("id1");
+                        assertThat(d.columns().get(0).columnFilterInfos().id()).isEqualTo("id1");
                         assertThat(d.columns().get(0).columnFilterInfos().filterDataType()).isEqualTo("text");
                         assertThat(d.columns().get(0).columnFilterInfos().filterType()).isEqualTo("contains");
                         assertThat(d.columns().get(0).columnFilterInfos().filterValue()).isEqualTo("test");
@@ -85,7 +85,7 @@ public class DtoConverterTest implements WithAssertions {
 
                         assertThat(d.columns().get(1).name()).isEqualTo("Column2");
                         assertThat(d.columns().get(1).formula()).isEqualTo("C*D");
-                        assertThat(d.columns().get(1).columnFilterInfos().columnId()).isEqualTo("id2");
+                        assertThat(d.columns().get(1).columnFilterInfos().id()).isEqualTo("id2");
                         assertThat(d.columns().get(1).columnFilterInfos().filterDataType()).isNull();
                         assertThat(d.columns().get(1).columnFilterInfos().filterType()).isNull();
                         assertThat(d.columns().get(1).columnFilterInfos().filterValue()).isNull();
@@ -131,7 +131,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getColumns()).hasSize(2);
                         assertThat(e.getColumns().get(0).getName()).isEqualTo("Column1");
                         assertThat(e.getColumns().get(0).getFormula()).isEqualTo("X+Y");
-                        assertThat(e.getColumns().get(0).getColumnFilter().getColumnId()).isEqualTo("id1");
+                        assertThat(e.getColumns().get(0).getColumnFilter().getId()).isEqualTo("id1");
                         assertThat(e.getColumns().get(0).getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                         assertThat(e.getColumns().get(0).getColumnFilter().getFilterDataType()).isEqualTo("number");
                         assertThat(e.getColumns().get(0).getColumnFilter().getFilterType()).isEqualTo("greaterThan");
@@ -141,7 +141,7 @@ public class DtoConverterTest implements WithAssertions {
 
                         assertThat(e.getColumns().get(1).getName()).isEqualTo("Column2");
                         assertThat(e.getColumns().get(1).getFormula()).isEqualTo("Z*W");
-                        assertThat(e.getColumns().get(1).getColumnFilter().getColumnId()).isEqualTo("id2");
+                        assertThat(e.getColumns().get(1).getColumnFilter().getId()).isEqualTo("id2");
                         assertThat(e.getColumns().get(1).getDependencies()).isEqualTo("[\"col1\"]");
                         assertThat(e.getColumns().get(1).getColumnFilter().getFilterDataType()).isNull();
                         assertThat(e.getColumns().get(1).getColumnFilter().getFilterType()).isNull();
@@ -165,7 +165,7 @@ public class DtoConverterTest implements WithAssertions {
                     .name("TestColumn")
                     .formula("A+B+C")
                     .columnFilter(ColumnFilterEntity.builder()
-                            .columnId("idTest")
+                            .id("idTest")
                             .filterDataType("text")
                             .filterType("startsWith")
                             .filterValue("prefix")
@@ -179,7 +179,7 @@ public class DtoConverterTest implements WithAssertions {
                     .satisfies(d -> {
                         assertThat(d.name()).isEqualTo("TestColumn");
                         assertThat(d.formula()).isEqualTo("A+B+C");
-                        assertThat(d.columnFilterInfos().columnId()).isEqualTo("idTest");
+                        assertThat(d.columnFilterInfos().id()).isEqualTo("idTest");
                         assertThat(d.columnFilterInfos().filterDataType()).isEqualTo("text");
                         assertThat(d.columnFilterInfos().filterType()).isEqualTo("startsWith");
                         assertThat(d.columnFilterInfos().filterValue()).isEqualTo("prefix");
@@ -212,7 +212,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getName()).isEqualTo("TestColumn");
                         assertThat(e.getFormula()).isEqualTo("X*Y*Z");
                         assertThat(e.getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
-                        assertThat(e.getColumnFilter().getColumnId()).isEqualTo("idTest");
+                        assertThat(e.getColumnFilter().getId()).isEqualTo("idTest");
                         assertThat(e.getColumnFilter().getFilterDataType()).isEqualTo("number");
                         assertThat(e.getColumnFilter().getFilterType()).isEqualTo("lessThan");
                         assertThat(e.getColumnFilter().getFilterValue()).isEqualTo("50.5");
