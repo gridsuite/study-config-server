@@ -8,6 +8,7 @@ package org.gridsuite.studyconfig.server.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
@@ -68,33 +69,18 @@ public class SpreadsheetConfigService {
         if (entity.getNodeAliases() != null) {
             duplicate.setNodeAliases(new ArrayList<>(entity.getNodeAliases()));
         }
-        List<ColumnEntity> columns = entity.getColumns().stream()
-                .map(column -> ColumnEntity.builder()
-                        .name(column.getName())
-                        .type(column.getType())
-                        .precision(column.getPrecision())
-                        .formula(column.getFormula())
-                        .dependencies(column.getDependencies())
-                        .id(column.getId())
-                        .filterDataType(column.getFilterDataType())
-                        .filterType(column.getFilterType())
-                        .filterValue(column.getFilterValue())
-                        .filterTolerance(column.getFilterTolerance())
-                        .build())
-                .toList();
-        duplicate.setColumns(columns);
+        if (entity.getSortColumnId() != null && entity.getSortDirection() != null) {
+            duplicate.setSortColumnId(entity.getSortColumnId());
+            duplicate.setSortDirection(entity.getSortDirection());
+        }
+        duplicate.setColumns(entity.getColumns().stream()
+                .map(ColumnEntity::copy)
+                .toList());
 
         // Copy global filters if needed
         if (entity.getGlobalFilters() != null) {
             duplicate.setGlobalFilters(entity.getGlobalFilters().stream()
-                    .map(globalFilter -> GlobalFilterEntity.builder()
-                            .filterType(globalFilter.getFilterType())
-                            .label(globalFilter.getLabel())
-                            .uuid(globalFilter.getUuid())
-                            .equipmentType(globalFilter.getEquipmentType())
-                            .recent(globalFilter.isRecent())
-                            .path(globalFilter.getPath())
-                            .build())
+                    .map(GlobalFilterEntity::copy)
                     .toList());
         }
         return duplicate;
@@ -143,6 +129,17 @@ public class SpreadsheetConfigService {
                     .map(SpreadsheetConfigMapper::toGlobalFilterEntity)
                     .toList());
         }
+        if (dto.sortConfig() != null) {
+            entity.setSortColumnId(dto.sortConfig().colId());
+            entity.setSortDirection(SortDirection.valueOf(dto.sortConfig().sort().toUpperCase()));
+        }
+    }
+
+    @Transactional
+    public void updateSpreadsheetConfigSort(UUID id, SortConfig dto) {
+        SpreadsheetConfigEntity entity = findEntityById(id);
+        entity.setSortColumnId(dto.colId());
+        entity.setSortDirection(SortDirection.valueOf(dto.sort().toUpperCase()));
     }
 
     @Transactional
@@ -274,33 +271,17 @@ public class SpreadsheetConfigService {
                     SpreadsheetConfigEntity configDuplicate = SpreadsheetConfigEntity.builder()
                             .name(config.getName())
                             .sheetType(config.getSheetType())
+                            .sortColumnId(config.getSortColumnId())
+                            .sortDirection(config.getSortDirection())
                             .build();
                     if (config.getNodeAliases() != null) {
                         configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
                     }
                     configDuplicate.setColumns(config.getColumns().stream()
-                            .map(column -> ColumnEntity.builder()
-                                    .name(column.getName())
-                                    .type(column.getType())
-                                    .precision(column.getPrecision())
-                                    .formula(column.getFormula())
-                                    .dependencies(column.getDependencies())
-                                    .id(column.getId())
-                                    .filterDataType(column.getFilterDataType())
-                                    .filterType(column.getFilterType())
-                                    .filterValue(column.getFilterValue())
-                                    .filterTolerance(column.getFilterTolerance())
-                                    .build())
+                            .map(ColumnEntity::copy)
                             .toList());
                     configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
-                            .map(globalFilter -> GlobalFilterEntity.builder()
-                                    .filterType(globalFilter.getFilterType())
-                                    .label(globalFilter.getLabel())
-                                    .uuid(globalFilter.getUuid())
-                                    .equipmentType(globalFilter.getEquipmentType())
-                                    .recent(globalFilter.isRecent())
-                                    .path(globalFilter.getPath())
-                                    .build())
+                            .map(GlobalFilterEntity::copy)
                             .toList());
                     return configDuplicate;
                 })

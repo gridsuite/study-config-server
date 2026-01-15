@@ -32,16 +32,20 @@ public class NetworkVisualizationsParamService {
     @Value("${study-config.nad-positions-generation-default-mode:}")
     private NadPositionsGenerationMode nadPositionsGenerationDefaultMode;
 
+    @Value("${study-config.base-map:}")
+    private String defaultBaseMap;
+
     @Transactional
     public UUID createDefaultParameters() {
         NetworkVisualizationParamEntity entity = new NetworkVisualizationParamEntity();
         entity.setNadPositionsGenerationMode(nadPositionsGenerationDefaultMode.toString());
+        entity.setMapBaseMap(defaultBaseMap);
         return repository.save(entity).getId();
     }
 
     @Transactional
     public UUID createParameters(NetworkVisualizationParamInfos dto) {
-        NetworkVisualizationParamEntity entity = NetworkVisualizationParamMapper.toEntity(dto);
+        NetworkVisualizationParamEntity entity = NetworkVisualizationParamMapper.toEntity(dto, defaultBaseMap);
         return repository.save(entity).getId();
     }
 

@@ -110,7 +110,8 @@ public class DtoConverterTest implements WithAssertions {
                     List.of(
                             GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").recent(false).build()
                     ),
-                    List.of()
+                    List.of(),
+                    null
             );
 
             SpreadsheetConfigEntity entity = SpreadsheetConfigMapper.toEntity(dto);
@@ -250,6 +251,8 @@ public class DtoConverterTest implements WithAssertions {
                     .id(uuid)
                     .uuid(filterId)
                     .label("TestGlobalFilter")
+                .minValue(10)
+                .maxValue(20)
                     .build();
 
             GlobalFilterInfos dto = SpreadsheetConfigMapper.toGlobalFilterDto(entity);
@@ -259,6 +262,8 @@ public class DtoConverterTest implements WithAssertions {
                     .satisfies(d -> {
                         assertThat(d.uuid()).isEqualTo(filterId);
                         assertThat(d.label()).isEqualTo("TestGlobalFilter");
+                        assertThat(d.minValue()).isEqualTo(10);
+                        assertThat(d.maxValue()).isEqualTo(20);
                     });
         }
 
@@ -266,7 +271,15 @@ public class DtoConverterTest implements WithAssertions {
         void testConversionToEntityOfGlobalFilter() {
             UUID uuid = UUID.randomUUID();
             UUID filterId = UUID.randomUUID();
-            GlobalFilterInfos dto = GlobalFilterInfos.builder().id(uuid).uuid(filterId).filterType("country").label("TestGlobalFilter").recent(false).build();
+            GlobalFilterInfos dto = GlobalFilterInfos.builder()
+                .id(uuid)
+                .uuid(filterId)
+                .filterType("country")
+                .label("TestGlobalFilter")
+                .recent(false)
+                .minValue(5)
+                .maxValue(15)
+                .build();
 
             GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
 
@@ -275,6 +288,8 @@ public class DtoConverterTest implements WithAssertions {
                     .satisfies(e -> {
                         assertThat(e.getUuid()).isEqualTo(filterId);
                         assertThat(e.getLabel()).isEqualTo("TestGlobalFilter");
+                        assertThat(e.getMinValue()).isEqualTo(5);
+                        assertThat(e.getMaxValue()).isEqualTo(15);
                     });
         }
     }

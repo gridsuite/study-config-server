@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="hedhiliabd (generated)" id="1765279047985-6">
+        <addColumn tableName="spreadsheet_config">
+            <column name="sort_column_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="hedhiliabd (generated)" id="1765279047985-7">
+        <addColumn tableName="spreadsheet_config">
+            <column name="sort_direction" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

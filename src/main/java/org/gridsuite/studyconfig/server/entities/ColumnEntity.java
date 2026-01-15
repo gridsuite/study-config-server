@@ -71,4 +71,20 @@ public class ColumnEntity {
         this.filterTolerance = null;
         this.filterValue = null;
     }
+
+    public ColumnEntity copy() {
+        return ColumnEntity.builder()
+            .name(getName())
+            .type(getType())
+            .precision(getPrecision())
+            .formula(getFormula())
+            .dependencies(getDependencies())
+            .id(getId())
+            .filterDataType(getFilterDataType())
+            .filterType(getFilterType())
+            .filterValue(getFilterValue())
+            .filterTolerance(getFilterTolerance())
+            .visible(isVisible())
+            .build();
+    }
 }

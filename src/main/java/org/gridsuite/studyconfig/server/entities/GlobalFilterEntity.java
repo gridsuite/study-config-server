@@ -49,4 +49,23 @@ public class GlobalFilterEntity {
     @Column(name = "path")
     private String path;
 
+    @Column(name = "min_value")
+    private Integer minValue;
+
+    @Column(name = "max_value")
+    private Integer maxValue;
+
+    public GlobalFilterEntity copy() {
+        return GlobalFilterEntity.builder()
+            .filterType(getFilterType())
+            .filterSubtype(getFilterSubtype())
+            .label(getLabel())
+            .uuid(getUuid())
+            .equipmentType(getEquipmentType())
+            .recent(isRecent())
+            .path(getPath())
+            .minValue(getMinValue())
+            .maxValue(getMaxValue())
+            .build();
+    }
 }

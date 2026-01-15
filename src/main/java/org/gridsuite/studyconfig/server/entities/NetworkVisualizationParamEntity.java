@@ -41,7 +41,7 @@ public class NetworkVisualizationParamEntity {
     private Boolean mapManualRefresh = true;
 
     @Column(name = "map_basemap")
-    private String mapBaseMap = "mapbox";
+    private String mapBaseMap;
 
     @Column(name = "diagonal_label")
     private Boolean diagonalLabel = true;
