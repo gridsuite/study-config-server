@@ -6,7 +6,6 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.dto.NadPositionsGenerationMode;
 import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
@@ -14,8 +13,10 @@ import org.gridsuite.studyconfig.server.entities.NetworkVisualizationParamEntity
 import org.gridsuite.studyconfig.server.mapper.NetworkVisualizationParamMapper;
 import org.gridsuite.studyconfig.server.repositories.NetworkVisualizationParamRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -83,17 +84,17 @@ public class NetworkVisualizationsParamService {
     @Transactional
     public void deleteParameters(UUID id) {
         if (!repository.existsById(id)) {
-            throw entityNotFoundException(id);
+            throw notFoundException(id);
         }
         repository.deleteById(id);
     }
 
     private NetworkVisualizationParamEntity findEntityById(UUID id) {
         return repository.findById(id)
-                .orElseThrow(() -> entityNotFoundException(id));
+                .orElseThrow(() -> notFoundException(id));
     }
 
-    private EntityNotFoundException entityNotFoundException(UUID id) {
-        return new EntityNotFoundException("NetworkVisualizationParam not found with id: " + id);
+    private ResponseStatusException notFoundException(UUID id) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "NetworkVisualizationParam not found with id: " + id);
     }
 }
