@@ -1,7 +1,6 @@
 {
   "computationResultFilters": {
-    "LOAD_FLOW": [
-      {
+    "LOAD_FLOW": {
         "columnsFilters": {
           "LOADFLOW_CURRENT_LIMIT_VIOLATION": {
             "columns": []
@@ -11,10 +10,8 @@
           }
         },
         "globalFilters": []
-      }
-    ],
-    "SECURITY_ANALYSIS": [
-      {
+    },
+    "SECURITY_ANALYSIS": {
         "columnsFilters": {
           "SECURITY_ANALYSIS_RESULT_N": {
             "columns": []
@@ -24,10 +21,8 @@
           }
         },
         "globalFilters": []
-      }
-    ],
-    "SENSITIVITY_ANALYSIS": [
-      {
+    },
+    "SENSITIVITY_ANALYSIS": {
         "columnsFilters": {
           "SENSITIVITY_IN_DELTA_MW_N": {
             "columns": []
@@ -49,10 +44,8 @@
           }
         },
         "globalFilters": []
-      }
-    ],
-    "SHORT_CIRCUIT": [
-      {
+    },
+    "SHORT_CIRCUIT": {
         "columnsFilters": {
           "ONE_BUS": {
             "columns": []
@@ -62,27 +55,22 @@
           }
         },
         "globalFilters": []
-      }
-    ],
-    "VOLTAGE_INITIALIZATION": [
-      {
+    },
+    "VOLTAGE_INITIALIZATION": {
         "columnsFilters": {
           "VOLTAGE_INITIALIZATION": {
             "columns": []
           }
         },
         "globalFilters": []
-      }
-    ],
-    "PCC_MIN": [
-      {
+    },
+    "PCC_MIN": {
         "columnsFilters": {
           "PCCMIN_RESULT": {
             "columns": []
           }
         },
         "globalFilters": []
-      }
-    ]
+    }
   }
 }

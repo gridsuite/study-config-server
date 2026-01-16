@@ -59,11 +59,12 @@ public class ComputationResultFiltersService {
 
     public UUID createDefaultComputationConfig(ComputationResultFiltersInfos dto) {
         ComputationResultFiltersEntity root = new ComputationResultFiltersEntity();
-        Map<ComputationType, ComputationResultFilterEntity> mappedFilters = dto.computationResultFilters().entrySet()
-                .stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
-                    List<ComputationResultFilterInfos> list = e.getValue();
-                    return ComputationResultFiltersMapper.toEntity(list.getFirst());
-                }, (a, b) -> a, () -> new EnumMap<>(ComputationType.class)));
+        Map<ComputationType, ComputationResultFilterEntity> mappedFilters = dto.computationResultFilters().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> ComputationResultFiltersMapper.toEntity(e.getValue()),
+                        (a, b) -> a,
+                        () -> new EnumMap<>(ComputationType.class)
+                ));
         root.setComputationResultFilter(mappedFilters);
         return computationResultFiltersRepository.saveAndFlush(root).getId();
     }
@@ -79,10 +80,13 @@ public class ComputationResultFiltersService {
         ComputationResultFiltersEntity entity = computationResultFiltersRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + id));
 
-        Map<ComputationType, List<ComputationResultFilterInfos>> groupedFilters = entity.getComputationResultFilter()
-                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
-                        e -> List.of(ComputationResultFiltersMapper.toDto(e.getValue()))));
-        return new ComputationResultFiltersInfos(entity.getId(), groupedFilters);
+        Map<ComputationType, ComputationResultFilterInfos> mappedFilters = entity.getComputationResultFilter().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> ComputationResultFiltersMapper.toDto(e.getValue()),
+                        (a, b) -> a,
+                        () -> new EnumMap<>(ComputationType.class)
+                ));
+        return new ComputationResultFiltersInfos(entity.getId(), mappedFilters);
     }
 
     @Transactional

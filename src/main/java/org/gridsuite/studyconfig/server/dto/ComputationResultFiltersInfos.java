@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import org.gridsuite.studyconfig.server.constants.ComputationType;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +24,7 @@ public record ComputationResultFiltersInfos(
 
         @NotNull
         @Schema(description = "map of computation result filter by computation type")
-        Map<ComputationType, List<ComputationResultFilterInfos>> computationResultFilters
+        Map<ComputationType, ComputationResultFilterInfos> computationResultFilters
 ) {
 
 }

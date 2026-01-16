@@ -72,7 +72,7 @@ public class ComputationResultFiltersController {
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
     public ResponseEntity<Void> updateColumn(
-            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @Parameter(description = "ID of the computation config") @PathVariable UUID id,
             @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
             @Valid @RequestBody ColumnFilterInfos dto) {
         computationGlobalFiltersService.updateColumn(id, columnId, dto);

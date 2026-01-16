@@ -24,7 +24,7 @@ public record ComputationResultFilterInfos(
         UUID id,
 
         @NotNull
-        @Schema(description = "Map of columns filters list by computation sub type")
+        @Schema(description = "Map of columns filters by computation sub type")
         Map<ComputationSubType, ColumnsFiltersInfos> columnsFilters,
 
         @NotNull
