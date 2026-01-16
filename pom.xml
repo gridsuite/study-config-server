@@ -68,7 +68,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- overrides of imports -->
-
             <!-- imports -->
             <dependency>
                 <groupId>org.gridsuite</groupId>
