@@ -7,8 +7,9 @@
 package org.gridsuite.studyconfig.server.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.gridsuite.studyconfig.server.dto.workspace.*;
 import org.gridsuite.studyconfig.server.entities.workspace.*;
 import org.gridsuite.studyconfig.server.repositories.PanelRepository;
@@ -135,13 +136,13 @@ public class WorkspacesConfigService {
 
     private WorkspacesConfigEntity findWorkspacesConfig(UUID configId) {
         return workspacesConfigRepository.findById(configId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACES_CONFIG_NOT_FOUND + configId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACES_CONFIG_NOT_FOUND + configId));
     }
 
     private WorkspaceEntity findWorkspace(UUID configId, UUID workspaceId) {
         WorkspacesConfigEntity config = findWorkspacesConfig(configId);
         return config.getWorkspace(workspaceId)
-            .orElseThrow(() -> new EntityNotFoundException(WORKSPACE_NOT_FOUND + workspaceId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACE_NOT_FOUND + workspaceId));
     }
 
     @Transactional
@@ -157,7 +158,7 @@ public class WorkspacesConfigService {
         NADPanelEntity nadPanel = findNadPanel(configId, workspaceId, panelId);
         UUID nadConfigUuid = nadPanel.getSavedWorkspaceConfigUuid();
         if (nadConfigUuid == null) {
-            throw new EntityNotFoundException("No NAD config found for panel: " + panelId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No NAD config found for panel: " + panelId);
         }
         singleLineDiagramService.deleteNadConfig(nadConfigUuid);
         nadPanel.setSavedWorkspaceConfigUuid(null);
@@ -166,7 +167,7 @@ public class WorkspacesConfigService {
     private NADPanelEntity findNadPanel(UUID configId, UUID workspaceId, UUID panelId) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         PanelEntity panel = workspace.getPanel(panelId)
-            .orElseThrow(() -> new EntityNotFoundException("Panel not found: " + panelId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Panel not found: " + panelId));
         if (!(panel instanceof NADPanelEntity)) {
             throw new IllegalArgumentException("Panel is not a NAD panel: " + panelId);
         }
