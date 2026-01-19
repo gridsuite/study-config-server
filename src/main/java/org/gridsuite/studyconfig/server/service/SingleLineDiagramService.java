@@ -8,7 +8,9 @@ package org.gridsuite.studyconfig.server.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -75,9 +77,14 @@ public class SingleLineDiagramService {
 
     public UUID duplicateNadConfig(UUID sourceConfigUuid) {
         String path = UriComponentsBuilder.newInstance()
-                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG)
                 .queryParam("duplicateFrom", sourceConfigUuid)
                 .toUriString();
-        return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, null, UUID.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, requestEntity, UUID.class);
     }
 }
