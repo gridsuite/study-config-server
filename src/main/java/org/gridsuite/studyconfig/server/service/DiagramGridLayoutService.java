@@ -6,14 +6,14 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutRepository;
 import org.gridsuite.studyconfig.server.mapper.DiagramGridLayoutMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class DiagramGridLayoutService {
     public DiagramGridLayout getByDiagramGridLayoutUuid(UUID diagramGridLayoutUuid) {
         DiagramGridLayoutEntity entity = diagramGridLayoutRepository
                 .findById(diagramGridLayoutUuid)
-                .orElseThrow(() -> new EntityNotFoundException("Diagram grid layout not found with id: " + diagramGridLayoutUuid));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with id: " + diagramGridLayoutUuid));
 
         return DiagramGridLayoutMapper.toDto(entity);
     }
@@ -48,7 +48,7 @@ public class DiagramGridLayoutService {
 
     @Transactional
     public void updateDiagramGridLayout(UUID diagramGridLayoutUuid, DiagramGridLayout diagramGridLayout) {
-        DiagramGridLayoutEntity diagramGridLayoutEntity = diagramGridLayoutRepository.findById(diagramGridLayoutUuid).orElseThrow(() -> new EntityNotFoundException("Diagram grid layout not found with id: " + diagramGridLayoutUuid));
+        DiagramGridLayoutEntity diagramGridLayoutEntity = diagramGridLayoutRepository.findById(diagramGridLayoutUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with id: " + diagramGridLayoutUuid));
 
         diagramGridLayoutEntity.replaceAllDiagramLayouts(diagramGridLayout.getDiagramLayouts().stream()
                 .map(DiagramGridLayoutMapper::toDiagramLayoutEntity)

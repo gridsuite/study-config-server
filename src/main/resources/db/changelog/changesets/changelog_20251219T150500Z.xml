@@ -1,0 +1,46 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="flomillot" id="20251219T150500Z-1">
+        <addColumn tableName="spreadsheet_global_filter">
+            <column name="min_value" type="integer"/>
+            <column name="max_value" type="integer"/>
+        </addColumn>
+        <sql dbms="postgresql">
+            WITH parsed_labels AS (SELECT id,
+                                          CAST(label AS INTEGER) as val
+                                   FROM spreadsheet_global_filter
+                                   WHERE filter_type = 'voltageLevel')
+            UPDATE spreadsheet_global_filter f
+            SET min_value = CASE
+                                WHEN p.val &lt; 40 THEN 0
+                                WHEN p.val &lt; 50 THEN 40
+                                WHEN p.val &lt; 70 THEN 50
+                                WHEN p.val &lt; 100 THEN 70
+                                WHEN p.val &lt; 200 THEN 100
+                                WHEN p.val &lt; 300 THEN 200
+                                ELSE 300
+                END,
+                max_value = CASE
+                                WHEN p.val &lt; 40 THEN 40
+                                WHEN p.val &lt; 50 THEN 50
+                                WHEN p.val &lt; 70 THEN 70
+                                WHEN p.val &lt; 100 THEN 100
+                                WHEN p.val &lt; 200 THEN 200
+                                WHEN p.val &lt; 300 THEN 300
+                                ELSE 500
+                    END,
+                label     = CASE
+                                WHEN p.val &lt; 40 THEN 'voltage-level-1'
+                                WHEN p.val &lt; 50 THEN 'voltage-level-2'
+                                WHEN p.val &lt; 70 THEN 'voltage-level-3'
+                                WHEN p.val &lt; 100 THEN 'voltage-level-4'
+                                WHEN p.val &lt; 200 THEN 'voltage-level-5'
+                                WHEN p.val &lt; 300 THEN 'voltage-level-6'
+                                ELSE 'voltage-level-7'
+                    END FROM parsed_labels p
+            WHERE f.id = p.id;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

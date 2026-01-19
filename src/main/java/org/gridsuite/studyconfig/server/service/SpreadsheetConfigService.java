@@ -6,7 +6,6 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
@@ -20,10 +19,12 @@ import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollection
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -144,18 +145,18 @@ public class SpreadsheetConfigService {
     @Transactional
     public void deleteSpreadsheetConfig(UUID id) {
         if (!spreadsheetConfigRepository.existsById(id)) {
-            throw entityNotFoundException(id);
+            throw notFoundException(id);
         }
         spreadsheetConfigRepository.deleteById(id);
     }
 
     private SpreadsheetConfigEntity findEntityById(UUID id) {
         return spreadsheetConfigRepository.findById(id)
-                .orElseThrow(() -> entityNotFoundException(id));
+                .orElseThrow(() -> notFoundException(id));
     }
 
-    private EntityNotFoundException entityNotFoundException(UUID id) {
-        return new EntityNotFoundException("SpreadsheetConfig not found with id: " + id);
+    private ResponseStatusException notFoundException(UUID id) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "SpreadsheetConfig not found with id: " + id);
     }
 
     public UUID createSpreadsheetConfigCollection(SpreadsheetConfigCollectionInfos dto) {
@@ -188,7 +189,7 @@ public class SpreadsheetConfigService {
     @Transactional(readOnly = true)
     public SpreadsheetConfigCollectionInfos getSpreadsheetConfigCollection(UUID id) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
         return new SpreadsheetConfigCollectionInfos(entity.getId(), entity.getSpreadsheetConfigs().stream()
                 .map(SpreadsheetConfigMapper::toDto)
                 .toList(), entity.getNodeAliases());
@@ -197,7 +198,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public void deleteSpreadsheetConfigCollection(UUID id) {
         if (!spreadsheetConfigCollectionRepository.existsById(id)) {
-            throw new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id);
         }
         spreadsheetConfigCollectionRepository.deleteById(id);
     }
@@ -205,7 +206,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public void updateSpreadsheetConfigCollection(UUID id, SpreadsheetConfigCollectionInfos dto) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
 
         entity.getSpreadsheetConfigs().clear();
         entity.getSpreadsheetConfigs().addAll(dto.spreadsheetConfigs().stream()
@@ -217,7 +218,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public void updateSpreadsheetConfigCollectionWithConfigs(UUID id, List<UUID> configUuids) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
 
         entity.getSpreadsheetConfigs().clear();
         entity.getSpreadsheetConfigs().addAll(configUuids.stream()
@@ -228,9 +229,9 @@ public class SpreadsheetConfigService {
     @Transactional
     public void appendSpreadsheetConfigCollection(UUID id, UUID sourceCollectionId) {
         SpreadsheetConfigCollectionEntity targetEntity = spreadsheetConfigCollectionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
         SpreadsheetConfigCollectionEntity sourceEntity = spreadsheetConfigCollectionRepository.findById(sourceCollectionId)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + sourceCollectionId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + sourceCollectionId));
         // Make sure names are unique in the merged collection
         Set<String> targetNames = targetEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
         Set<String> sourceNames = sourceEntity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getName).collect(Collectors.toSet());
@@ -262,7 +263,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public UUID duplicateSpreadsheetConfigCollection(UUID id) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
 
         SpreadsheetConfigCollectionEntity duplicate = new SpreadsheetConfigCollectionEntity();
         duplicate.setSpreadsheetConfigs(entity.getSpreadsheetConfigs().stream()
@@ -296,7 +297,7 @@ public class SpreadsheetConfigService {
             .filter(column -> column.getUuid().equals(columnId))
             .findFirst()
             .map(SpreadsheetConfigMapper::toColumnDto)
-            .orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
     }
 
     @Transactional
@@ -314,7 +315,7 @@ public class SpreadsheetConfigService {
         ColumnEntity columnEntity = entity.getColumns().stream()
             .filter(column -> column.getUuid().equals(columnId))
             .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
 
         columnEntity.setName(dto.name());
         columnEntity.setType(dto.type());
@@ -336,7 +337,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
         boolean removed = entity.getColumns().removeIf(column -> column.getUuid().equals(columnId));
         if (!removed) {
-            throw new EntityNotFoundException(COLUMN_NOT_FOUND + columnId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId);
         }
         spreadsheetConfigRepository.save(entity);
     }
@@ -389,7 +390,7 @@ public class SpreadsheetConfigService {
     public void duplicateColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
         ColumnEntity columnEntity = entity.getColumns().stream().filter(col -> col.getUuid().equals(columnId))
-                .findFirst().orElseThrow(() -> new EntityNotFoundException(COLUMN_NOT_FOUND + columnId));
+                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(null);
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
@@ -412,7 +413,7 @@ public class SpreadsheetConfigService {
         for (ColumnStateUpdateInfos state : columnStates) {
             ColumnEntity column = columnMap.get(state.columnId());
             if (column == null) {
-                throw new EntityNotFoundException(COLUMN_NOT_FOUND + state.columnId());
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + state.columnId());
             }
             column.setVisible(state.visible());
         }
@@ -452,7 +453,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public UUID addSpreadsheetConfigToCollection(UUID collectionId, SpreadsheetConfigInfos dto) {
         SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
 
         SpreadsheetConfigEntity newConfig = SpreadsheetConfigMapper.toEntity(dto);
         collection.getSpreadsheetConfigs().add(newConfig);
@@ -463,11 +464,11 @@ public class SpreadsheetConfigService {
     @Transactional
     public void removeSpreadsheetConfigFromCollection(UUID collectionId, UUID configId) {
         SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
-            .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
 
         boolean removed = collection.getSpreadsheetConfigs().removeIf(config -> config.getId().equals(configId));
         if (!removed) {
-            throw new EntityNotFoundException("Spreadsheet configuration not found in collection");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Spreadsheet configuration not found in collection");
         }
         spreadsheetConfigCollectionRepository.save(collection);
     }
@@ -475,7 +476,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public void reorderSpreadsheetConfigs(UUID collectionId, List<UUID> newOrder) {
         SpreadsheetConfigCollectionEntity collection = spreadsheetConfigCollectionRepository.findById(collectionId)
-                .orElseThrow(() -> new EntityNotFoundException(SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + collectionId));
 
         // Validate inputs
         Set<UUID> existingIds = collection.getSpreadsheetConfigs().stream()
