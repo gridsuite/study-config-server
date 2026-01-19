@@ -24,6 +24,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "sld_panel")
+@PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "fk_sld_panel_panel"))
 public class SLDPanelEntity extends PanelEntity {
 
     @Column(name = "diagram_id", nullable = false)
@@ -33,7 +34,11 @@ public class SLDPanelEntity extends PanelEntity {
     private UUID parentNadPanelId;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "sld_panel_navigation_history", joinColumns = @JoinColumn(name = "panel_id"))
+    @CollectionTable(
+        name = "sld_panel_navigation_history",
+        joinColumns = @JoinColumn(name = "panel_id", foreignKey = @ForeignKey(name = "fk_sld_panel_navigation_history")),
+        indexes = @Index(name = "idx_sld_panel_navigation_history_panel_id", columnList = "panel_id")
+    )
     @Column(name = "voltage_level_id")
     @OrderColumn(name = "position")
     private List<String> navigationHistory = new ArrayList<>();

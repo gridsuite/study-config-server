@@ -129,13 +129,13 @@ public class WorkspacesConfigController {
     }
 
     @DeleteMapping("/{id}/workspaces/{workspaceId}/panels")
-    @Operation(summary = "Delete panels", description = "Deletes panels by their IDs")
+    @Operation(summary = "Delete panels", description = "Deletes panels by their IDs, or all panels if no IDs provided")
     @ApiResponse(responseCode = "204", description = "Panels deleted")
     @ApiResponse(responseCode = "404", description = "Panels not found")
     public ResponseEntity<Void> deletePanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
-            @Parameter(description = "List of panel IDs to delete") @Valid @RequestBody List<UUID> panelIds) {
+            @Parameter(description = "Optional list of panel IDs to delete. If not provided, deletes all panels") @Valid @RequestBody(required = false) Set<UUID> panelIds) {
         workspacesConfigService.deletePanels(id, workspaceId, panelIds);
         return ResponseEntity.noContent().build();
     }

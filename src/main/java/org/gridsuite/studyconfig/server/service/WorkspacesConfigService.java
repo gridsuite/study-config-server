@@ -99,11 +99,13 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public void deletePanels(UUID configId, UUID workspaceId, List<UUID> panelIds) {
+    public void deletePanels(UUID configId, UUID workspaceId, Set<UUID> panelIds) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
 
+        boolean deleteAll = panelIds == null || panelIds.isEmpty();
+
         List<UUID> savedNadConfigUuids = workspace.getPanels().stream()
-            .filter(p -> panelIds.contains(p.getId()))
+            .filter(p -> deleteAll || panelIds.contains(p.getId()))
             .filter(NADPanelEntity.class::isInstance)
             .map(NADPanelEntity.class::cast)
             .map(NADPanelEntity::getSavedWorkspaceConfigUuid)
@@ -114,7 +116,11 @@ public class WorkspacesConfigService {
             singleLineDiagramService.deleteNadConfigs(savedNadConfigUuids);
         }
 
-        workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
+        if (deleteAll) {
+            workspace.getPanels().clear();
+        } else {
+            workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
+        }
     }
 
     @Transactional

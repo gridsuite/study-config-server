@@ -38,10 +38,20 @@ public class SingleLineDiagramService {
     }
 
     public UUID createOrUpdateNadConfig(Map<String, Object> nadConfigData) {
-        String path = UriComponentsBuilder.newInstance()
-                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
-                .toUriString();
-        return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, nadConfigData, UUID.class);
+        UUID id = nadConfigData.get("id") != null ? UUID.fromString(nadConfigData.get("id").toString()) : null;
+
+        if (id != null) {
+            String path = UriComponentsBuilder.newInstance()
+                    .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG, id.toString())
+                    .toUriString();
+            restTemplate.put(singleLineDiagramServerBaseUri + path, nadConfigData);
+            return id;
+        } else {
+            String path = UriComponentsBuilder.newInstance()
+                    .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG)
+                    .toUriString();
+            return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, nadConfigData, UUID.class);
+        }
     }
 
     public void deleteNadConfig(UUID configUuid) {

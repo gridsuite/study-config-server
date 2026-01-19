@@ -24,6 +24,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "nad_panel")
+@PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "fk_nad_panel_panel"))
 public class NADPanelEntity extends PanelEntity {
 
     @Column(name = "nad_config_uuid")
@@ -39,12 +40,29 @@ public class NADPanelEntity extends PanelEntity {
     private UUID savedWorkspaceConfigUuid;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "nad_panel_voltage_level_to_omit", joinColumns = @JoinColumn(name = "panel_id"))
+    @CollectionTable(
+        name = "nad_panel_voltage_level_to_omit",
+        joinColumns = @JoinColumn(name = "panel_id", foreignKey = @ForeignKey(name = "fk_nad_panel_voltage_level_to_omit")),
+        indexes = @Index(name = "idx_nad_panel_voltage_level_to_omit_panel_id", columnList = "panel_id")
+    )
     @Column(name = "voltage_level_id")
     private List<String> voltageLevelToOmitIds = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "nad_panel_navigation_history", joinColumns = @JoinColumn(name = "panel_id"))
+    @CollectionTable(
+        name = "nad_panel_initial_voltage_levels",
+        joinColumns = @JoinColumn(name = "panel_id", foreignKey = @ForeignKey(name = "fk_nad_panel_initial_voltage_levels")),
+        indexes = @Index(name = "idx_nad_panel_initial_voltage_levels_panel_id", columnList = "panel_id")
+    )
+    @Column(name = "voltage_level_id")
+    private List<String> initialVoltageLevelIds = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+        name = "nad_panel_navigation_history",
+        joinColumns = @JoinColumn(name = "panel_id", foreignKey = @ForeignKey(name = "fk_nad_panel_navigation_history")),
+        indexes = @Index(name = "idx_nad_panel_navigation_history_panel_id", columnList = "panel_id")
+    )
     @Column(name = "voltage_level_id")
     @OrderColumn(name = "position")
     private List<String> navigationHistory = new ArrayList<>();
@@ -65,6 +83,9 @@ public class NADPanelEntity extends PanelEntity {
         if (nadDto.getVoltageLevelToOmitIds() != null) {
             voltageLevelToOmitIds = new ArrayList<>(nadDto.getVoltageLevelToOmitIds());
         }
+        if (nadDto.getInitialVoltageLevelIds() != null) {
+            initialVoltageLevelIds = new ArrayList<>(nadDto.getInitialVoltageLevelIds());
+        }
         if (nadDto.getNavigationHistory() != null) {
             navigationHistory = new ArrayList<>(nadDto.getNavigationHistory());
         }
@@ -79,6 +100,7 @@ public class NADPanelEntity extends PanelEntity {
         dto.setCurrentFilterUuid(getCurrentFilterUuid());
         dto.setSavedWorkspaceConfigUuid(getSavedWorkspaceConfigUuid());
         dto.setVoltageLevelToOmitIds(getVoltageLevelToOmitIds());
+        dto.setInitialVoltageLevelIds(getInitialVoltageLevelIds());
         dto.setNavigationHistory(getNavigationHistory());
         return dto;
     }

@@ -26,7 +26,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "workspace")
+@Table(name = "workspace", indexes = {
+    @Index(name = "idx_workspace_workspaces_config_id", columnList = "workspaces_config_id")
+})
 public class WorkspaceEntity {
 
     @Id
