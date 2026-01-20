@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +39,10 @@ public class WorkspacesConfigService {
     @Transactional
     public void deleteWorkspacesConfig(UUID id) {
         WorkspacesConfigEntity entity = findWorkspacesConfig(id);
-        List<UUID> nadConfigUuids = entity.getWorkspaces().stream()
-            .flatMap(workspace -> getNadConfigUuids(workspace).stream())
-            .toList();
+        Stream<NADPanelEntity> nadPanels = entity.getWorkspaces().stream()
+            .flatMap(workspace -> workspace.getNadPanels().stream());
         workspacesConfigRepository.delete(entity);
-        deleteNadConfigs(nadConfigUuids);
+        deleteNadConfigs(nadPanels);
     }
 
     @Transactional
@@ -97,13 +97,10 @@ public class WorkspacesConfigService {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         boolean deleteAll = panelIds == null || panelIds.isEmpty();
 
-        List<UUID> currrentNadConfigUuids = workspace.getNadPanels().stream()
-            .filter(nadPanel -> deleteAll || panelIds.contains(nadPanel.getId()))
-            .map(NADPanelEntity::getCurrentNadConfigUuid)
-            .filter(Objects::nonNull)
-            .toList();
+        Stream<NADPanelEntity> nadPanelsToDelete = workspace.getNadPanels().stream()
+            .filter(nadPanel -> deleteAll || panelIds.contains(nadPanel.getId()));
 
-        deleteNadConfigs(currrentNadConfigUuids);
+        deleteNadConfigs(nadPanelsToDelete);
 
         if (deleteAll) {
             workspace.getPanels().clear();
@@ -172,14 +169,11 @@ public class WorkspacesConfigService {
         });
     }
 
-    private List<UUID> getNadConfigUuids(WorkspaceEntity workspace) {
-        return workspace.getNadPanels().stream()
+    private void deleteNadConfigs(Stream<NADPanelEntity> nadPanels) {
+        List<UUID> nadConfigUuids = nadPanels
             .map(NADPanelEntity::getCurrentNadConfigUuid)
             .filter(Objects::nonNull)
             .toList();
-    }
-
-    private void deleteNadConfigs(List<UUID> nadConfigUuids) {
         if (!nadConfigUuids.isEmpty()) {
             singleLineDiagramService.deleteNadConfigs(nadConfigUuids);
         }
