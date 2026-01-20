@@ -74,7 +74,7 @@ class WorkspacesConfigControllerTest {
     }
 
     private String getNadConfigPath() {
-        return getPanelsPath() + "/{panelId}/saved-nad-config";
+        return getPanelsPath() + "/{panelId}/current-nad-config";
     }
 
     @Test
@@ -227,7 +227,7 @@ class WorkspacesConfigControllerTest {
             .findFirst().orElseThrow();
 
         assertThat(sldPanel.getParentNadPanelId()).isEqualTo(nadPanel.getId());
-        assertThat(nadPanel.getSavedWorkspaceConfigUuid()).isEqualTo(nadConfigId);
+        assertThat(nadPanel.getCurrentNadConfigUuid()).isEqualTo(nadConfigId);
     }
 
     @Test
@@ -316,7 +316,7 @@ class WorkspacesConfigControllerTest {
         assertThat(returnedId).isEqualTo(newNadConfigId);
 
         NADPanelInfos updatedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceId, Set.of(nadPanelId)).get(0);
-        assertThat(updatedPanel.getSavedWorkspaceConfigUuid()).isEqualTo(newNadConfigId);
+        assertThat(updatedPanel.getCurrentNadConfigUuid()).isEqualTo(newNadConfigId);
     }
 
     @Test
@@ -336,7 +336,7 @@ class WorkspacesConfigControllerTest {
         verify(singleLineDiagramService).deleteNadConfig(any());
 
         NADPanelInfos updatedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceId, Set.of(nadPanel.getId())).get(0);
-        assertThat(updatedPanel.getSavedWorkspaceConfigUuid()).isNull();
+        assertThat(updatedPanel.getCurrentNadConfigUuid()).isNull();
     }
 
     @Test
@@ -467,21 +467,6 @@ class WorkspacesConfigControllerTest {
         verify(singleLineDiagramService, never()).duplicateNadConfig(any());
     }
 
-    @Test
-    void testPanelCountInMetadata() {
-        UUID configId = createConfig();
-        UUID workspaceId = workspacesConfigService.getWorkspacesMetadata(configId).get(0).id();
-
-        PanelInfos panel1 = createPanel(PanelType.TREE, PANEL_1);
-        PanelInfos panel2 = createPanel(PanelType.SPREADSHEET, PANEL_2);
-
-        workspacesConfigService.createOrUpdatePanels(configId, workspaceId, List.of(panel1, panel2));
-
-        List<WorkspaceMetadata> metadata = workspacesConfigService.getWorkspacesMetadata(configId);
-        assertThat(metadata.get(0).panelCount()).isEqualTo(2);
-        assertThat(metadata.get(1).panelCount()).isZero();
-    }
-
     private UUID createConfig() {
         return workspacesConfigRepository.save(new WorkspacesConfigEntity(
             new WorkspacesConfigInfos(null, List.of(
@@ -506,7 +491,7 @@ class WorkspacesConfigControllerTest {
         nadPanel.setTitle("NAD");
         nadPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
         nadPanel.setSize(new PanelSizeInfos(1.0, 1.0));
-        nadPanel.setSavedWorkspaceConfigUuid(UUID.randomUUID());
+        nadPanel.setCurrentNadConfigUuid(UUID.randomUUID());
 
         SLDPanelInfos sldPanel = new SLDPanelInfos();
         sldPanel.setId(UUID.randomUUID());
@@ -514,7 +499,7 @@ class WorkspacesConfigControllerTest {
         sldPanel.setTitle("SLD");
         sldPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
         sldPanel.setSize(new PanelSizeInfos(1.0, 1.0));
-        sldPanel.setDiagramId("vl1");
+        sldPanel.setEquipmentId("vl1");
         sldPanel.setParentNadPanelId(nadPanel.getId());
 
         return workspacesConfigRepository.save(new WorkspacesConfigEntity(

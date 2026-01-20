@@ -23,8 +23,8 @@ import java.util.UUID;
 @Schema(name = "SLDPanelDto", description = "SLD panel configuration")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SLDPanelInfos extends PanelInfos {
-    @Schema(description = "Diagram ID (voltage level or substation)")
-    private String diagramId;
+    @Schema(description = "Equipment ID (voltage level or substation)")
+    private String equipmentId;
 
     @Schema(description = "Parent NAD panel ID (if this SLD is associated with a NAD)")
     private UUID parentNadPanelId;

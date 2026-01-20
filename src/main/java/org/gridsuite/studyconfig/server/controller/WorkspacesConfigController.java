@@ -140,7 +140,7 @@ public class WorkspacesConfigController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/saved-nad-config")
+    @PostMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/current-nad-config")
     @Operation(summary = "Save a NAD configuration",
             description = "Creates or updates a NAD configuration and updates the panel reference")
     @ApiResponse(responseCode = "201", description = "NAD config saved",
@@ -155,7 +155,7 @@ public class WorkspacesConfigController {
             .body(workspacesConfigService.saveNadConfig(id, workspaceId, panelId, nadConfigData));
     }
 
-    @DeleteMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/saved-nad-config")
+    @DeleteMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/current-nad-config")
     @Operation(summary = "Delete a NAD configuration",
             description = "Deletes a NAD configuration and clears panel reference")
     @ApiResponse(responseCode = "204", description = "NAD config deleted")

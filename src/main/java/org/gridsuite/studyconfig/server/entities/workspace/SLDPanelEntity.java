@@ -27,8 +27,8 @@ import java.util.UUID;
 @PrimaryKeyJoinColumn(name = "id", foreignKey = @ForeignKey(name = "fk_sld_panel_panel"))
 public class SLDPanelEntity extends PanelEntity {
 
-    @Column(name = "diagram_id", nullable = false)
-    private String diagramId;
+    @Column(name = "equipment_id", nullable = false)
+    private String equipmentId;
 
     @Column(name = "parent_nad_panel_id")
     private UUID parentNadPanelId;
@@ -52,7 +52,7 @@ public class SLDPanelEntity extends PanelEntity {
     protected void initEntity(PanelInfos dto) {
         super.initEntity(dto);
         SLDPanelInfos sldDto = (SLDPanelInfos) dto;
-        diagramId = sldDto.getDiagramId();
+        equipmentId = sldDto.getEquipmentId();
         parentNadPanelId = sldDto.getParentNadPanelId();
         if (sldDto.getNavigationHistory() != null) {
             navigationHistory = new ArrayList<>(sldDto.getNavigationHistory());
@@ -63,7 +63,7 @@ public class SLDPanelEntity extends PanelEntity {
     public SLDPanelInfos toDto() {
         SLDPanelInfos dto = new SLDPanelInfos();
         iniDto(dto);
-        dto.setDiagramId(getDiagramId());
+        dto.setEquipmentId(getEquipmentId());
         dto.setParentNadPanelId(getParentNadPanelId());
         dto.setNavigationHistory(getNavigationHistory());
         return dto;

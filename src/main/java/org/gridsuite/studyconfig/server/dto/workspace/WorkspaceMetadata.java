@@ -16,9 +16,6 @@ public record WorkspaceMetadata(
     UUID id,
 
     @Schema(description = "Workspace name")
-    String name,
-
-    @Schema(description = "Number of panels in the workspace")
-    int panelCount
+    String name
 ) {
 }

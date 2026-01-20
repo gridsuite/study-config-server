@@ -32,8 +32,8 @@ public class NADPanelInfos extends PanelInfos {
     @Schema(description = "Current filter UUID")
     private UUID currentFilterUuid;
 
-    @Schema(description = "Saved workspace configuration UUID")
-    private UUID savedWorkspaceConfigUuid;
+    @Schema(description = "Current NAD configuration UUID")
+    private UUID currentNadConfigUuid;
 
     @Schema(description = "Voltage level IDs to omit")
     private List<String> voltageLevelToOmitIds;

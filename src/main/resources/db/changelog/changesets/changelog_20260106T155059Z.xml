@@ -5,7 +5,7 @@
             <column name="current_filter_uuid" type="UUID"/>
             <column name="filter_uuid" type="UUID"/>
             <column name="nad_config_uuid" type="UUID"/>
-            <column name="saved_workspace_config_uuid" type="UUID"/>
+            <column name="current_nad_config_uuid" type="UUID"/>
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panelPK"/>
             </column>
@@ -80,7 +80,7 @@
     </changeSet>
     <changeSet author="labidiayo (generated)" id="1768710017572-11">
         <createTable tableName="sld_panel">
-            <column name="diagram_id" type="VARCHAR(255)">
+            <column name="equipment_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="parent_nad_panel_id" type="UUID"/>

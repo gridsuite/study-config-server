@@ -70,8 +70,8 @@ public class WorkspaceEntity {
             .findFirst();
     }
 
-    public WorkspaceMetadata toMetadata(int panelCount) {
-        return new WorkspaceMetadata(getId(), getName(), panelCount);
+    public WorkspaceMetadata toMetadata() {
+        return new WorkspaceMetadata(getId(), getName());
     }
 
     public WorkspaceEntity duplicate() {
