@@ -141,4 +141,8 @@ public class PanelEntity extends AbstractManuallyAssignedIdentifierEntity<UUID> 
         dto.setId(null);
         return PanelEntity.toEntity(dto);
     }
+
+    public boolean isNad() {
+        return false;
+    }
 }

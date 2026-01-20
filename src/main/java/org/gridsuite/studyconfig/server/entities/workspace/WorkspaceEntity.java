@@ -70,6 +70,13 @@ public class WorkspaceEntity {
             .findFirst();
     }
 
+    public List<NADPanelEntity> getNadPanels() {
+        return panels.stream()
+            .filter(PanelEntity::isNad)
+            .map(NADPanelEntity.class::cast)
+            .toList();
+    }
+
     public WorkspaceMetadata toMetadata() {
         return new WorkspaceMetadata(getId(), getName());
     }

@@ -104,4 +104,9 @@ public class NADPanelEntity extends PanelEntity {
         dto.setNavigationHistory(getNavigationHistory());
         return dto;
     }
+
+    @Override
+    public boolean isNad() {
+        return true;
+    }
 }

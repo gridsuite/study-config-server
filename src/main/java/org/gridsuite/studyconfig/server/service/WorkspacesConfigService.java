@@ -38,22 +38,17 @@ public class WorkspacesConfigService {
     @Transactional
     public void deleteWorkspacesConfig(UUID id) {
         WorkspacesConfigEntity entity = findWorkspacesConfig(id);
-        List<UUID> nadConfigUuids = getNadPanels(entity).stream()
-            .map(NADPanelEntity::getCurrentNadConfigUuid)
+        List<UUID> nadConfigUuids = entity.getWorkspaces().stream()
+            .flatMap(workspace -> getNadConfigUuids(workspace).stream())
             .toList();
         workspacesConfigRepository.delete(entity);
-        if (!nadConfigUuids.isEmpty()) {
-            singleLineDiagramService.deleteNadConfigs(nadConfigUuids);
-        }
+        deleteNadConfigs(nadConfigUuids);
     }
 
     @Transactional
     public UUID duplicateWorkspacesConfig(UUID id) {
         WorkspacesConfigEntity duplicated = findWorkspacesConfig(id).duplicate();
-        getNadPanels(duplicated).forEach(nadPanel -> {
-            UUID newConfigUuid = singleLineDiagramService.duplicateNadConfig(nadPanel.getCurrentNadConfigUuid());
-            nadPanel.setCurrentNadConfigUuid(newConfigUuid);
-        });
+        duplicated.getWorkspaces().forEach(this::duplicateNadConfigs);
         return workspacesConfigRepository.save(duplicated).getId();
     }
 
@@ -100,20 +95,15 @@ public class WorkspacesConfigService {
     @Transactional
     public void deletePanels(UUID configId, UUID workspaceId, Set<UUID> panelIds) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
-
         boolean deleteAll = panelIds == null || panelIds.isEmpty();
 
-        List<UUID> currrentNadConfigUuids = workspace.getPanels().stream()
-            .filter(p -> deleteAll || panelIds.contains(p.getId()))
-            .filter(NADPanelEntity.class::isInstance)
-            .map(NADPanelEntity.class::cast)
+        List<UUID> currrentNadConfigUuids = workspace.getNadPanels().stream()
+            .filter(nadPanel -> deleteAll || panelIds.contains(nadPanel.getId()))
             .map(NADPanelEntity::getCurrentNadConfigUuid)
             .filter(Objects::nonNull)
             .toList();
 
-        if (!currrentNadConfigUuids.isEmpty()) {
-            singleLineDiagramService.deleteNadConfigs(currrentNadConfigUuids);
-        }
+        deleteNadConfigs(currrentNadConfigUuids);
 
         if (deleteAll) {
             workspace.getPanels().clear();
@@ -130,17 +120,6 @@ public class WorkspacesConfigService {
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to read default workspaces config", e);
         }
-    }
-
-    private WorkspacesConfigEntity findWorkspacesConfig(UUID configId) {
-        return workspacesConfigRepository.findById(configId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACES_CONFIG_NOT_FOUND + configId));
-    }
-
-    private WorkspaceEntity findWorkspace(UUID configId, UUID workspaceId) {
-        WorkspacesConfigEntity config = findWorkspacesConfig(configId);
-        return config.getWorkspace(workspaceId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACE_NOT_FOUND + workspaceId));
     }
 
     @Transactional
@@ -162,22 +141,47 @@ public class WorkspacesConfigService {
         nadPanel.setCurrentNadConfigUuid(null);
     }
 
+    private WorkspacesConfigEntity findWorkspacesConfig(UUID configId) {
+        return workspacesConfigRepository.findById(configId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACES_CONFIG_NOT_FOUND + configId));
+    }
+
+    private WorkspaceEntity findWorkspace(UUID configId, UUID workspaceId) {
+        WorkspacesConfigEntity config = findWorkspacesConfig(configId);
+        return config.getWorkspace(workspaceId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKSPACE_NOT_FOUND + workspaceId));
+    }
+
     private NADPanelEntity findNadPanel(UUID configId, UUID workspaceId, UUID panelId) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         PanelEntity panel = workspace.getPanel(panelId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Panel not found: " + panelId));
-        if (!(panel instanceof NADPanelEntity)) {
+        if (!panel.isNad()) {
             throw new IllegalArgumentException("Panel is not a NAD panel: " + panelId);
         }
         return (NADPanelEntity) panel;
     }
 
-    private List<NADPanelEntity> getNadPanels(WorkspacesConfigEntity config) {
-        return config.getWorkspaces().stream()
-            .flatMap(workspace -> workspace.getPanels().stream())
-            .filter(NADPanelEntity.class::isInstance)
-            .map(NADPanelEntity.class::cast)
-            .filter(nadPanel -> nadPanel.getCurrentNadConfigUuid() != null)
+    private void duplicateNadConfigs(WorkspaceEntity workspace) {
+        workspace.getNadPanels().forEach(nadPanel -> {
+            UUID nadConfigUuid = nadPanel.getCurrentNadConfigUuid();
+            if (nadConfigUuid != null) {
+                UUID newConfigUuid = singleLineDiagramService.duplicateNadConfig(nadConfigUuid);
+                nadPanel.setCurrentNadConfigUuid(newConfigUuid);
+            }
+        });
+    }
+
+    private List<UUID> getNadConfigUuids(WorkspaceEntity workspace) {
+        return workspace.getNadPanels().stream()
+            .map(NADPanelEntity::getCurrentNadConfigUuid)
+            .filter(Objects::nonNull)
             .toList();
+    }
+
+    private void deleteNadConfigs(List<UUID> nadConfigUuids) {
+        if (!nadConfigUuids.isEmpty()) {
+            singleLineDiagramService.deleteNadConfigs(nadConfigUuids);
+        }
     }
 }
