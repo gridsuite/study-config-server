@@ -6,7 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.repositories;
 
-import org.gridsuite.studyconfig.server.entities.ComputationResultFilterEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationSubTypeFiltersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +16,5 @@ import java.util.UUID;
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @Repository
-public interface ComputationResultFilterRepository extends JpaRepository<ComputationResultFilterEntity, UUID> {
+public interface ComputationSubTypeFiltersRepository extends JpaRepository<ComputationSubTypeFiltersEntity, UUID> {
 }

@@ -8,26 +8,28 @@ package org.gridsuite.studyconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import org.gridsuite.studyconfig.server.constants.ComputationSubType;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
-@Schema(name = "ComputationResultFilter")
-public record ComputationResultFilterInfos(
 
-        @Schema(description = "Filter UUID")
+@Schema(name = "ComputationTypeFiltersInfos", description = "Computation type Filters")
+public record ComputationTypeFiltersInfos(
+        @Schema(description = "ID of the computation result filter")
         UUID id,
 
-        @NotNull
-        @Schema(description = "Map of columns filters by computation sub type")
-        Map<ComputationSubType, ColumnsFiltersInfos> columnsFilters,
+        @Schema(description = "Computation type")
+        String computationType,
 
         @NotNull
         @Schema(description = "Global filters")
-        List<GlobalFilterInfos> globalFilters
-) { }
+        List<GlobalFilterInfos> globalFilters,
+
+        @Schema(description = "Sub-types of the computation type with their columns")
+        List<ComputationSubTypeFilterInfos> computationSubTypeFilterInfos
+) {
+
+}

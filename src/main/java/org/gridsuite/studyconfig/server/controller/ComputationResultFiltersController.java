@@ -56,26 +56,27 @@ public class ComputationResultFiltersController {
         return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultFilters(id));
     }
 
-    @PostMapping("/{id}/global-filters")
+    @PostMapping("/{id}/{computationType}/global-filters")
     @Operation(summary = "Set global filters",
             description = "Replaces all existing global filters with the provided list for a computation result")
     @ApiResponse(responseCode = "204", description = "Global filters set successfully")
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
     public ResponseEntity<Void> setGlobalFiltersForComputingResult(
-            @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
+            @PathVariable UUID id,
+            @PathVariable String computationType,
             @Valid @RequestBody List<GlobalFilterInfos> filters) {
-        computationGlobalFiltersService.setGlobalFiltersForComputationResult(id, filters);
+        computationGlobalFiltersService.setGlobalFiltersForComputationResult(id, computationType, filters);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/columns/{columnId}")
+    @PutMapping("/{id}/{computationSubType}/columns")
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
     public ResponseEntity<Void> updateColumn(
-            @Parameter(description = "ID of the computation config") @PathVariable UUID id,
-            @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
+            @PathVariable UUID id,
+            @PathVariable String computationSubType,
             @Valid @RequestBody ColumnFilterInfos dto) {
-        computationGlobalFiltersService.updateColumn(id, columnId, dto);
+        computationGlobalFiltersService.updateColumn(id, computationSubType, dto);
         return ResponseEntity.noContent().build();
     }
 

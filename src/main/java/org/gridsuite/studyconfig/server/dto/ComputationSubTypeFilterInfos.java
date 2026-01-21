@@ -14,14 +14,15 @@ import java.util.UUID;
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
+@Schema(name = "ComputationSubTypeFilter")
+public record ComputationSubTypeFilterInfos(
 
-@Schema(name = "ComputationResultFiltersInfos", description = "Computation Result Filters")
-public record ComputationResultFiltersInfos(
-        @Schema(description = "ID of the computation result filter")
+        @Schema(description = "Filter UUID")
         UUID id,
 
-        @Schema(description = "Sub-types of the computation type with their columns")
-        List<ComputationTypeFiltersInfos> computationTypeFiltersInfos
-) {
+        @Schema(description = "computation sub type")
+        String computationSubType,
 
-}
+        @Schema(description = "List of columns for this sub-type")
+        List<ColumnFilterInfos> columns
+) { }

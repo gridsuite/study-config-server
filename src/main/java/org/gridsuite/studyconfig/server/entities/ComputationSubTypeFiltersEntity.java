@@ -20,17 +20,19 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "computation_result_filters")
-public class ComputationResultFiltersEntity {
+@Table(name = "computation_result_filter")
+public class ComputationSubTypeFiltersEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_filters_id", foreignKey = @ForeignKey(name = "fk_computation_result_filters_type"))
-    @Builder.Default
-    private List<ComputationTypeFiltersEntity> computationResultFilter = new ArrayList<>();
+    @Column(nullable = false)
+    private String computationSubType;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "computation_sub_type_filters_id", foreignKey = @ForeignKey(name = "fk_subtype_columns"))
+    @Builder.Default
+    private List<ColumnFilterEntity> columns = new ArrayList<>();
 }
