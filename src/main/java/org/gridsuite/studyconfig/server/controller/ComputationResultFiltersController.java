@@ -69,11 +69,12 @@ public class ComputationResultFiltersController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/{computationSubType}/columns")
+    @PutMapping("/{id}/{computationType}/{computationSubType}/columns")
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
     public ResponseEntity<Void> updateColumn(
             @PathVariable UUID id,
+            @PathVariable String computationType,
             @PathVariable String computationSubType,
             @Valid @RequestBody ColumnFilterInfos dto) {
         computationGlobalFiltersService.updateColumn(id, computationSubType, dto);

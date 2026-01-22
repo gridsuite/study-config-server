@@ -9,16 +9,12 @@ package org.gridsuite.studyconfig.server.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @Schema(name = "ComputationSubTypeFilter")
 public record ComputationSubTypeFilterInfos(
-
-        @Schema(description = "Filter UUID")
-        UUID id,
 
         @Schema(description = "computation sub type")
         String computationSubType,

@@ -9,7 +9,6 @@ package org.gridsuite.studyconfig.server.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -17,9 +16,6 @@ import java.util.UUID;
 
 @Schema(name = "ComputationResultFiltersInfos", description = "Computation Result Filters")
 public record ComputationResultFiltersInfos(
-        @Schema(description = "ID of the computation result filter")
-        UUID id,
-
         @Schema(description = "Sub-types of the computation type with their columns")
         List<ComputationTypeFiltersInfos> computationTypeFiltersInfos
 ) {

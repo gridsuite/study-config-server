@@ -11,19 +11,17 @@ import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
-import org.gridsuite.studyconfig.server.entities.ComputationSubTypeFiltersEntity;
-import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
-import org.gridsuite.studyconfig.server.entities.ComputationTypeFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.*;
 import org.gridsuite.studyconfig.server.mapper.CommonFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
+import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
 import org.gridsuite.studyconfig.server.repositories.ComputationSubTypeFiltersRepository;
 import org.gridsuite.studyconfig.server.repositories.ComputationTypeFiltersRepository;
-import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -53,47 +51,47 @@ public class ComputationResultFiltersService {
 
     @Transactional
     public void setGlobalFiltersForComputationResult(UUID rootId, String computationType, List<GlobalFilterInfos> globalFilters) {
-        ComputationTypeFiltersEntity typeEntity = findTypeEntity(rootId, computationType);
-        typeEntity.getGlobalFilters().clear();
-        typeEntity.getGlobalFilters().addAll(globalFilters.stream().map(CommonFiltersMapper::toGlobalFilterEntity).toList());
-        computationTypeFiltersRepository.save(typeEntity);
+        ComputationResultFiltersEntity root = computationResultFiltersRepository.findById(rootId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
+        ComputationTypeFiltersEntity typeEntity = root.getComputationResultFilter().stream()
+                .filter(type -> computationType.equals(type.getComputationType()))
+                .findFirst()
+                .orElseGet(() -> {
+                    ComputationTypeFiltersEntity entity = new ComputationTypeFiltersEntity();
+                    entity.setComputationType(computationType);
+                    root.getComputationResultFilter().add(entity);
+                    return entity;
+                });
+
+        List<GlobalFilterEntity> newFilters = globalFilters.stream().map(CommonFiltersMapper::toGlobalFilterEntity).toList();
+        if (!typeEntity.getGlobalFilters().equals(newFilters)) {
+            typeEntity.getGlobalFilters().clear();
+            typeEntity.getGlobalFilters().addAll(newFilters);
+        }
+        computationResultFiltersRepository.save(root);
     }
 
     @Transactional
     public void updateColumn(UUID rootId, String computationSubType, ColumnFilterInfos columns) {
         ComputationResultFiltersEntity root = computationResultFiltersRepository.findById(rootId)
-                .orElseThrow(() -> new EntityNotFoundException("Sub-type not found: " + rootId));
-
-        ComputationSubTypeFiltersEntity subTypeEntity =
-                root.getComputationResultFilter().stream()
-                        .flatMap(type -> type.getComputationSubTypeResultFilter().stream())
-                        .filter(subType ->
-                                subType.getComputationSubType().equals(computationSubType))
-                        .findFirst()
-                        .orElseThrow(() ->
-                                new EntityNotFoundException(
-                                        "Computation sub-type not found: " + computationSubType));
-
+                .orElseThrow(() -> new EntityNotFoundException("ComputationResultFilters not found: " + rootId));
+        ComputationSubTypeFiltersEntity subTypeEntity = root.getComputationResultFilter().stream()
+                .flatMap(type -> type.getComputationSubTypeResultFilter().stream())
+                .filter(sub -> sub.getComputationSubType().equals(computationSubType))
+                .findFirst()
+                .orElseGet(() -> {
+                    ComputationSubTypeFiltersEntity newSubType = new ComputationSubTypeFiltersEntity();
+                    newSubType.setComputationSubType(computationSubType);
+                    if (!root.getComputationResultFilter().isEmpty()) {
+                        root.getComputationResultFilter().getFirst().getComputationSubTypeResultFilter().add(newSubType);
+                    }
+                    computationSubTypeFiltersRepository.save(newSubType);
+                    return newSubType;
+                });
         ColumnFilterEntity updatedColumn = CommonFiltersMapper.toColumnFilterEntity(columns);
-
         subTypeEntity.getColumns().removeIf(col -> col.getId().equals(updatedColumn.getId()));
         subTypeEntity.getColumns().add(updatedColumn);
         computationResultFiltersRepository.save(root);
         computationSubTypeFiltersRepository.save(subTypeEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public ComputationTypeFiltersEntity findTypeEntity(UUID rootId, String computationType) {
-        ComputationResultFiltersEntity root =
-                computationResultFiltersRepository.findById(rootId)
-                        .orElseThrow(() ->
-                                new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
-
-        return root.getComputationResultFilter().stream()
-                .filter(type -> type.getComputationType().equals(computationType))
-                .findFirst()
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Computation type not found: " + computationType));
     }
 }

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -18,8 +17,6 @@ import java.util.UUID;
 
 @Schema(name = "ComputationTypeFiltersInfos", description = "Computation type Filters")
 public record ComputationTypeFiltersInfos(
-        @Schema(description = "ID of the computation result filter")
-        UUID id,
 
         @Schema(description = "Computation type")
         String computationType,

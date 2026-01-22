@@ -7,7 +7,9 @@
 package org.gridsuite.studyconfig.server.mapper;
 
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.entities.*;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationSubTypeFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationTypeFiltersEntity;
 
 import java.util.List;
 
@@ -23,10 +25,7 @@ public final class ComputationResultFiltersMapper {
                 .map(ComputationResultFiltersMapper::toTypeDto)
                 .toList();
 
-        return new ComputationResultFiltersInfos(
-                entity.getId(),
-                typeDTOs
-        );
+        return new ComputationResultFiltersInfos(typeDTOs);
     }
 
     private static ComputationTypeFiltersInfos toTypeDto(ComputationTypeFiltersEntity typeEntity) {
@@ -38,12 +37,7 @@ public final class ComputationResultFiltersMapper {
                 .map(ComputationResultFiltersMapper::toSubTypeDto)
                 .toList();
 
-        return new ComputationTypeFiltersInfos(
-                typeEntity.getId(),
-                typeEntity.getComputationType(),
-                globalFilters,
-                subTypeDTOs
-        );
+        return new ComputationTypeFiltersInfos(typeEntity.getComputationType(), globalFilters, subTypeDTOs);
     }
 
     private static ComputationSubTypeFilterInfos toSubTypeDto(ComputationSubTypeFiltersEntity entity) {
@@ -51,10 +45,6 @@ public final class ComputationResultFiltersMapper {
                 .map(CommonFiltersMapper::toColumnFilterDto)
                 .toList();
 
-        return new ComputationSubTypeFilterInfos(
-                entity.getId(),
-                entity.getComputationSubType(),
-                columns
-        );
+        return new ComputationSubTypeFilterInfos(entity.getComputationSubType(), columns);
     }
 }
