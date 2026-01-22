@@ -7,9 +7,11 @@
 package org.gridsuite.studyconfig.server.repositories;
 
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,4 +19,8 @@ import java.util.UUID;
  */
 @Repository
 public interface WorkspaceRepository extends JpaRepository<WorkspaceEntity, UUID> {
+
+    @EntityGraph(attributePaths = {"panels"})
+    @Override
+    Optional<WorkspaceEntity> findById(UUID id);
 }
