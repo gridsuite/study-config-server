@@ -81,15 +81,24 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public void createOrUpdatePanels(UUID configId, UUID workspaceId, List<PanelInfos> panels) {
+    public List<UUID> createOrUpdatePanels(UUID configId, UUID workspaceId, List<PanelInfos> panels) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
+        List<UUID> panelIds = new ArrayList<>();
         panels.forEach(panelDto ->
             workspace.getPanel(panelDto.getId())
                 .ifPresentOrElse(
-                    panel -> panel.update(panelDto),
-                    () -> workspace.getPanels().add(PanelEntity.toEntity(panelDto))
+                    panel -> {
+                        panel.update(panelDto);
+                        panelIds.add(panel.getId());
+                    },
+                    () -> {
+                        PanelEntity newPanel = PanelEntity.toEntity(panelDto);
+                        workspace.getPanels().add(newPanel);
+                        panelIds.add(newPanel.getId());
+                    }
                 )
         );
+        return panelIds;
     }
 
     @Transactional
@@ -124,6 +133,7 @@ public class WorkspacesConfigService {
         UUID nadConfigUuid = singleLineDiagramService.createOrUpdateNadConfig(nadConfigData);
         NADPanelEntity nadPanel = findNadPanel(configId, workspaceId, panelId);
         nadPanel.setCurrentNadConfigUuid(nadConfigUuid);
+        nadPanel.getInitialVoltageLevelIds().clear();
         return nadConfigUuid;
     }
 
