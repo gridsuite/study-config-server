@@ -77,7 +77,7 @@ public class ComputationResultFiltersController {
             @PathVariable String computationType,
             @PathVariable String computationSubType,
             @Valid @RequestBody ColumnFilterInfos dto) {
-        computationGlobalFiltersService.updateColumn(id, computationSubType, dto);
+        computationGlobalFiltersService.updateColumn(id, computationType, computationSubType, dto);
         return ResponseEntity.noContent().build();
     }
 

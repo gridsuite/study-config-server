@@ -30,7 +30,7 @@ public class ComputationTypeFiltersEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String computationType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

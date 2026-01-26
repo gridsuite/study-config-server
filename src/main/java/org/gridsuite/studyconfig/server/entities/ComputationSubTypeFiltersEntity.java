@@ -28,7 +28,7 @@ public class ComputationSubTypeFiltersEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String computationSubType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

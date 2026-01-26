@@ -72,26 +72,39 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void updateColumn(UUID rootId, String computationSubType, ColumnFilterInfos columns) {
+    public void updateColumn(UUID rootId, String computationType, String computationSubType, ColumnFilterInfos columns) {
         ComputationResultFiltersEntity root = computationResultFiltersRepository.findById(rootId)
-                .orElseThrow(() -> new EntityNotFoundException("ComputationResultFilters not found: " + rootId));
+                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
         ComputationSubTypeFiltersEntity subTypeEntity = root.getComputationResultFilter().stream()
                 .flatMap(type -> type.getComputationSubTypeResultFilter().stream())
                 .filter(sub -> sub.getComputationSubType().equals(computationSubType))
                 .findFirst()
-                .orElseGet(() -> {
-                    ComputationSubTypeFiltersEntity newSubType = new ComputationSubTypeFiltersEntity();
-                    newSubType.setComputationSubType(computationSubType);
-                    if (!root.getComputationResultFilter().isEmpty()) {
-                        root.getComputationResultFilter().getFirst().getComputationSubTypeResultFilter().add(newSubType);
-                    }
-                    computationSubTypeFiltersRepository.save(newSubType);
-                    return newSubType;
-                });
+                .orElseGet(() -> createAndAttachSubType(root, computationType, computationSubType));
         ColumnFilterEntity updatedColumn = CommonFiltersMapper.toColumnFilterEntity(columns);
         subTypeEntity.getColumns().removeIf(col -> col.getId().equals(updatedColumn.getId()));
         subTypeEntity.getColumns().add(updatedColumn);
         computationResultFiltersRepository.save(root);
         computationSubTypeFiltersRepository.save(subTypeEntity);
+    }
+
+    private ComputationTypeFiltersEntity findOrCreateComputationType(ComputationResultFiltersEntity root, String computationType) {
+        return root.getComputationResultFilter().stream()
+                .filter(type -> type.getComputationType().contains(computationType))
+                .findFirst()
+                .orElseGet(() -> {
+                    ComputationTypeFiltersEntity newType = new ComputationTypeFiltersEntity();
+                    newType.setComputationType(computationType);
+                    root.getComputationResultFilter().add(newType);
+                    return newType;
+                });
+    }
+
+    private ComputationSubTypeFiltersEntity createAndAttachSubType(ComputationResultFiltersEntity root, String computationType,
+                                                                   String computationSubType) {
+        ComputationTypeFiltersEntity typeEntity = findOrCreateComputationType(root, computationType);
+        ComputationSubTypeFiltersEntity newSubType = new ComputationSubTypeFiltersEntity();
+        newSubType.setComputationSubType(computationSubType);
+        typeEntity.getComputationSubTypeResultFilter().add(newSubType);
+        return computationSubTypeFiltersRepository.save(newSubType);
     }
 }
