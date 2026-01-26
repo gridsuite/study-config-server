@@ -145,7 +145,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         mockMvc.perform(post(getPanelsPath(), configId, emptyWorkspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(panel))))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(configId, emptyWorkspaceId, Set.of(panel.getId()));
         assertThat(panels).hasSize(1);
@@ -155,7 +155,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         mockMvc.perform(post(getPanelsPath(), configId, emptyWorkspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(panel))))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
 
         panels = workspacesConfigService.getPanels(configId, emptyWorkspaceId, Set.of(panel.getId()));
         assertThat(panels.get(0).getTitle()).isEqualTo("Updated Title");
@@ -383,7 +383,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         mockMvc.perform(post(getPanelsPath(), configId, emptyWorkspaceId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(panel1, panel2, panel3))))
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk());
 
         List<PanelInfos> panels = workspacesConfigService.getPanels(configId, emptyWorkspaceId, null);
         assertThat(panels).hasSize(3);

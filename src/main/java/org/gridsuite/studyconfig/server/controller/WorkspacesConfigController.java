@@ -119,13 +119,13 @@ public class WorkspacesConfigController {
     @PostMapping("/{id}/workspaces/{workspaceId}/panels")
     @Operation(summary = "Create or update panels",
             description = "Creates new panels or updates existing ones based on panel ID presence")
-    @ApiResponse(responseCode = "204", description = "Panels created or updated")
-    public ResponseEntity<Void> createOrUpdatePanels(
+    @ApiResponse(responseCode = "200", description = "Panels created or updated, returns list of panel IDs")
+    public ResponseEntity<List<UUID>> createOrUpdatePanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
             @Parameter(description = "List of panels") @Valid @RequestBody List<PanelInfos> panels) {
-        workspacesConfigService.createOrUpdatePanels(id, workspaceId, panels);
-        return ResponseEntity.noContent().build();
+        List<UUID> panelIds = workspacesConfigService.createOrUpdatePanels(id, workspaceId, panels);
+        return ResponseEntity.ok(panelIds);
     }
 
     @DeleteMapping("/{id}/workspaces/{workspaceId}/panels")
