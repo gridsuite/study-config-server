@@ -21,7 +21,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -121,9 +120,11 @@ public class SpreadsheetConfigService {
         }
         entity.getSpreadsheetColumnFilter().clear();
         if (dto.columns() != null) {
-            entity.getSpreadsheetColumnFilter().addAll(dto.columns().stream()
+            List<SpreadsheetColumnFilterEntity> newColumns = dto.columns().stream()
                     .map(CommonFiltersMapper::toSpreadSheetColumnFilterEntity)
-                    .toList());
+                    .toList();
+            newColumns.forEach(c -> c.setSpreadsheetConfig(entity));
+            entity.getSpreadsheetColumnFilter().addAll(newColumns);
         }
         entity.getGlobalFilters().clear();
         if (dto.globalFilters() != null) {
@@ -280,7 +281,11 @@ public class SpreadsheetConfigService {
                         configDuplicate.setNodeAliases(new ArrayList<>(config.getNodeAliases()));
                     }
                     configDuplicate.setSpreadsheetColumnFilter(config.getSpreadsheetColumnFilter().stream()
-                            .map(SpreadsheetColumnFilterEntity::copy)
+                            .map(filter -> {
+                                SpreadsheetColumnFilterEntity copy = filter.copy();
+                                copy.setSpreadsheetConfig(configDuplicate);
+                                return copy;
+                            })
                             .toList());
                     configDuplicate.setGlobalFilters(config.getGlobalFilters().stream()
                             .map(GlobalFilterEntity::copy)
@@ -296,7 +301,7 @@ public class SpreadsheetConfigService {
     public SpreadSheetColumnFilterInfos getColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
         return entity.getSpreadsheetColumnFilter().stream()
-            .filter(column -> column.getId().equals(columnId))
+            .filter(column -> Objects.equals(column.getUuid(), columnId))
             .findFirst()
             .map(CommonFiltersMapper::toSpreadSheetColumnFilterInfos)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
@@ -307,6 +312,7 @@ public class SpreadsheetConfigService {
         SpreadsheetConfigEntity entity = findEntityById(id);
         SpreadsheetColumnFilterEntity spreadsheetColumnEntity = CommonFiltersMapper.toSpreadSheetColumnFilterEntity(dto);
         spreadsheetColumnEntity.setSpreadsheetConfig(entity);
+        spreadsheetColumnEntity.setColumnOrder(entity.getSpreadsheetColumnFilter().size());
         entity.getSpreadsheetColumnFilter().add(spreadsheetColumnEntity);
         spreadsheetConfigRepository.flush();
         return spreadsheetColumnEntity.getUuid();
@@ -326,6 +332,7 @@ public class SpreadsheetConfigService {
         spreadsheetColumnEntity.setPrecision(updatedColumn.getPrecision());
         spreadsheetColumnEntity.setFormula(updatedColumn.getFormula());
         spreadsheetColumnEntity.setDependencies(updatedColumn.getDependencies());
+        spreadsheetColumnEntity.setId(updatedColumn.getId());
         spreadsheetColumnEntity.setFilter(updatedColumn.getFilter());
         spreadsheetColumnEntity.setVisible(updatedColumn.isVisible());
 
@@ -335,7 +342,7 @@ public class SpreadsheetConfigService {
     @Transactional
     public void deleteColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
-        boolean removed = entity.getSpreadsheetColumnFilter().removeIf(column -> column.getId().equals(columnId));
+        boolean removed = entity.getSpreadsheetColumnFilter().removeIf(column -> column.getUuid().equals(columnId));
         if (!removed) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId);
         }
@@ -352,6 +359,9 @@ public class SpreadsheetConfigService {
 
     private static void reorderColumns(List<UUID> columnOrder, List<SpreadsheetColumnFilterEntity> columns) {
         columns.sort(Comparator.comparingInt(column -> columnOrder.indexOf(column.getUuid())));
+        for (int i = 0; i < columns.size(); i++) {
+            columns.get(i).setColumnOrder(i);
+        }
     }
 
     private String newCandidate(String base, int n) {
@@ -389,15 +399,19 @@ public class SpreadsheetConfigService {
     @Transactional
     public void duplicateColumn(UUID id, UUID columnId) {
         SpreadsheetConfigEntity entity = findEntityById(id);
-        SpreadsheetColumnFilterEntity spreadsheetColumnEntity = entity.getSpreadsheetColumnFilter().stream().filter(col -> col.getId().equals(columnId))
+        SpreadsheetColumnFilterEntity spreadsheetColumnEntity = entity.getSpreadsheetColumnFilter().stream().filter(col -> col.getUuid().equals(columnId))
                 .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
         SpreadsheetColumnFilterEntity columnCopy = spreadsheetColumnEntity.copy();
-        columnCopy.setId(null);
+        columnCopy.setUuid(null);
+        columnCopy.setSpreadsheetConfig(entity);
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
         columnCopy.setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());
         List<SpreadsheetColumnFilterEntity> columns = entity.getSpreadsheetColumnFilter();
         columns.add(columns.indexOf(spreadsheetColumnEntity) + 1, columnCopy);
+        for (int i = 0; i < columns.size(); i++) {
+            columns.get(i).setColumnOrder(i);
+        }
         entity.setSpreadsheetColumnFilter(columns);
         spreadsheetConfigRepository.save(entity);
     }

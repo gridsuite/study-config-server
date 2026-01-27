@@ -8,6 +8,7 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
@@ -24,7 +25,9 @@ import java.util.UUID;
 public class ColumnFilterEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @UuidGenerator
+    @Column(nullable = false, updatable = false)
     private UUID uuid;
 
     @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
@@ -48,7 +51,6 @@ public class ColumnFilterEntity {
 
     public ColumnFilterEntity copy() {
         return ColumnFilterEntity.builder()
-                .uuid(getUuid())
                 .filterDataType(getFilterDataType())
                 .filterType(getFilterType())
                 .filterValue(getFilterValue())

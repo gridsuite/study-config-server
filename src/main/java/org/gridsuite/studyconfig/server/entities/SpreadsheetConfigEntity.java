@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,9 @@ import java.util.UUID;
 public class SpreadsheetConfigEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue
+    @UuidGenerator
+    @Column(nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "name", nullable = false)
@@ -40,7 +42,7 @@ public class SpreadsheetConfigEntity {
     private SheetType sheetType;
 
     @OneToMany(mappedBy = "spreadsheetConfig", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "column_order")
+    @OrderBy("columnOrder ASC")
     @Builder.Default
     private List<SpreadsheetColumnFilterEntity> spreadsheetColumnFilter = new ArrayList<>();
 

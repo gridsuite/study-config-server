@@ -53,11 +53,11 @@ public final class SpreadsheetConfigMapper {
             entity.setNodeAliases(new ArrayList<>(dto.nodeAliases()));
         }
         if (dto.columns() != null) {
-            List<SpreadsheetColumnFilterEntity> cols = dto.columns().stream()
+            List<SpreadsheetColumnFilterEntity> newColumns = dto.columns().stream()
                     .map(CommonFiltersMapper::toSpreadSheetColumnFilterEntity)
                     .toList();
-            entity.setSpreadsheetColumnFilter(cols);
-            cols.forEach(c -> c.setSpreadsheetConfig(entity));
+            newColumns.forEach(c -> c.setSpreadsheetConfig(entity));
+            entity.getSpreadsheetColumnFilter().addAll(newColumns);
         }
 
         if (dto.globalFilters() != null) {
