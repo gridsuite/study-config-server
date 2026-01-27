@@ -10,9 +10,11 @@ import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.dto.MetadataInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -27,8 +29,8 @@ public final class SpreadsheetConfigMapper {
                 entity.getId(),
                 entity.getName(),
                 entity.getSheetType(),
-                entity.getColumns().stream()
-                    .map(CommonFiltersMapper::toColumnDto)
+                entity.getSpreadsheetColumnFilter().stream()
+                    .map(CommonFiltersMapper::toSpreadSheetColumnFilterInfos)
                     .toList(),
                 entity.getGlobalFilters().stream()
                     .map(CommonFiltersMapper::toGlobalFilterDto)
@@ -51,9 +53,11 @@ public final class SpreadsheetConfigMapper {
             entity.setNodeAliases(new ArrayList<>(dto.nodeAliases()));
         }
         if (dto.columns() != null) {
-            entity.setColumns(dto.columns().stream()
-                    .map(CommonFiltersMapper::toColumnEntity)
-                    .toList());
+            List<SpreadsheetColumnFilterEntity> cols = dto.columns().stream()
+                    .map(CommonFiltersMapper::toSpreadSheetColumnFilterEntity)
+                    .toList();
+            entity.setSpreadsheetColumnFilter(cols);
+            cols.forEach(c -> c.setSpreadsheetConfig(entity));
         }
 
         if (dto.globalFilters() != null) {

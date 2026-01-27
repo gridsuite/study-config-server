@@ -6,12 +6,13 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
-import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
+import org.gridsuite.studyconfig.server.dto.SpreadSheetColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationResultColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnFilterEntity;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -20,51 +21,60 @@ public final class CommonFiltersMapper {
 
     private CommonFiltersMapper() { }
 
-    public static ColumnInfos toColumnDto(SpreadsheetColumnEntity entity) {
-        return new ColumnInfos(
+    public static SpreadSheetColumnFilterInfos toSpreadSheetColumnFilterInfos(SpreadsheetColumnFilterEntity entity) {
+        return new SpreadSheetColumnFilterInfos(
                 entity.getUuid(),
                 entity.getName(),
                 entity.getType(),
                 entity.getPrecision(),
                 entity.getFormula(),
                 entity.getDependencies(),
-                entity.isVisible(),
-                entity.getColumnFilter() == null ? null : toColumnFilterDto(entity.getColumnFilter())
-        );
-    }
-
-    public static ColumnFilterInfos toColumnFilterDto(ColumnFilterEntity entity) {
-        return new ColumnFilterInfos(
-                entity.getUuid(),
                 entity.getId(),
-                entity.getFilterDataType(),
-                entity.getFilterType(),
-                entity.getFilterValue(),
-                entity.getFilterTolerance()
+                entity.getFilter() != null ? entity.getFilter().getFilterDataType() : null,
+                entity.getFilter() != null ? entity.getFilter().getFilterType() : null,
+                entity.getFilter() != null ? entity.getFilter().getFilterValue() : null,
+                entity.getFilter() != null ? entity.getFilter().getFilterTolerance() : null,
+                entity.isVisible()
         );
     }
 
-    public static SpreadsheetColumnEntity toColumnEntity(ColumnInfos dto) {
-        return SpreadsheetColumnEntity.builder()
+    public static SpreadsheetColumnFilterEntity toSpreadSheetColumnFilterEntity(SpreadSheetColumnFilterInfos dto) {
+        return SpreadsheetColumnFilterEntity.builder()
                 .name(dto.name())
                 .type(dto.type())
                 .precision(dto.precision())
                 .formula(dto.formula())
                 .dependencies(dto.dependencies())
                 .visible(dto.visible())
-                .columnFilter(dto.columnFilterInfos() == null
-                        ? null
-                        : toColumnFilterEntity(dto.columnFilterInfos()))
+                .id(dto.id())
+                .filter(ColumnFilterEntity.builder()
+                        .filterDataType(dto.filterDataType())
+                        .filterTolerance(dto.filterTolerance())
+                        .filterType(dto.filterType())
+                        .filterValue(dto.filterValue())
+                        .build())
                 .build();
     }
 
-    public static ColumnFilterEntity toColumnFilterEntity(ColumnFilterInfos dto) {
-        return ColumnFilterEntity.builder()
-                .id(dto.id())
-                .filterDataType(dto.filterDataType())
-                .filterType(dto.filterType())
-                .filterValue(dto.filterValue())
-                .filterTolerance(dto.filterTolerance())
+    public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ComputationResultColumnFilterEntity entity) {
+        return new ComputationResultColumnFilterInfos(
+                entity.getId(),
+                entity.getFilter().getFilterDataType(),
+                entity.getFilter().getFilterType(),
+                entity.getFilter().getFilterValue(),
+                entity.getFilter().getFilterTolerance()
+        );
+    }
+
+    public static ComputationResultColumnFilterEntity toColumnFilterEntity(ComputationResultColumnFilterInfos dto) {
+        return ComputationResultColumnFilterEntity.builder()
+                .id(dto.getId())
+                .filter(ColumnFilterEntity.builder()
+                        .filterDataType(dto.getFilterDataType())
+                        .filterTolerance(dto.getFilterTolerance())
+                        .filterType(dto.getFilterType())
+                        .filterValue(dto.getFilterValue())
+                        .build())
                 .build();
     }
 

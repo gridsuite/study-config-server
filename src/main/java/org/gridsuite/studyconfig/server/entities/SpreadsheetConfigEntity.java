@@ -39,24 +39,13 @@ public class SpreadsheetConfigEntity {
     @Enumerated(EnumType.STRING)
     private SheetType sheetType;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_columns"))
+    @OneToMany(mappedBy = "spreadsheetConfig", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderColumn(name = "column_order")
     @Builder.Default
-    private List<SpreadsheetColumnEntity> columns = new ArrayList<>();
+    private List<SpreadsheetColumnFilterEntity> spreadsheetColumnFilter = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "spreadsheet_config_global_filter",
-            joinColumns = @JoinColumn(
-                    name = "spreadsheet_config_id",
-                    foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter_spreadsheet_config")
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "global_filter_id",
-                    foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter_global_filter")
-            )
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "spreadsheet_config_global_filter_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter"))
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
@@ -73,6 +62,6 @@ public class SpreadsheetConfigEntity {
 
     public void resetFilters() {
         this.globalFilters.clear();
-        getColumns().forEach(SpreadsheetColumnEntity::resetColumn);
+        getSpreadsheetColumnFilter().forEach(SpreadsheetColumnFilterEntity::resetColumn);
     }
 }

@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
-import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
@@ -76,7 +76,7 @@ public class ComputationResultFiltersController {
             @PathVariable UUID id,
             @PathVariable String computationType,
             @PathVariable String computationSubType,
-            @Valid @RequestBody ColumnFilterInfos dto) {
+            @Valid @RequestBody ComputationResultColumnFilterInfos dto) {
         computationGlobalFiltersService.updateColumn(id, computationType, computationSubType, dto);
         return ResponseEntity.noContent().build();
     }

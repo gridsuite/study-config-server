@@ -20,7 +20,7 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "computation_result_filter")
+@Table(name = "computation_sub_type_filters", uniqueConstraints = @UniqueConstraint(columnNames = {"computation_type_filters_id", "computation_sub_type"}))
 public class ComputationSubTypeFiltersEntity {
 
     @Id
@@ -28,11 +28,14 @@ public class ComputationSubTypeFiltersEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "computation_sub_type", nullable = false, unique = true)
     private String computationSubType;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_sub_type_filters_id", foreignKey = @ForeignKey(name = "fk_subtype_columns"))
-    @Builder.Default
-    private List<ColumnFilterEntity> columns = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "computation_type_filters_id", nullable = false)
+    private ComputationTypeFiltersEntity computationType;
+
+    @OneToMany(mappedBy = "computationSubType", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("columnOrder ASC")
+    private List<ComputationResultColumnFilterEntity> columns = new ArrayList<>();
 }

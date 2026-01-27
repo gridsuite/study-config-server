@@ -276,11 +276,12 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos initialCollection = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
         UUID collectionUuid = postSpreadsheetConfigCollection(initialCollection);
 
-        List<ColumnInfos> columnInfos = List.of(
-                new ColumnInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]", true, new ColumnFilterInfos(null, "idNew", null, null, null, null))
+        List<SpreadSheetColumnFilterInfos> columnInfos = List.of(
+                new SpreadSheetColumnFilterInfos(null, "new_col", ColumnType.NUMBER, 1, "formula", "[\"dep\"]",
+                        "idNew", null, null, null, null, true)
         );
-        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null, List.of(), new SortConfig("idNew", SortDirection.ASC.name().toLowerCase()));
-
+        SpreadsheetConfigInfos newConfig = new SpreadsheetConfigInfos(null, "NewSheet", SheetType.BATTERY, columnInfos, null,
+                List.of(), new SortConfig("idNew", SortDirection.ASC.name().toLowerCase()));
         String newConfigJson = mapper.writeValueAsString(newConfig);
         MvcResult mvcResult = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid + "/spreadsheet-configs")
                 .content(newConfigJson)
@@ -413,9 +414,11 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigsWithAliases() {
-        List<ColumnInfos> columnInfos = Arrays.asList(
-                new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", true, new ColumnFilterInfos(null, "idA", null, null, null, null)),
-                new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, true, new ColumnFilterInfos(null, "idB", null, null, null, null))
+        List<SpreadSheetColumnFilterInfos> columnInfos = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]",
+                        "idA", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null,
+                        "idB", null, null, null, null, true)
         );
 
         return List.of(
@@ -428,11 +431,11 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigs() {
-        List<ColumnInfos> columnInfos = Arrays.asList(
-            new ColumnInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", true,
-                    new ColumnFilterInfos(null, "idA", null, null, null, null)),
-            new ColumnInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null, true,
-                    new ColumnFilterInfos(null, "idB", null, null, null, null))
+        List<SpreadSheetColumnFilterInfos> columnInfos = Arrays.asList(
+            new SpreadSheetColumnFilterInfos(null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]",
+                    "idA", null, null, null, null, true),
+            new SpreadSheetColumnFilterInfos(null, "cust_b", ColumnType.TEXT, null, "var_minP + 1", null,
+                    "idB", null, null, null, null, true)
         );
 
         return List.of(
@@ -442,15 +445,15 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigsWithFilters() {
-        List<ColumnInfos> columnsConfig1 = Arrays.asList(
-                new ColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", true, new ColumnFilterInfos(null, "id",
-                        "text", "equals", "test-value", null)),
-                new ColumnInfos(null, "name", ColumnType.TEXT, null, "name", "[\"name\"]", true,
-                        new ColumnFilterInfos(null, "name", "text", "contains", "name-value", null)),
-                new ColumnInfos(null, "country1", ColumnType.ENUM, null, "country1", "[\"country1\"]", true,
-                        new ColumnFilterInfos(null, "country1", null, null, null, null)),
-                new ColumnInfos(null, "voltage", ColumnType.NUMBER, 1, "voltage", "[\"voltage\"]", true,
-                        new ColumnFilterInfos(null, "voltage", "number", "greaterThan", "100", 0.5))
+        List<SpreadSheetColumnFilterInfos> columnsConfig1 = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]",
+                        "id", "text", "equals", "test-value", null, true),
+                new SpreadSheetColumnFilterInfos(null, "name", ColumnType.TEXT, null, "name", "[\"name\"]",
+                        "name", "text", "contains", "name-value", null, true),
+                new SpreadSheetColumnFilterInfos(null, "country1", ColumnType.ENUM, null, "country1", "[\"country1\"]",
+                        "country1", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(null, "voltage", ColumnType.NUMBER, 1, "voltage", "[\"voltage\"]",
+                        "voltage", "number", "greaterThan", "100", 0.5, true)
         );
 
         List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
@@ -458,19 +461,16 @@ class SpreadsheetConfigCollectionIntegrationTest {
                 GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 2").recent(false).build()
         );
 
-        List<ColumnInfos> columnsConfig2 = Arrays.asList(
-                new ColumnInfos(
-                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", true,
-                        new ColumnFilterInfos(null, "id", "text", "contains", "other-value", null)
-                ),
-                new ColumnInfos(
-                        null, "type", ColumnType.ENUM, null, "type", "[\"type\"]", true,
-                        new ColumnFilterInfos(null, "type", null, null, null, null)
-                ),
-                new ColumnInfos(
-                        null, "power", ColumnType.NUMBER, 1, "power", "[\"power\"]", true,
-                        new ColumnFilterInfos(null, "power", "number", "lessThan", "50", 0.1)
-                )
+        List<SpreadSheetColumnFilterInfos> columnsConfig2 = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(
+                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]",
+                        "id", "text", "contains", "other-value", null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "type", ColumnType.ENUM, null, "type", "[\"type\"]",
+                        "type", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "power", ColumnType.NUMBER, 1, "power", "[\"power\"]",
+                        "power", "number", "lessThan", "50", 0.1, true)
         );
 
         List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
@@ -484,27 +484,19 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigs() {
-        List<ColumnInfos> columnInfos = Arrays.asList(
-                new ColumnInfos(
-                        null, "cust_a", ColumnType.NUMBER, 1,
-                        "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", true,
-                        new ColumnFilterInfos(null, "cust_a", null, null, null, null)
-                ),
-                new ColumnInfos(
+        List<SpreadSheetColumnFilterInfos> columnInfos = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(
+                        null, "cust_a", ColumnType.NUMBER, 1, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]",
+                        "cust_a", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(
                         null, "cust_b", ColumnType.TEXT, null,
-                        "var_minP + 2", null, true,
-                        new ColumnFilterInfos(null, "cust_b", null, null, null, null)
-                ),
-                new ColumnInfos(
-                        null, "cust_c", ColumnType.ENUM, null,
-                        "cust_b + 2", "[\"cust_b\"]", true,
-                        new ColumnFilterInfos(null, "cust_c", null, null, null, null)
-                ),
-                new ColumnInfos(
-                        null, "cust_d", ColumnType.NUMBER, 0,
-                        "5 + 1", null, true,
-                        new ColumnFilterInfos(null, "cust_d", null, null, null, null)
-                )
+                        "var_minP + 2", null, "cust_b", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "cust_c", ColumnType.ENUM, null, "cust_b + 2", "[\"cust_b\"]",
+                        "cust_c", null, null, null, null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "cust_d", ColumnType.NUMBER, 0, "5 + 1", null,
+                        "cust_d", null, null, null, null, true)
         );
 
         return List.of(
@@ -515,15 +507,13 @@ class SpreadsheetConfigCollectionIntegrationTest {
     }
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigsWithFilters() {
-        List<ColumnInfos> columnsConfig1 = Arrays.asList(
-                new ColumnInfos(
-                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", true,
-                        new ColumnFilterInfos(null, "id", "text", "startsWith", "new-prefix", null)
-                ),
-                new ColumnInfos(
-                        null, "updated", ColumnType.TEXT, null, "updated", "[\"updated\"]", true,
-                        new ColumnFilterInfos(null, "updated", null, null, null, null)
-                )
+        List<SpreadSheetColumnFilterInfos> columnsConfig1 = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(
+                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]",
+                         "id", "text", "startsWith", "new-prefix", null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "updated", ColumnType.TEXT, null, "updated", "[\"updated\"]",
+                   "updated", null, null, null, null, true)
         );
 
         List<GlobalFilterInfos> globalFiltersConfig1 = Arrays.asList(
@@ -532,34 +522,26 @@ class SpreadsheetConfigCollectionIntegrationTest {
                 GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Updated Filter 3").recent(false).build()
         );
 
-        List<ColumnInfos> columnsConfig2 = Arrays.asList(
-                new ColumnInfos(
-                        null, "id", ColumnType.TEXT, null,
-                        "id", "[\"id\"]", true,
-                        new ColumnFilterInfos(null, "id", "text", "endsWith", "suffix", null)
-                ),
-                new ColumnInfos(
-                        null, "other", ColumnType.NUMBER, 2,
-                        "other", "[\"other\"]", true,
-                        new ColumnFilterInfos(null, "other", "number", "between", "10,20", null)
-                )
+        List<SpreadSheetColumnFilterInfos> columnsConfig2 = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(
+                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]",
+                        "id", "text", "endsWith", "suffix", null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "other", ColumnType.NUMBER, 2, "other", "[\"other\"]",
+                         "other", "number", "between", "10,20", null, true)
         );
 
         List<GlobalFilterInfos> globalFiltersConfig2 = List.of(
                 GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Updated Other Filter").recent(false).build()
         );
 
-        List<ColumnInfos> columnsConfig3 = Arrays.asList(
-                new ColumnInfos(
-                        null, "id", ColumnType.TEXT, null,
-                        "id", "[\"id\"]", true,
-                        new ColumnFilterInfos(null, "id", "text", "contains", "middle", null)
-                ),
-                new ColumnInfos(
-                        null, "third", ColumnType.BOOLEAN, null,
-                        "third", "[\"third\"]", true,
-                        new ColumnFilterInfos(null, "third", "boolean", "equals", "true", null)
-                )
+        List<SpreadSheetColumnFilterInfos> columnsConfig3 = Arrays.asList(
+                new SpreadSheetColumnFilterInfos(
+                        null, "id", ColumnType.TEXT, null, "id", "[\"id\"]",
+                        "id", "text", "contains", "middle", null, true),
+                new SpreadSheetColumnFilterInfos(
+                        null, "third", ColumnType.BOOLEAN, null, "third", "[\"third\"]",
+                        "third", "boolean", "equals", "true", null, true)
         );
 
         List<GlobalFilterInfos> globalFiltersConfig3 = List.of(

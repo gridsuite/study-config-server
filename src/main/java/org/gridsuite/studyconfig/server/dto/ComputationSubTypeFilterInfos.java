@@ -20,5 +20,5 @@ public record ComputationSubTypeFilterInfos(
         String computationSubType,
 
         @Schema(description = "List of columns for this sub-type")
-        List<ColumnFilterInfos> columns
+        List<ComputationResultColumnFilterInfos> columns
 ) { }

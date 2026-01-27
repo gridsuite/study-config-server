@@ -30,7 +30,7 @@ public class ComputationTypeFiltersEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "computation_type", nullable = false, unique = true)
     private String computationType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,8 +38,6 @@ public class ComputationTypeFiltersEntity {
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_type_filters_id", foreignKey = @ForeignKey(name = "fk_computation_type_subtype_filters"))
-    @Builder.Default
-    private List<ComputationSubTypeFiltersEntity> computationSubTypeResultFilter = new ArrayList<>();
+    @OneToMany(mappedBy = "computationType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ComputationSubTypeFiltersEntity> computationSubTypes = new ArrayList<>();
 }

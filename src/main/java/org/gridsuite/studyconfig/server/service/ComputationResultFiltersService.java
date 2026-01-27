@@ -8,7 +8,7 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.entities.*;
@@ -72,24 +72,32 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void updateColumn(UUID rootId, String computationType, String computationSubType, ColumnFilterInfos columns) {
+    public void updateColumn(
+            UUID rootId,
+            String computationType,
+            String computationSubType,
+            ComputationResultColumnFilterInfos columns
+    ) {
         ComputationResultFiltersEntity root = computationResultFiltersRepository.findById(rootId)
                 .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
-        ComputationSubTypeFiltersEntity subTypeEntity = root.getComputationResultFilter().stream()
-                .flatMap(type -> type.getComputationSubTypeResultFilter().stream())
+        ComputationTypeFiltersEntity typeEntity = findOrCreateComputationType(root, computationType);
+        if (typeEntity.getId() == null) {
+            computationTypeFiltersRepository.save(typeEntity);
+        }
+        ComputationSubTypeFiltersEntity subTypeEntity = typeEntity.getComputationSubTypes().stream()
                 .filter(sub -> sub.getComputationSubType().equals(computationSubType))
                 .findFirst()
-                .orElseGet(() -> createAndAttachSubType(root, computationType, computationSubType));
-        ColumnFilterEntity updatedColumn = CommonFiltersMapper.toColumnFilterEntity(columns);
-        subTypeEntity.getColumns().removeIf(col -> col.getId().equals(updatedColumn.getId()));
+                .orElseGet(() -> createAndAttachSubType(typeEntity, computationSubType));
+        ComputationResultColumnFilterEntity updatedColumn = CommonFiltersMapper.toColumnFilterEntity(columns);
+        updatedColumn.setComputationSubType(subTypeEntity);
+        subTypeEntity.getColumns().removeIf(col -> col.getId() != null && col.getId().equals(updatedColumn.getId()));
         subTypeEntity.getColumns().add(updatedColumn);
         computationResultFiltersRepository.save(root);
-        computationSubTypeFiltersRepository.save(subTypeEntity);
     }
 
     private ComputationTypeFiltersEntity findOrCreateComputationType(ComputationResultFiltersEntity root, String computationType) {
         return root.getComputationResultFilter().stream()
-                .filter(type -> type.getComputationType().contains(computationType))
+                .filter(type -> type.getComputationType().equals(computationType))
                 .findFirst()
                 .orElseGet(() -> {
                     ComputationTypeFiltersEntity newType = new ComputationTypeFiltersEntity();
@@ -99,12 +107,11 @@ public class ComputationResultFiltersService {
                 });
     }
 
-    private ComputationSubTypeFiltersEntity createAndAttachSubType(ComputationResultFiltersEntity root, String computationType,
-                                                                   String computationSubType) {
-        ComputationTypeFiltersEntity typeEntity = findOrCreateComputationType(root, computationType);
+    private ComputationSubTypeFiltersEntity createAndAttachSubType(ComputationTypeFiltersEntity typeEntity, String computationSubType) {
         ComputationSubTypeFiltersEntity newSubType = new ComputationSubTypeFiltersEntity();
         newSubType.setComputationSubType(computationSubType);
-        typeEntity.getComputationSubTypeResultFilter().add(newSubType);
+        newSubType.setComputationType(typeEntity);
+        typeEntity.getComputationSubTypes().add(newSubType);
         return computationSubTypeFiltersRepository.save(newSubType);
     }
 }

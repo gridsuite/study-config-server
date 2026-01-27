@@ -7,30 +7,31 @@
 package org.gridsuite.studyconfig.server.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @Schema(name = "ColumnFilterDto", description = "Column filter configuration")
-public record ColumnFilterInfos(
-
-    @Schema(description = "Column UUID")
-    UUID uuid,
+@Getter
+@Setter
+@AllArgsConstructor
+public class ComputationResultColumnFilterInfos {
 
     @Schema(description = "Column id")
-    String id,
+    String id;
 
     @Schema(description = "Filter data type")
-    String filterDataType,
+    String filterDataType;
 
     @Schema(description = "Filter type")
-    String filterType,
+    String filterType;
 
     @Schema(description = "Filter value")
-    String filterValue,
+    String filterValue;
 
     @Schema(description = "Filter tolerance for numeric comparisons")
-    Double filterTolerance
-) { }
+    Double filterTolerance;
+}

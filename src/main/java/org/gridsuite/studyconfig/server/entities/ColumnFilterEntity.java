@@ -25,11 +25,7 @@ public class ColumnFilterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid")
     private UUID uuid;
-
-    @Column(name = "column_id", nullable = false, columnDefinition = "varchar(255)")
-    private String id;
 
     @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
     private String filterDataType;
@@ -52,7 +48,7 @@ public class ColumnFilterEntity {
 
     public ColumnFilterEntity copy() {
         return ColumnFilterEntity.builder()
-                .id(getId())
+                .uuid(getUuid())
                 .filterDataType(getFilterDataType())
                 .filterType(getFilterType())
                 .filterValue(getFilterValue())

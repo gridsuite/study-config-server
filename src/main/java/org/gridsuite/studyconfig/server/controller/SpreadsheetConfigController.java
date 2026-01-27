@@ -140,7 +140,7 @@ public class SpreadsheetConfigController {
     @Operation(summary = "Get a column", description = "Retrieves a column by its ID")
     @ApiResponse(responseCode = "200", description = "Column found")
     @ApiResponse(responseCode = "404", description = "Column not found")
-    public ResponseEntity<ColumnInfos> getColumn(
+    public ResponseEntity<SpreadSheetColumnFilterInfos> getColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "ID of the column to retrieve") @PathVariable UUID columnId) {
         return ResponseEntity.ok(spreadsheetConfigService.getColumn(id, columnId));
@@ -151,7 +151,7 @@ public class SpreadsheetConfigController {
     @ApiResponse(responseCode = "201", description = "Column created")
     public ResponseEntity<UUID> createColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
-                    @Valid @RequestBody ColumnInfos dto) {
+                    @Valid @RequestBody SpreadSheetColumnFilterInfos dto) {
         UUID columnId = spreadsheetConfigService.createColumn(id, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(columnId);
     }
@@ -162,7 +162,7 @@ public class SpreadsheetConfigController {
     public ResponseEntity<Void> updateColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
-                    @Valid @RequestBody ColumnInfos dto) {
+                    @Valid @RequestBody SpreadSheetColumnFilterInfos dto) {
         spreadsheetConfigService.updateColumn(id, columnId, dto);
         return ResponseEntity.noContent().build();
     }

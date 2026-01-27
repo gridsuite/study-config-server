@@ -33,7 +33,7 @@ public final class ComputationResultFiltersMapper {
                 .map(CommonFiltersMapper::toGlobalFilterDto)
                 .toList();
 
-        List<ComputationSubTypeFilterInfos> subTypeDTOs = typeEntity.getComputationSubTypeResultFilter().stream()
+        List<ComputationSubTypeFilterInfos> subTypeDTOs = typeEntity.getComputationSubTypes().stream()
                 .map(ComputationResultFiltersMapper::toSubTypeDto)
                 .toList();
 
@@ -41,8 +41,8 @@ public final class ComputationResultFiltersMapper {
     }
 
     private static ComputationSubTypeFilterInfos toSubTypeDto(ComputationSubTypeFiltersEntity entity) {
-        List<ColumnFilterInfos> columns = entity.getColumns().stream()
-                .map(CommonFiltersMapper::toColumnFilterDto)
+        List<ComputationResultColumnFilterInfos> columns = entity.getColumns().stream()
+                .map(CommonFiltersMapper::toComputationColumnFilterInfos)
                 .toList();
 
         return new ComputationSubTypeFilterInfos(entity.getComputationSubType(), columns);

@@ -8,8 +8,8 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
-import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -20,12 +20,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class SpreadsheetColumnEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID uuid;
+@SuperBuilder
+public class SpreadsheetColumnFilterEntity extends AbstractColumnFilterAssignmentEntity {
 
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private String name;
@@ -43,29 +39,31 @@ public class SpreadsheetColumnEntity {
     @Column(columnDefinition = "CLOB")
     private String dependencies;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "filter_id")
-    private ColumnFilterEntity columnFilter;
-
     @Column(nullable = false)
     @Builder.Default
     private boolean visible = true;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "spreadsheet_config_id", nullable = false, foreignKey = @ForeignKey(name = "fk_spreadsheet_column"))
+    private SpreadsheetConfigEntity spreadsheetConfig;
+
     public void resetColumn() {
-        if (columnFilter != null) {
-            columnFilter.resetColumnFilter();
+        if (filter != null) {
+            filter.resetColumnFilter();
         }
     }
 
-    public SpreadsheetColumnEntity copy() {
-        return SpreadsheetColumnEntity.builder()
+    public SpreadsheetColumnFilterEntity copy() {
+        return SpreadsheetColumnFilterEntity.builder()
                 .name(getName())
                 .type(getType())
                 .precision(getPrecision())
                 .formula(getFormula())
                 .dependencies(getDependencies())
                 .visible(isVisible())
-                .columnFilter(getColumnFilter() != null ? getColumnFilter().copy() : null)
+                .id(getId())
+                .columnOrder(getColumnOrder())
+                .filter(getFilter() != null ? getFilter().copy() : null)
                 .build();
     }
 }
