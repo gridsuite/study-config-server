@@ -1,0 +1,113 @@
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package org.gridsuite.studyconfig.server.entities.workspace;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "workspace", indexes = {
+    @Index(name = "idx_workspace_workspaces_config_id", columnList = "workspaces_config_id")
+})
+public class WorkspaceEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id", foreignKey = @ForeignKey(name = "fk_workspace"))
+    @OrderColumn(name = "panel_order")
+    private List<PanelEntity> panels = new ArrayList<>();
+
+    public WorkspaceEntity(WorkspaceInfos dto) {
+        id = dto.id();
+        name = dto.name();
+        if (dto.panels() != null) {
+            setPanels(dto.panels().stream()
+                .map(PanelEntity::toEntity)
+                .toList());
+        }
+    }
+
+    public WorkspaceInfos toDto() {
+        return new WorkspaceInfos(
+            getId(),
+            getName(),
+            getPanels().stream()
+                .map(PanelEntity::toDto)
+                .toList()
+        );
+    }
+
+    public Optional<PanelEntity> getPanel(UUID uuid) {
+        return panels.stream()
+            .filter(p -> p.getId().equals(uuid))
+            .findFirst();
+    }
+
+    public List<NADPanelEntity> getNadPanels() {
+        return panels.stream()
+            .filter(PanelEntity::isNad)
+            .map(NADPanelEntity.class::cast)
+            .toList();
+    }
+
+    public WorkspaceMetadata toMetadata() {
+        return new WorkspaceMetadata(getId(), getName());
+    }
+
+    public WorkspaceEntity duplicate() {
+        WorkspaceEntity copy = new WorkspaceEntity();
+        copy.setName(this.name);
+
+        Map<UUID, UUID> oldToNew = new HashMap<>();
+
+        // duplicate all panels and track ID changes
+        List<PanelEntity> copiedPanels = this.panels.stream()
+            .map(panel -> {
+                UUID oldId = panel.getId();
+                PanelEntity newPanel = panel.duplicate();
+                oldToNew.put(oldId, newPanel.getId());
+                return newPanel;
+            })
+            .toList();
+
+        // fix SLD parent references
+        copiedPanels.stream()
+            .filter(SLDPanelEntity.class::isInstance)
+            .map(SLDPanelEntity.class::cast)
+            .forEach(sld -> {
+                if (sld.getParentNadPanelId() != null) {
+                    sld.setParentNadPanelId(oldToNew.get(sld.getParentNadPanelId()));
+                }
+            });
+
+        copy.setPanels(copiedPanels);
+        return copy;
+    }
+}

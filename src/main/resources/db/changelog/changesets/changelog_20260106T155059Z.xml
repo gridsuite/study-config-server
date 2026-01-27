@@ -1,0 +1,176 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="labidiayo (generated)" id="1768710017572-6">
+        <createTable tableName="nad_panel">
+            <column name="current_filter_uuid" type="UUID"/>
+            <column name="filter_uuid" type="UUID"/>
+            <column name="nad_config_uuid" type="UUID"/>
+            <column name="current_nad_config_uuid" type="UUID"/>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panelPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-7">
+        <createTable tableName="nad_panel_initial_voltage_levels">
+            <column name="panel_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voltage_level_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-8">
+        <createTable tableName="nad_panel_navigation_history">
+            <column name="panel_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panel_navigation_historyPK"/>
+            </column>
+            <column name="voltage_level_id" type="VARCHAR(255)"/>
+            <column name="position" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="nad_panel_navigation_historyPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-9">
+        <createTable tableName="nad_panel_voltage_level_to_omit">
+            <column name="panel_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voltage_level_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-10">
+        <createTable tableName="panel">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="panelPK"/>
+            </column>
+            <column name="is_maximized" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_minimized" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_pinned" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position_x" type="FLOAT(53)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position_y" type="FLOAT(53)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="restore_position_x" type="FLOAT(53)"/>
+            <column name="restore_position_y" type="FLOAT(53)"/>
+            <column name="restore_size_height" type="FLOAT(53)"/>
+            <column name="restore_size_width" type="FLOAT(53)"/>
+            <column name="size_height" type="FLOAT(53)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size_width" type="FLOAT(53)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspace_id" type="UUID"/>
+            <column name="panel_order" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-11">
+        <createTable tableName="sld_panel">
+            <column name="equipment_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_nad_panel_id" type="UUID"/>
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panelPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-12">
+        <createTable tableName="sld_panel_navigation_history">
+            <column name="panel_id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panel_navigation_historyPK"/>
+            </column>
+            <column name="voltage_level_id" type="VARCHAR(255)"/>
+            <column name="position" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sld_panel_navigation_historyPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-13">
+        <createTable tableName="workspace">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="workspacePK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspaces_config_id" type="UUID"/>
+            <column name="workspace_order" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-14">
+        <createTable tableName="workspaces_config">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="workspaces_configPK"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-15">
+        <createIndex indexName="idx_nad_panel_initial_voltage_levels_panel_id" tableName="nad_panel_initial_voltage_levels">
+            <column name="panel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-16">
+        <createIndex indexName="idx_nad_panel_navigation_history_panel_id" tableName="nad_panel_navigation_history">
+            <column name="panel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-17">
+        <createIndex indexName="idx_nad_panel_voltage_level_to_omit_panel_id" tableName="nad_panel_voltage_level_to_omit">
+            <column name="panel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-18">
+        <createIndex indexName="idx_panel_workspace_id" tableName="panel">
+            <column name="workspace_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-19">
+        <createIndex indexName="idx_sld_panel_navigation_history_panel_id" tableName="sld_panel_navigation_history">
+            <column name="panel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-20">
+        <createIndex indexName="idx_workspace_workspaces_config_id" tableName="workspace">
+            <column name="workspaces_config_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-21">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_initial_voltage_levels" constraintName="fk_nad_panel_initial_voltage_levels" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="nad_panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-22">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_navigation_history" constraintName="fk_nad_panel_navigation_history" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="nad_panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-23">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="nad_panel" constraintName="fk_nad_panel_panel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-24">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="nad_panel_voltage_level_to_omit" constraintName="fk_nad_panel_voltage_level_to_omit" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="nad_panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-25">
+        <addForeignKeyConstraint baseColumnNames="panel_id" baseTableName="sld_panel_navigation_history" constraintName="fk_sld_panel_navigation_history" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="sld_panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-26">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="sld_panel" constraintName="fk_sld_panel_panel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="panel" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-27">
+        <addForeignKeyConstraint baseColumnNames="workspace_id" baseTableName="panel" constraintName="fk_workspace" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="workspace" validate="true"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1768710017572-28">
+        <addForeignKeyConstraint baseColumnNames="workspaces_config_id" baseTableName="workspace" constraintName="fk_workspaces_config" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="workspaces_config" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
