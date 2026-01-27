@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,9 @@ import java.util.UUID;
 public class SpreadsheetConfigEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue
+    @UuidGenerator
+    @Column(nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "name", nullable = false)
@@ -39,14 +41,13 @@ public class SpreadsheetConfigEntity {
     @Enumerated(EnumType.STRING)
     private SheetType sheetType;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_column"))
-    @OrderColumn(name = "column_order")
+    @OneToMany(mappedBy = "spreadsheetConfig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("columnOrder ASC")
     @Builder.Default
-    private List<ColumnEntity> columns = new ArrayList<>();
+    private List<SpreadsheetColumnFilterEntity> spreadsheetColumnFilter = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_global_filter_spreadsheet_config"))
+    @JoinColumn(name = "spreadsheet_config_global_filter_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_global_filter"))
     @Builder.Default
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
@@ -63,6 +64,6 @@ public class SpreadsheetConfigEntity {
 
     public void resetFilters() {
         this.globalFilters.clear();
-        getColumns().forEach(ColumnEntity::resetFilter);
+        getSpreadsheetColumnFilter().forEach(SpreadsheetColumnFilterEntity::resetColumn);
     }
 }

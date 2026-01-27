@@ -6,18 +6,19 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
-import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.constants.ColumnType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+
+import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Schema(name = "ColumnDto", description = "Column configuration")
-public record ColumnInfos(
+@Builder
+public record SpreadSheetColumnFilterInfos(
 
     @Schema(description = "Column UUID")
     UUID uuid,
@@ -56,7 +57,7 @@ public record ColumnInfos(
     @Schema(description = "Column visibility", defaultValue = "true")
     Boolean visible
 ) {
-    public ColumnInfos {
+    public SpreadSheetColumnFilterInfos {
         if (visible == null) {
             visible = true;
         }
