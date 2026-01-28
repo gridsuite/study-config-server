@@ -66,7 +66,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
     @Test
     void testCreateDefaultWorkspacesConfig() throws Exception {
-        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath() + "/default"))
+        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath()))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -75,6 +75,23 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
         assertThat(metadata).hasSize(3);
         assertThat(workspacesConfigService.getPanels(configId, metadata.get(0).id(), null)).hasSize(2);
+    }
+
+    @Test
+    void testCreateWorkspacesConfigFromWorkspaces() throws Exception {
+        when(singleLineDiagramService.duplicateNadConfig(any())).thenReturn(UUID.randomUUID());
+
+        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath())
+                .param("createFrom", workspaceWithPanelsId.toString(), UUID.randomUUID().toString()))
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        UUID newConfigId = objectMapper.readValue(result.getResponse().getContentAsString(), UUID.class);
+        List<WorkspaceMetadata> metadata = workspacesConfigService.getWorkspacesMetadata(newConfigId);
+
+        assertThat(metadata).hasSize(2);
+        assertThat(workspacesConfigService.getPanels(newConfigId, metadata.get(0).id(), null)).hasSize(2);
+        assertThat(workspacesConfigService.getPanels(newConfigId, metadata.get(1).id(), null)).isEmpty();
     }
 
     @Test

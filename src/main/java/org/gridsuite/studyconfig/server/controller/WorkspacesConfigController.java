@@ -40,6 +40,7 @@ public class WorkspacesConfigController {
     private final WorkspacesConfigService workspacesConfigService;
 
     public static final String DUPLICATE_FROM = "duplicateFrom";
+    public static final String CREATE_FROM = "createFrom";
 
     @PostMapping(params = { DUPLICATE_FROM })
     @Operation(summary = "Duplicate a workspaces config",
@@ -53,14 +54,16 @@ public class WorkspacesConfigController {
             .body(workspacesConfigService.duplicateWorkspacesConfig(id));
     }
 
-    @PostMapping(value = "/default")
-    @Operation(summary = "Create a default workspaces config",
-            description = "Creates a default workspaces config with 3 workspaces")
-    @ApiResponse(responseCode = "201", description = "Default workspaces config created",
+    @PostMapping
+    @Operation(summary = "Create a workspaces config",
+            description = "Creates a workspaces config from workspace UUIDs (duplicating valid ones, creating empty for nulls/invalids). Empty list creates default config")
+    @ApiResponse(responseCode = "201", description = "Workspaces config created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
-    public ResponseEntity<UUID> createDefaultWorkspacesConfig() {
+    public ResponseEntity<UUID> createWorkspacesConfig(
+            @Parameter(description = "Optional comma-separated list of workspace UUIDs. Null entries create empty workspaces. Empty/null list creates default config")
+            @RequestParam(name = CREATE_FROM, required = false) List<UUID> workspaceIds) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(workspacesConfigService.createDefaultWorkspacesConfig());
+            .body(workspacesConfigService.createWorkspacesConfigFromWorkspaces(workspaceIds));
     }
 
     @DeleteMapping("/{id}")
