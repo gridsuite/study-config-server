@@ -22,11 +22,11 @@ public final class ComputationResultFiltersMapper {
                 .toList());
     }
 
-    private static ComputationTypeFiltersInfos toTypeDto(ComputationTypeFiltersEntity typeEntity) {
-        return new ComputationTypeFiltersInfos(
-                typeEntity.getComputationType(),
-                typeEntity.getGlobalFilters().stream().map(SpreadsheetConfigMapper::toGlobalFilterDto).toList(),
-                typeEntity.getComputationSubTypes().stream().map(ComputationResultFiltersMapper::toSubTypeDto).toList()
+    public static ComputationTypeFiltersInfos toTypeDto(ComputationTypeFiltersEntity entity) {
+        return new ComputationTypeFiltersInfos(entity.getComputationType(),
+                entity.getGlobalFilters().stream()
+                .map(SpreadsheetConfigMapper::toGlobalFilterDto).toList(),
+                entity.getComputationSubTypes().stream().map(ComputationResultFiltersMapper::toSubTypeDto).toList()
         );
     }
 
@@ -38,22 +38,21 @@ public final class ComputationResultFiltersMapper {
     }
 
     public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ComputationResultColumnFilterEntity entity) {
-        return new ComputationResultColumnFilterInfos(
-                entity.getComputationColumnId(),
-                entity.getFilterDataType(),
-                entity.getFilterType(),
-                entity.getFilterValue(),
-                entity.getFilterTolerance()
-        );
+        ColumnFilter filter = entity.getColumnFilter();
+        return new ComputationResultColumnFilterInfos(entity.getComputationColumnId(), filter != null ?
+                new ColumnFilterInfos(filter.getFilterDataType(), filter.getFilterType(), filter.getFilterValue(), filter.getFilterTolerance())
+                : null);
     }
 
     public static ComputationResultColumnFilterEntity toComputationColumnFilterEntity(ComputationResultColumnFilterInfos columnFilterInfos) {
         return ComputationResultColumnFilterEntity.builder()
                 .computationColumnId(columnFilterInfos.id())
-                .filterDataType(columnFilterInfos.filterDataType())
-                .filterType(columnFilterInfos.filterType())
-                .filterValue(columnFilterInfos.filterValue())
-                .filterTolerance(columnFilterInfos.filterTolerance())
+                .columnFilter(columnFilterInfos.columnFilterInfos() != null ? ColumnFilter.builder()
+                        .filterDataType(columnFilterInfos.columnFilterInfos().filterDataType())
+                        .filterType(columnFilterInfos.columnFilterInfos().filterType())
+                        .filterValue(columnFilterInfos.columnFilterInfos().filterValue())
+                        .filterTolerance(columnFilterInfos.columnFilterInfos().filterTolerance())
+                        .build() : null)
                 .build();
     }
 }

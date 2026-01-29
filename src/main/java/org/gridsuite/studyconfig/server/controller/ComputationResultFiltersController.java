@@ -14,9 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
-import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
-import org.gridsuite.studyconfig.server.dto.ComputationResultFiltersInfos;
-import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,15 +42,17 @@ public class ComputationResultFiltersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/{computationType}/{computationSubType}")
     @Operation(summary = "Get a computation result filters",
-            description = "Retrieves a computation result filters by its ID")
+            description = "Fetches the computation result filters for a given computation type and subtype")
     @ApiResponse(responseCode = "200", description = "Computation result filters found",
             content = @Content(schema = @Schema(implementation = ComputationResultFiltersInfos.class)))
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
-    public ResponseEntity<ComputationResultFiltersInfos> getComputingResultFilters(
-            @Parameter(description = "ID of the computation result filters to retrieve") @PathVariable UUID id) {
-        return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultFilters(id));
+    public ResponseEntity<ComputationTypeFiltersInfos> getComputingResultFilters(
+            @Parameter(description = "Computation root ID") @PathVariable UUID id,
+            @Parameter(description = "Computation type") @PathVariable String computationType,
+            @Parameter(description = "Computation subtype") @PathVariable String computationSubType) {
+        return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultFilters(id, computationType, computationSubType));
     }
 
     @PostMapping("/{id}/{computationType}/global-filters")

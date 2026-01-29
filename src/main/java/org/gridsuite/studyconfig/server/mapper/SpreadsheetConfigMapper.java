@@ -9,6 +9,7 @@ package org.gridsuite.studyconfig.server.mapper;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilter;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
@@ -70,6 +71,7 @@ public final class SpreadsheetConfigMapper {
     }
 
     public static ColumnInfos toColumnDto(ColumnEntity entity) {
+        ColumnFilter filter = entity.getColumnFilter();
         return new ColumnInfos(
                 entity.getUuid(),
                 entity.getName(),
@@ -78,11 +80,11 @@ public final class SpreadsheetConfigMapper {
                 entity.getFormula(),
                 entity.getDependencies(),
                 entity.getId(),
-                entity.getFilterDataType(),
-                entity.getFilterType(),
-                entity.getFilterValue(),
-                entity.getFilterTolerance(),
-                entity.isVisible()
+                entity.isVisible(),
+                filter != null ? filter.getFilterDataType() : null,
+                filter != null ? filter.getFilterType() : null,
+                filter != null ? filter.getFilterValue() : null,
+                filter != null ? filter.getFilterTolerance() : null
                 );
     }
 
@@ -94,11 +96,13 @@ public final class SpreadsheetConfigMapper {
                 .formula(dto.formula())
                 .dependencies(dto.dependencies())
                 .id(dto.id())
-                .filterDataType(dto.filterDataType())
-                .filterType(dto.filterType())
-                .filterValue(dto.filterValue())
-                .filterTolerance(dto.filterTolerance())
                 .visible(dto.visible())
+                .columnFilter(dto.columnFilterInfos() != null ? ColumnFilter.builder()
+                        .filterDataType(dto.columnFilterInfos().filterDataType())
+                        .filterType(dto.columnFilterInfos().filterType())
+                        .filterValue(dto.columnFilterInfos().filterValue())
+                        .filterTolerance(dto.columnFilterInfos().filterTolerance())
+                        .build() : null)
                 .build();
     }
 

@@ -11,12 +11,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
-@Schema(name = "ComputationResultColumnFilterInfos", description = "Computation Result Column filter infos")
-public record ComputationResultColumnFilterInfos(
+@Schema(name = "ColumnFilterInfos", description = "Column filter infos")
+public record ColumnFilterInfos(
+        @Schema(description = "Filter data type")
+        String filterDataType,
 
-    @Schema(description = "Column id")
-    String id,
+        @Schema(description = "Filter type")
+        String filterType,
 
-    @Schema(description = "column filter infos")
-    ColumnFilterInfos columnFilterInfos
+        @Schema(description = "Filter value")
+        String filterValue,
+
+        @Schema(description = "Filter tolerance for numeric comparisons")
+        Double filterTolerance
 ) { }

@@ -8,8 +8,9 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
+
+import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -20,8 +21,13 @@ import org.gridsuite.studyconfig.server.constants.ColumnType;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
-public class ColumnEntity extends AbstractColumnFilter {
+@Builder(toBuilder = true)
+public class ColumnEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     private String name;
@@ -46,7 +52,21 @@ public class ColumnEntity extends AbstractColumnFilter {
     @Builder.Default
     private boolean visible = true;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "columnEntity_columnFilter_id", referencedColumnName = "uuid",
+            foreignKey = @ForeignKey(name = "columnEntity_columnFilter_fk"))
+    private ColumnFilter columnFilter;
+
     public ColumnEntity copy() {
-        return this.toBuilder().uuid(null).build();
+        return ColumnEntity.builder()
+                .name(getName())
+                .type(getType())
+                .precision(getPrecision())
+                .formula(getFormula())
+                .dependencies(getDependencies())
+                .id(getId())
+                .columnFilter(this.columnFilter != null ? this.columnFilter.copy() : null)
+                .visible(isVisible())
+                .build();
     }
 }

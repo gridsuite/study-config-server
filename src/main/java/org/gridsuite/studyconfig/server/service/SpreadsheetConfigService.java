@@ -323,10 +323,10 @@ public class SpreadsheetConfigService {
         columnEntity.setFormula(dto.formula());
         columnEntity.setDependencies(dto.dependencies());
         columnEntity.setId(dto.id());
-        columnEntity.setFilterDataType(dto.filterDataType());
-        columnEntity.setFilterType(dto.filterType());
-        columnEntity.setFilterValue(dto.filterValue());
-        columnEntity.setFilterTolerance(dto.filterTolerance());
+        columnEntity.getColumnFilter().setFilterDataType(dto.columnFilterInfos().filterDataType());
+        columnEntity.getColumnFilter().setFilterType(dto.columnFilterInfos().filterType());
+        columnEntity.getColumnFilter().setFilterValue(dto.columnFilterInfos().filterValue());
+        columnEntity.getColumnFilter().setFilterTolerance(dto.columnFilterInfos().filterTolerance());
         columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
@@ -393,6 +393,7 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(null);
+        columnCopy.setColumnFilter(null);
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
         columnCopy.setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());
