@@ -128,22 +128,7 @@ public class WorkspacesConfigService {
             return createDefaultWorkspacesConfig();
         }
         List<WorkspaceEntity> workspaces = IntStream.range(0, workspaceIds.size())
-            .mapToObj(i -> {
-                UUID workspaceId = workspaceIds.get(i);
-                String name = WORKSPACE_NAME_PREFIX + (i + 1);
-                if (workspaceId != null) {
-                    return workspaceRepository.findById(workspaceId)
-                        .map(source -> {
-                            WorkspaceEntity duplicated = source.duplicate();
-                            duplicated.setName(name);
-                            workspaceNADConfigService.duplicateNadConfigs(duplicated);
-                            return duplicated;
-                        })
-                        .orElseGet(() -> createEmptyWorkspace(name));
-                } else {
-                    return createEmptyWorkspace(name);
-                }
-            })
+            .mapToObj(i -> createOrDuplicateWorkspace(workspaceIds.get(i), WORKSPACE_NAME_PREFIX + (i + 1)))
             .toList();
         WorkspacesConfigEntity config = new WorkspacesConfigEntity();
         config.setWorkspaces(workspaces);
@@ -204,5 +189,21 @@ public class WorkspacesConfigService {
         workspace.setName(name);
         workspace.setPanels(new ArrayList<>());
         return workspace;
+    }
+
+    private WorkspaceEntity createOrDuplicateWorkspace(UUID workspaceId, String name) {
+        if (workspaceId == null) {
+            return createEmptyWorkspace(name);
+        }
+        return workspaceRepository.findById(workspaceId)
+            .map(source -> duplicateWorkspaceWithName(source, name))
+            .orElseGet(() -> createEmptyWorkspace(name));
+    }
+
+    private WorkspaceEntity duplicateWorkspaceWithName(WorkspaceEntity source, String name) {
+        WorkspaceEntity duplicated = source.duplicate();
+        duplicated.setName(name);
+        workspaceNADConfigService.duplicateNadConfigs(duplicated);
+        return duplicated;
     }
 }
