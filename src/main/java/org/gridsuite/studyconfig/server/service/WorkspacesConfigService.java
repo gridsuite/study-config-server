@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.gridsuite.studyconfig.server.dto.workspace.*;
 import org.gridsuite.studyconfig.server.entities.workspace.*;
+import org.gridsuite.studyconfig.server.repositories.WorkspaceRepository;
 import org.gridsuite.studyconfig.server.repositories.WorkspacesConfigRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
@@ -27,6 +29,7 @@ import java.util.stream.Stream;
 public class WorkspacesConfigService {
 
     private final WorkspacesConfigRepository workspacesConfigRepository;
+    private final WorkspaceRepository workspaceRepository;
     private final WorkspaceNADConfigService workspaceNADConfigService;
     private final ObjectMapper objectMapper;
 
@@ -35,6 +38,7 @@ public class WorkspacesConfigService {
 
     private static final String WORKSPACES_CONFIG_NOT_FOUND = "WorkspacesConfig not found with id: ";
     private static final String WORKSPACE_NOT_FOUND = "Workspace not found with id: ";
+    private static final String WORKSPACE_NAME_PREFIX = "Workspace ";
 
     @Transactional
     public void deleteWorkspacesConfig(UUID id) {
@@ -119,13 +123,16 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public UUID createDefaultWorkspacesConfig() {
-        try (InputStream inputStream = defaultWorkspacesConfigResource.getInputStream()) {
-            WorkspacesConfigInfos defaultConfig = objectMapper.readValue(inputStream, WorkspacesConfigInfos.class);
-            return workspacesConfigRepository.save(new WorkspacesConfigEntity(defaultConfig)).getId();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to read default workspaces config", e);
+    public UUID createWorkspacesConfigFromWorkspaces(List<UUID> workspaceIds) {
+        if (workspaceIds == null || workspaceIds.isEmpty()) {
+            return createDefaultWorkspacesConfig();
         }
+        List<WorkspaceEntity> workspaces = IntStream.range(0, workspaceIds.size())
+            .mapToObj(i -> createOrDuplicateWorkspace(workspaceIds.get(i), WORKSPACE_NAME_PREFIX + (i + 1)))
+            .toList();
+        WorkspacesConfigEntity config = new WorkspacesConfigEntity();
+        config.setWorkspaces(workspaces);
+        return workspacesConfigRepository.save(config).getId();
     }
 
     @Transactional
@@ -166,5 +173,37 @@ public class WorkspacesConfigService {
             throw new IllegalArgumentException("Panel is not a NAD panel: " + panelId);
         }
         return (NADPanelEntity) panel;
+    }
+
+    private UUID createDefaultWorkspacesConfig() {
+        try (InputStream inputStream = defaultWorkspacesConfigResource.getInputStream()) {
+            WorkspacesConfigInfos defaultConfig = objectMapper.readValue(inputStream, WorkspacesConfigInfos.class);
+            return workspacesConfigRepository.save(new WorkspacesConfigEntity(defaultConfig)).getId();
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to read default workspaces config", e);
+        }
+    }
+
+    private WorkspaceEntity createEmptyWorkspace(String name) {
+        WorkspaceEntity workspace = new WorkspaceEntity();
+        workspace.setName(name);
+        workspace.setPanels(new ArrayList<>());
+        return workspace;
+    }
+
+    private WorkspaceEntity createOrDuplicateWorkspace(UUID workspaceId, String name) {
+        if (workspaceId == null) {
+            return createEmptyWorkspace(name);
+        }
+        return workspaceRepository.findById(workspaceId)
+            .map(source -> duplicateWorkspaceWithName(source, name))
+            .orElseGet(() -> createEmptyWorkspace(name));
+    }
+
+    private WorkspaceEntity duplicateWorkspaceWithName(WorkspaceEntity source, String name) {
+        WorkspaceEntity duplicated = source.duplicate();
+        duplicated.setName(name);
+        workspaceNADConfigService.duplicateNadConfigs(duplicated);
+        return duplicated;
     }
 }
