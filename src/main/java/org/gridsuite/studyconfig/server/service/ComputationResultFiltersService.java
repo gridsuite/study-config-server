@@ -90,7 +90,7 @@ public class ComputationResultFiltersService {
                 .findFirst()
                 .orElseGet(() -> createAndAttachSubType(typeEntity, computationSubType));
         ComputationResultColumnFilterEntity updatedColumn = toComputationColumnFilterEntity(columns);
-        subTypeEntity.getColumns().removeIf(col -> col.getId() != null && col.getId().equals(updatedColumn.getId()));
+        subTypeEntity.getColumns().removeIf(col -> col.getComputationColumnId() != null && col.getComputationColumnId().equals(updatedColumn.getComputationColumnId()));
         subTypeEntity.getColumns().add(updatedColumn);
         computationResultFiltersRepository.save(root);
     }

@@ -39,7 +39,7 @@ public final class ComputationResultFiltersMapper {
 
     public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ComputationResultColumnFilterEntity entity) {
         return new ComputationResultColumnFilterInfos(
-                entity.getId(),
+                entity.getComputationColumnId(),
                 entity.getFilterDataType(),
                 entity.getFilterType(),
                 entity.getFilterValue(),
@@ -49,7 +49,7 @@ public final class ComputationResultFiltersMapper {
 
     public static ComputationResultColumnFilterEntity toComputationColumnFilterEntity(ComputationResultColumnFilterInfos columnFilterInfos) {
         return ComputationResultColumnFilterEntity.builder()
-                .id(columnFilterInfos.id())
+                .computationColumnId(columnFilterInfos.id())
                 .filterDataType(columnFilterInfos.filterDataType())
                 .filterType(columnFilterInfos.filterType())
                 .filterValue(columnFilterInfos.filterValue())

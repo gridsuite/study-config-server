@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="rehiligha (generated)" id="1769595887729-6">
+    <changeSet author="rehiligha (generated)" id="1769677476930-6">
         <createTable tableName="computation_column">
             <column name="uuid" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="computation_columnPK"/>
@@ -9,20 +9,20 @@
             <column name="filter_tolerance" type="FLOAT(53)"/>
             <column name="filter_type" type="VARCHAR(255)"/>
             <column name="filter_value" type="CLOB"/>
-            <column name="column_id" type="VARCHAR(255)">
+            <column name="computation_column_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="computation_result_id" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-7">
+    <changeSet author="rehiligha (generated)" id="1769677476930-7">
         <createTable tableName="computation_result_filters">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="computation_result_filtersPK"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-8">
+    <changeSet author="rehiligha (generated)" id="1769677476930-8">
         <createTable tableName="computation_sub_type_filters">
             <column name="uuid" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="computation_sub_type_filtersPK"/>
@@ -33,7 +33,7 @@
             <column name="computation_sub_type_filters_id" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-9">
+    <changeSet author="rehiligha (generated)" id="1769677476930-9">
         <createTable tableName="computation_type_filters">
             <column name="uuid" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="computation_type_filtersPK"/>
@@ -44,27 +44,32 @@
             <column name="computation_result_filters_id" type="UUID"/>
         </createTable>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-10">
+    <changeSet author="rehiligha (generated)" id="1769677476930-10">
         <addColumn tableName="spreadsheet_global_filter">
             <column name="computation_type_filters_id" type="uuid"/>
         </addColumn>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-11">
+    <changeSet author="rehiligha (generated)" id="1769677476930-11">
         <addUniqueConstraint columnNames="computation_sub_type" constraintName="UC_COMPUTATION_SUB_TYPE_FILTERSCOMPUTATION_SUB_TYPE_COL" tableName="computation_sub_type_filters"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-12">
+    <changeSet author="rehiligha (generated)" id="1769677476930-12">
         <addUniqueConstraint columnNames="computation_type" constraintName="UC_COMPUTATION_TYPE_FILTERSCOMPUTATION_TYPE_COL" tableName="computation_type_filters"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-13">
+    <changeSet author="rehiligha (generated)" id="1769677476930-13">
+        <createIndex indexName="idx_global_filter_computation_type_filters_id" tableName="spreadsheet_global_filter">
+            <column name="computation_type_filters_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="rehiligha (generated)" id="1769677476930-14">
         <addForeignKeyConstraint baseColumnNames="computation_result_id" baseTableName="computation_column" constraintName="fk_computation_result_column" deferrable="false" initiallyDeferred="false" referencedColumnNames="uuid" referencedTableName="computation_sub_type_filters" validate="true"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-14">
+    <changeSet author="rehiligha (generated)" id="1769677476930-15">
         <addForeignKeyConstraint baseColumnNames="computation_result_filters_id" baseTableName="computation_type_filters" constraintName="fk_computation_result_filters_type" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="computation_result_filters" validate="true"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-15">
+    <changeSet author="rehiligha (generated)" id="1769677476930-16">
         <addForeignKeyConstraint baseColumnNames="computation_sub_type_filters_id" baseTableName="computation_sub_type_filters" constraintName="fk_computation_sub_type_column_filters" deferrable="false" initiallyDeferred="false" referencedColumnNames="uuid" referencedTableName="computation_type_filters" validate="true"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769595887729-16">
+    <changeSet author="rehiligha (generated)" id="1769677476930-17">
         <addForeignKeyConstraint baseColumnNames="computation_type_filters_id" baseTableName="spreadsheet_global_filter" constraintName="fk_computation_type_global_filters" deferrable="false" initiallyDeferred="false" referencedColumnNames="uuid" referencedTableName="computation_type_filters" validate="true"/>
     </changeSet>
 </databaseChangeLog>

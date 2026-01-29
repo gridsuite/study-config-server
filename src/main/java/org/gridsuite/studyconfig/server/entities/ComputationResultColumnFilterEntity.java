@@ -8,8 +8,7 @@ package org.gridsuite.studyconfig.server.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -20,26 +19,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ComputationResultColumnFilterEntity {
+@SuperBuilder(toBuilder = true)
+public class ComputationResultColumnFilterEntity extends AbstractColumnFilter {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid")
-    private UUID uuid;
-
-    @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
-    private String id;
-
-    @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
-    private String filterDataType;
-
-    @Column(name = "filter_type", columnDefinition = "varchar(255)")
-    private String filterType;
-
-    @Column(name = "filter_value", columnDefinition = "CLOB")
-    private String filterValue;
-
-    @Column(name = "filter_tolerance")
-    private Double filterTolerance;
+    @Column(name = "computation_column_id", nullable = false, columnDefinition = "varchar(255)")
+    private String computationColumnId;
 }

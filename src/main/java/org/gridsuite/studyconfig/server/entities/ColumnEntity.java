@@ -6,12 +6,10 @@
  */
 package org.gridsuite.studyconfig.server.entities;
 
-import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.constants.ColumnType;
-
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -22,13 +20,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
-public class ColumnEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid")
-    private UUID uuid;
+@SuperBuilder(toBuilder = true)
+public class ColumnEntity extends AbstractColumnFilter {
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     private String name;
@@ -49,42 +42,11 @@ public class ColumnEntity {
     @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
     private String id;
 
-    @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
-    private String filterDataType;
-
-    @Column(name = "filter_type", columnDefinition = "varchar(255)")
-    private String filterType;
-
-    @Column(name = "filter_value", columnDefinition = "CLOB")
-    private String filterValue;
-
-    @Column(name = "filter_tolerance")
-    private Double filterTolerance;
-
     @Column(name = "visible", nullable = false)
     @Builder.Default
     private boolean visible = true;
 
-    public void resetFilter() {
-        this.filterDataType = null;
-        this.filterType = null;
-        this.filterTolerance = null;
-        this.filterValue = null;
-    }
-
     public ColumnEntity copy() {
-        return ColumnEntity.builder()
-            .name(getName())
-            .type(getType())
-            .precision(getPrecision())
-            .formula(getFormula())
-            .dependencies(getDependencies())
-            .id(getId())
-            .filterDataType(getFilterDataType())
-            .filterType(getFilterType())
-            .filterValue(getFilterValue())
-            .filterTolerance(getFilterTolerance())
-            .visible(isVisible())
-            .build();
+        return this.toBuilder().uuid(null).build();
     }
 }
