@@ -6,11 +6,9 @@
  */
 package org.gridsuite.studyconfig.server;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gridsuite.studyconfig.server.dto.ColumnFilterInfos;
-import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
-import org.gridsuite.studyconfig.server.dto.ComputationTypeFiltersInfos;
-import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -85,9 +83,13 @@ class ComputationResultFiltersTest {
                 .andExpect(status().isNoContent());
 
         result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow/limitViolation")).andExpect(status().isOk()).andReturn();
-        ComputationTypeFiltersInfos infos = mapper.readValue(result.getResponse().getContentAsString(), ComputationTypeFiltersInfos.class);
-        assertThat(infos.computationType()).isEqualTo("LoadFlow");
-        assertThat(infos.computationSubTypeFilterInfos()).hasSize(1);
-        assertThat(infos.computationSubTypeFilterInfos().getFirst().computationSubType()).isEqualTo("limitViolation");
+        List<ComputationResultColumnFilterInfos> infos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(infos).hasSize(1);
+        ComputationResultColumnFilterInfos info = infos.get(0);
+        assertThat(info.id()).isEqualTo("subjectId");
+        assertThat(info.columnFilterInfos().filterValue()).isEqualTo("10");
+        assertThat(info.columnFilterInfos().filterType()).isEqualTo("greaterThan");
+        assertThat(info.columnFilterInfos().filterDataType()).isEqualTo("number");
+
     }
 }
