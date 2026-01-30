@@ -320,13 +320,18 @@ public class SpreadsheetConfigService {
         columnEntity.setFormula(dto.formula());
         columnEntity.setDependencies(dto.dependencies());
         columnEntity.setId(dto.id());
-        Optional.ofNullable(columnEntity.getColumnFilter()).ifPresent(filter -> {
-            var infos = dto.columnFilterInfos();
-            filter.setFilterDataType(infos != null ? infos.filterDataType() : null);
-            filter.setFilterType(infos != null ? infos.filterType() : null);
-            filter.setFilterValue(infos != null ? infos.filterValue() : null);
-            filter.setFilterTolerance(infos != null ? infos.filterTolerance() : null);
-        });
+        var infos = dto.columnFilterInfos();
+        if (infos != null) {
+            ColumnFilter filter = columnEntity.getColumnFilter();
+            if (filter == null) {
+                filter = new ColumnFilter();
+                columnEntity.setColumnFilter(filter);
+            }
+            filter.setFilterDataType(infos.filterDataType());
+            filter.setFilterType(infos.filterType());
+            filter.setFilterValue(infos.filterValue());
+            filter.setFilterTolerance(infos.filterTolerance());
+        }
         columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
