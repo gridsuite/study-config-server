@@ -8,7 +8,8 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.*;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.entities.*;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
@@ -42,15 +43,27 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional(readOnly = true)
-    public ComputationTypeFiltersInfos getComputingResultFilters(UUID rootId, String computationType, String computationSubType) {
+    public List<ComputationResultColumnFilterInfos> getComputingResultColumnFilters(UUID rootId, String computationType, String computationSubType) {
         ComputationResultFiltersEntity rootEntity = computationResultFiltersRepository.findById(rootId)
                 .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
-        return ComputationResultFiltersMapper.toTypeDto(rootEntity.getComputationResultFilter().stream()
+        return rootEntity.getComputationResultFilter().stream()
                 .filter(type -> type.getComputationType().equals(computationType))
-                .filter(type -> type.getComputationSubTypes().stream().anyMatch(
-                        sub -> sub.getComputationSubType().equals(computationSubType)))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + computationType)));
+                .flatMap(type -> type.getComputationSubTypes().stream()
+                        .filter(sub -> sub.getComputationSubType().equals(computationSubType))
+                        .findFirst())
+                .map(subType -> subType.getColumns().stream()
+                        .map(ComputationResultFiltersMapper::toComputationColumnFilterInfos).toList()).orElse(List.of());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GlobalFilterInfos> getComputingResultGlobalFilters(UUID rootId, String computationType) {
+        ComputationResultFiltersEntity rootEntity = computationResultFiltersRepository.findById(rootId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
+        return rootEntity.getComputationResultFilter().stream().filter(type -> type.getComputationType().equals(computationType))
+                .findFirst()
+                .map(type -> type.getGlobalFilters().stream().map(SpreadsheetConfigMapper::toGlobalFilterDto).toList())
+                .orElse(List.of());
     }
 
     @Transactional

@@ -42,17 +42,29 @@ public class ComputationResultFiltersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
+    @GetMapping("/{id}/{computationType}")
+    @Operation(summary = "Get a computation result global filters",
+            description = "Fetches the computation result global filters for a given computation type")
+    @ApiResponse(responseCode = "200", description = "Computation result global filters found",
+            content = @Content(schema = @Schema(implementation = GlobalFilterInfos.class)))
+    @ApiResponse(responseCode = "404", description = "Computation result global filters not found")
+    public ResponseEntity<List<GlobalFilterInfos>> getComputingResultGlobalFilters(
+            @Parameter(description = "Computation root ID") @PathVariable UUID id,
+            @Parameter(description = "Computation type") @PathVariable String computationType) {
+        return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultGlobalFilters(id, computationType));
+    }
+
     @GetMapping("/{id}/{computationType}/{computationSubType}")
-    @Operation(summary = "Get a computation result filters",
-            description = "Fetches the computation result filters for a given computation type and subtype")
-    @ApiResponse(responseCode = "200", description = "Computation result filters found",
-            content = @Content(schema = @Schema(implementation = ComputationResultFiltersInfos.class)))
-    @ApiResponse(responseCode = "404", description = "Computation result filters not found")
-    public ResponseEntity<ComputationTypeFiltersInfos> getComputingResultFilters(
+    @Operation(summary = "Get a computation result column filters",
+            description = "Fetches the computation result column filters for a given computation type and subtype")
+    @ApiResponse(responseCode = "200", description = "Computation result column filters found",
+            content = @Content(schema = @Schema(implementation = ComputationResultColumnFilterInfos.class)))
+    @ApiResponse(responseCode = "404", description = "Computation result column filters not found")
+    public ResponseEntity<List<ComputationResultColumnFilterInfos>> getComputingResultColumnFilters(
             @Parameter(description = "Computation root ID") @PathVariable UUID id,
             @Parameter(description = "Computation type") @PathVariable String computationType,
             @Parameter(description = "Computation subtype") @PathVariable String computationSubType) {
-        return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultFilters(id, computationType, computationSubType));
+        return ResponseEntity.ok(computationGlobalFiltersService.getComputingResultColumnFilters(id, computationType, computationSubType));
     }
 
     @PostMapping("/{id}/{computationType}/global-filters")
