@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
-import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigCollectionEntity;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
+import org.gridsuite.studyconfig.server.entities.*;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
@@ -323,10 +320,13 @@ public class SpreadsheetConfigService {
         columnEntity.setFormula(dto.formula());
         columnEntity.setDependencies(dto.dependencies());
         columnEntity.setId(dto.id());
-        columnEntity.getColumnFilter().setFilterDataType(dto.columnFilterInfos().filterDataType());
-        columnEntity.getColumnFilter().setFilterType(dto.columnFilterInfos().filterType());
-        columnEntity.getColumnFilter().setFilterValue(dto.columnFilterInfos().filterValue());
-        columnEntity.getColumnFilter().setFilterTolerance(dto.columnFilterInfos().filterTolerance());
+        Optional.ofNullable(columnEntity.getColumnFilter()).ifPresent(filter -> {
+            var infos = dto.columnFilterInfos();
+            filter.setFilterDataType(infos != null ? infos.filterDataType() : null);
+            filter.setFilterType(infos != null ? infos.filterType() : null);
+            filter.setFilterValue(infos != null ? infos.filterValue() : null);
+            filter.setFilterTolerance(infos != null ? infos.filterTolerance() : null);
+        });
         columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
