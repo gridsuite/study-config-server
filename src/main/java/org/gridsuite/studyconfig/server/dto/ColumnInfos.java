@@ -41,24 +41,32 @@ public record ColumnInfos(
     @Schema(description = "Column id")
     String id,
 
-    @Schema(description = "Filter data type")
-    String filterDataType,
-
-    @Schema(description = "Filter type")
-    String filterType,
-
-    @Schema(description = "Filter value")
-    String filterValue,
-
-    @Schema(description = "Filter tolerance for numeric comparisons")
-    Double filterTolerance,
-
     @Schema(description = "Column visibility", defaultValue = "true")
-    Boolean visible
+    Boolean visible,
+
+    @Schema(description = "column filter infos")
+    ColumnFilterInfos columnFilterInfos
 ) {
     public ColumnInfos {
         if (visible == null) {
             visible = true;
         }
+    }
+
+    public ColumnInfos(
+            UUID uuid,
+            String name,
+            ColumnType type,
+            Integer precision,
+            String formula,
+            String dependencies,
+            String id,
+            boolean visible,
+            String filterDataType,
+            String filterType,
+            String filterValue,
+            Double filterTolerance) {
+        this(uuid, name, type, precision, formula, dependencies, id, visible,
+                new ColumnFilterInfos(filterDataType, filterType, filterValue, filterTolerance));
     }
 }

@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
-import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigCollectionEntity;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
+import org.gridsuite.studyconfig.server.entities.*;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigRepository;
@@ -323,10 +320,18 @@ public class SpreadsheetConfigService {
         columnEntity.setFormula(dto.formula());
         columnEntity.setDependencies(dto.dependencies());
         columnEntity.setId(dto.id());
-        columnEntity.setFilterDataType(dto.filterDataType());
-        columnEntity.setFilterType(dto.filterType());
-        columnEntity.setFilterValue(dto.filterValue());
-        columnEntity.setFilterTolerance(dto.filterTolerance());
+        var infos = dto.columnFilterInfos();
+        if (infos != null) {
+            ColumnFilter filter = columnEntity.getColumnFilter();
+            if (filter == null) {
+                filter = new ColumnFilter();
+                columnEntity.setColumnFilter(filter);
+            }
+            filter.setFilterDataType(infos.filterDataType());
+            filter.setFilterType(infos.filterType());
+            filter.setFilterValue(infos.filterValue());
+            filter.setFilterTolerance(infos.filterTolerance());
+        }
         columnEntity.setVisible(dto.visible());
 
         spreadsheetConfigRepository.save(entity);
@@ -393,6 +398,7 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
         ColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(null);
+        columnCopy.setColumnFilter(null);
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
         columnCopy.setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());

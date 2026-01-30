@@ -63,6 +63,10 @@ public class SpreadsheetConfigEntity {
 
     public void resetFilters() {
         this.globalFilters.clear();
-        getColumns().forEach(ColumnEntity::resetFilter);
+        this.columns.forEach(column -> {
+            if (column.getColumnFilter() != null) {
+                column.getColumnFilter().resetFilter();
+            }
+        });
     }
 }
