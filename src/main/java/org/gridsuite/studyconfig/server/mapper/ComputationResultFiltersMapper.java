@@ -1,0 +1,50 @@
+/**
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package org.gridsuite.studyconfig.server.mapper;
+
+import org.gridsuite.studyconfig.server.dto.*;
+import org.gridsuite.studyconfig.server.entities.ComputationResultFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationSubTypeFiltersEntity;
+import org.gridsuite.studyconfig.server.entities.ComputationTypeFiltersEntity;
+
+import java.util.List;
+
+/**
+ * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
+ */
+public final class ComputationResultFiltersMapper {
+
+    private ComputationResultFiltersMapper() { }
+
+    public static ComputationResultFiltersInfos toDto(ComputationResultFiltersEntity entity) {
+        List<ComputationTypeFiltersInfos> typeDTOs = entity.getComputationResultFilter().stream()
+                .map(ComputationResultFiltersMapper::toTypeDto)
+                .toList();
+
+        return new ComputationResultFiltersInfos(typeDTOs);
+    }
+
+    private static ComputationTypeFiltersInfos toTypeDto(ComputationTypeFiltersEntity typeEntity) {
+        List<GlobalFilterInfos> globalFilters = typeEntity.getGlobalFilters().stream()
+                .map(CommonFiltersMapper::toGlobalFilterDto)
+                .toList();
+
+        List<ComputationSubTypeFilterInfos> subTypeDTOs = typeEntity.getComputationSubTypes().stream()
+                .map(ComputationResultFiltersMapper::toSubTypeDto)
+                .toList();
+
+        return new ComputationTypeFiltersInfos(typeEntity.getComputationType(), globalFilters, subTypeDTOs);
+    }
+
+    private static ComputationSubTypeFilterInfos toSubTypeDto(ComputationSubTypeFiltersEntity entity) {
+        List<ComputationResultColumnFilterInfos> columns = entity.getColumns().stream()
+                .map(CommonFiltersMapper::toComputationColumnFilterInfos)
+                .toList();
+
+        return new ComputationSubTypeFilterInfos(entity.getComputationSubType(), columns);
+    }
+}

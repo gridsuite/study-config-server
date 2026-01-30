@@ -9,12 +9,14 @@ package org.gridsuite.studyconfig.server;
 import org.assertj.core.api.WithAssertions;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.dto.SpreadSheetColumnFilterInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
+import org.gridsuite.studyconfig.server.mapper.CommonFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,17 +39,18 @@ public class DtoConverterTest implements WithAssertions {
             SpreadsheetConfigEntity entity = SpreadsheetConfigEntity.builder()
                     .id(id)
                     .sheetType(SheetType.BATTERY)
-                    .columns(Arrays.asList(
-                            ColumnEntity.builder()
+                    .spreadsheetColumnFilter(Arrays.asList(
+                            SpreadsheetColumnFilterEntity.builder()
                                 .name("Column1")
                                 .formula("A+B")
                                 .id("id1")
-                                .filterDataType("text")
-                                .filterType("contains")
-                                .filterValue("test")
+                                .filter(ColumnFilterEntity.builder()
+                                        .filterDataType("text")
+                                        .filterType("contains")
+                                        .filterValue("test").build())
                                 .visible(false)
                                 .build(),
-                            ColumnEntity.builder().name("Column2").formula("C*D").id("id2").build()
+                            SpreadsheetColumnFilterEntity.builder().name("Column2").formula("C*D").id("id2").filter(ColumnFilterEntity.builder().build()).build()
                     ))
                     .globalFilters(Arrays.asList(
                             GlobalFilterEntity.builder()
@@ -73,10 +76,10 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.columns().get(0).name()).isEqualTo("Column1");
                         assertThat(d.columns().get(0).formula()).isEqualTo("A+B");
                         assertThat(d.columns().get(0).id()).isEqualTo("id1");
+                        assertThat(d.columns().get(0).visible()).isFalse();
                         assertThat(d.columns().get(0).filterDataType()).isEqualTo("text");
                         assertThat(d.columns().get(0).filterType()).isEqualTo("contains");
                         assertThat(d.columns().get(0).filterValue()).isEqualTo("test");
-                        assertThat(d.columns().get(0).visible()).isFalse();
 
                         assertThat(d.columns().get(1).name()).isEqualTo("Column2");
                         assertThat(d.columns().get(1).formula()).isEqualTo("C*D");
@@ -102,10 +105,10 @@ public class DtoConverterTest implements WithAssertions {
                     "TestSheet",
                     SheetType.BUS,
                     Arrays.asList(
-                            new ColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1",
-                                    "number", "greaterThan", "100", 0.5, true),
-                            new ColumnInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2",
-                                    null, null, null, null, true)
+                            new SpreadSheetColumnFilterInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]",
+                                    "id1", "number", "greaterThan", "100", 0.5, true),
+                            new SpreadSheetColumnFilterInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]",
+                                    "id2", null, null, null, null, true)
                     ),
                     List.of(
                             GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").recent(false).build()
@@ -123,26 +126,26 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getSheetType()).isEqualTo(SheetType.BUS);
 
                         // Column assertions
-                        assertThat(e.getColumns()).hasSize(2);
-                        assertThat(e.getColumns().get(0).getName()).isEqualTo("Column1");
-                        assertThat(e.getColumns().get(0).getFormula()).isEqualTo("X+Y");
-                        assertThat(e.getColumns().get(0).getId()).isEqualTo("id1");
-                        assertThat(e.getColumns().get(0).getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
-                        assertThat(e.getColumns().get(0).getFilterDataType()).isEqualTo("number");
-                        assertThat(e.getColumns().get(0).getFilterType()).isEqualTo("greaterThan");
-                        assertThat(e.getColumns().get(0).getFilterValue()).isEqualTo("100");
-                        assertThat(e.getColumns().get(0).getFilterTolerance()).isEqualTo(0.5);
-                        assertThat(e.getColumns().get(0).isVisible()).isTrue();
+                        assertThat(e.getSpreadsheetColumnFilter()).hasSize(2);
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getName()).isEqualTo("Column1");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getFormula()).isEqualTo("X+Y");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getId()).isEqualTo("id1");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getFilter().getFilterDataType()).isEqualTo("number");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getFilter().getFilterType()).isEqualTo("greaterThan");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getFilter().getFilterValue()).isEqualTo("100");
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).getFilter().getFilterTolerance()).isEqualTo(0.5);
+                        assertThat(e.getSpreadsheetColumnFilter().get(0).isVisible()).isTrue();
 
-                        assertThat(e.getColumns().get(1).getName()).isEqualTo("Column2");
-                        assertThat(e.getColumns().get(1).getFormula()).isEqualTo("Z*W");
-                        assertThat(e.getColumns().get(1).getId()).isEqualTo("id2");
-                        assertThat(e.getColumns().get(1).getDependencies()).isEqualTo("[\"col1\"]");
-                        assertThat(e.getColumns().get(1).getFilterDataType()).isNull();
-                        assertThat(e.getColumns().get(1).getFilterType()).isNull();
-                        assertThat(e.getColumns().get(1).getFilterValue()).isNull();
-                        assertThat(e.getColumns().get(1).getFilterTolerance()).isNull();
-                        assertThat(e.getColumns().get(1).isVisible()).isTrue();
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getName()).isEqualTo("Column2");
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getFormula()).isEqualTo("Z*W");
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getId()).isEqualTo("id2");
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getDependencies()).isEqualTo("[\"col1\"]");
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getFilter().getFilterDataType()).isNull();
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getFilter().getFilterType()).isNull();
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getFilter().getFilterValue()).isNull();
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).getFilter().getFilterTolerance()).isNull();
+                        assertThat(e.getSpreadsheetColumnFilter().get(1).isVisible()).isTrue();
 
                         // Global filter assertions
                         assertThat(e.getGlobalFilters()).hasSize(1);
@@ -156,17 +159,18 @@ public class DtoConverterTest implements WithAssertions {
     class ColumnConverterTest {
         @Test
         void testConversionToDtoOfColumnWithFilter() {
-            ColumnEntity entity = ColumnEntity.builder()
+            SpreadsheetColumnFilterEntity entity = SpreadsheetColumnFilterEntity.builder()
                     .name("TestColumn")
                     .formula("A+B+C")
                     .id("idTest")
-                    .filterDataType("text")
-                    .filterType("startsWith")
-                    .filterValue("prefix")
-                    .filterTolerance(null)
-                    .build();
+                    .filter(ColumnFilterEntity.builder()
+                            .filterDataType("text")
+                            .filterType("startsWith")
+                            .filterValue("prefix")
+                            .filterTolerance(null)
+                            .build()).build();
 
-            ColumnInfos dto = SpreadsheetConfigMapper.toColumnDto(entity);
+            SpreadSheetColumnFilterInfos dto = CommonFiltersMapper.toSpreadSheetColumnFilterInfos(entity);
 
             assertThat(dto)
                     .as("DTO conversion result")
@@ -184,21 +188,11 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEntityOfColumnWithFilter() {
-            ColumnInfos dto = new ColumnInfos(
-                    null,
-                    "TestColumn",
-                    ColumnType.NUMBER,
-                    3,
-                    "X*Y*Z",
-                    "[\"col1\", \"col2\"]",
-                    "idTest",
-                    "number",
-                    "lessThan",
-                    "50.5",
-                    0.1,
-                    true);
+            SpreadSheetColumnFilterInfos dto = new SpreadSheetColumnFilterInfos(null, "TestColumn",
+                    ColumnType.NUMBER, 3, "X*Y*Z", "[\"col1\", \"col2\"]", "idTest",
+                    "number", "lessThan", "50.5", 0.1, true);
 
-            ColumnEntity column = SpreadsheetConfigMapper.toColumnEntity(dto);
+            SpreadsheetColumnFilterEntity column = CommonFiltersMapper.toSpreadSheetColumnFilterEntity(dto);
 
             assertThat(column)
                     .as("Entity conversion result")
@@ -207,32 +201,34 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getFormula()).isEqualTo("X*Y*Z");
                         assertThat(e.getDependencies()).isEqualTo("[\"col1\", \"col2\"]");
                         assertThat(e.getId()).isEqualTo("idTest");
-                        assertThat(e.getFilterDataType()).isEqualTo("number");
-                        assertThat(e.getFilterType()).isEqualTo("lessThan");
-                        assertThat(e.getFilterValue()).isEqualTo("50.5");
-                        assertThat(e.getFilterTolerance()).isEqualTo(0.1);
                         assertThat(e.isVisible()).isTrue();
+                        assertThat(e.getFilter()).isNotNull();
+                        assertThat(e.getFilter().getFilterDataType()).isEqualTo("number");
+                        assertThat(e.getFilter().getFilterType()).isEqualTo("lessThan");
+                        assertThat(e.getFilter().getFilterValue()).isEqualTo("50.5");
+                        assertThat(e.getFilter().getFilterTolerance()).isEqualTo(0.1);
                     });
         }
 
         @Test
         void testConversionOfColumnWithoutFilter() {
-            ColumnInfos dto = new ColumnInfos(
+            SpreadSheetColumnFilterInfos dto = new SpreadSheetColumnFilterInfos(
                     null,
                     "TestColumn",
                     ColumnType.TEXT,
                     null,
                     "X*Y*Z",
                     "[\"col1\", \"col2\"]",
-                    "idTest",
+                     "idTest",
                     null,
                     null,
                     null,
                     null,
-                    true);
+                    true
+                    );
 
-            ColumnEntity entity = SpreadsheetConfigMapper.toColumnEntity(dto);
-            ColumnInfos convertedDto = SpreadsheetConfigMapper.toColumnDto(entity);
+            SpreadsheetColumnFilterEntity entity = CommonFiltersMapper.toSpreadSheetColumnFilterEntity(dto);
+            SpreadSheetColumnFilterInfos convertedDto = CommonFiltersMapper.toSpreadSheetColumnFilterInfos(entity);
 
             assertThat(convertedDto)
                     .as("Round-trip conversion result")
@@ -255,7 +251,7 @@ public class DtoConverterTest implements WithAssertions {
                 .maxValue(20)
                     .build();
 
-            GlobalFilterInfos dto = SpreadsheetConfigMapper.toGlobalFilterDto(entity);
+            GlobalFilterInfos dto = CommonFiltersMapper.toGlobalFilterDto(entity);
 
             assertThat(dto)
                     .as("DTO conversion result")
@@ -281,7 +277,7 @@ public class DtoConverterTest implements WithAssertions {
                 .maxValue(15)
                 .build();
 
-            GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
+            GlobalFilterEntity entity = CommonFiltersMapper.toGlobalFilterEntity(dto);
 
             assertThat(entity)
                     .as("Entity conversion result")

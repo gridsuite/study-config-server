@@ -30,7 +30,7 @@ public record SpreadsheetConfigInfos(
     SheetType sheetType,
 
     @Schema(description = "Columns")
-    List<ColumnInfos> columns,
+    List<SpreadSheetColumnFilterInfos> columns,
 
     @Schema(description = "Global filters")
     List<GlobalFilterInfos> globalFilters,
