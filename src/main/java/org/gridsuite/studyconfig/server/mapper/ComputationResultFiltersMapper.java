@@ -16,27 +16,6 @@ public final class ComputationResultFiltersMapper {
 
     private ComputationResultFiltersMapper() { }
 
-    public static ComputationResultFiltersInfos toDto(ComputationResultFiltersEntity entity) {
-        return new ComputationResultFiltersInfos(entity.getComputationResultFilter().stream()
-                .map(ComputationResultFiltersMapper::toTypeDto)
-                .toList());
-    }
-
-    public static ComputationTypeFiltersInfos toTypeDto(ComputationTypeFiltersEntity entity) {
-        return new ComputationTypeFiltersInfos(entity.getComputationType(),
-                entity.getGlobalFilters().stream()
-                .map(SpreadsheetConfigMapper::toGlobalFilterDto).toList(),
-                entity.getComputationSubTypes().stream().map(ComputationResultFiltersMapper::toSubTypeDto).toList()
-        );
-    }
-
-    private static ComputationSubTypeFilterInfos toSubTypeDto(ComputationSubTypeFiltersEntity entity) {
-        return new ComputationSubTypeFilterInfos(
-                entity.getComputationSubType(),
-                entity.getColumns().stream().map(ComputationResultFiltersMapper::toComputationColumnFilterInfos).toList()
-        );
-    }
-
     public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ComputationResultColumnFilterEntity entity) {
         ColumnFilter filter = entity.getColumnFilter();
         return new ComputationResultColumnFilterInfos(entity.getComputationColumnId(), filter != null ?
