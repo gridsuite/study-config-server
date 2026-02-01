@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Entity
-@Table(name = "spreadsheet_global_filter", indexes = {
+@Table(name = "global_filter", indexes = {
     @Index(name = "idx_global_filter_spreadsheet_config_id", columnList = "spreadsheet_config_id"),
     @Index(name = "idx_global_filter_computation_type_filters_id", columnList = "computation_type_filters_id")}
 )
