@@ -77,19 +77,31 @@ class ComputationResultFiltersTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(put(BASE_URI + "/" + rootId + "/" + "LoadFlow" + "/" + "limitViolation" + "/columns")
+        mockMvc.perform(put(BASE_URI + "/" + rootId + "/" + "PccMin" + "/" + "pccMinResults" + "/columns")
                         .content(mapper.writeValueAsString(createColumnFilter()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow/limitViolation")).andExpect(status().isOk()).andReturn();
-        List<ComputationResultColumnFilterInfos> infos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
-        assertThat(infos).hasSize(1);
-        ComputationResultColumnFilterInfos info = infos.get(0);
+        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow/loadflowCurrentLimitViolation")).andExpect(status().isOk()).andReturn();
+        List<ComputationResultColumnFilterInfos> infosLoadFlowColumn = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(infosLoadFlowColumn).isEmpty();
+
+        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/PccMin/pccMinResults")).andExpect(status().isOk()).andReturn();
+        List<ComputationResultColumnFilterInfos> infosPccMinColumn = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(infosPccMinColumn).hasSize(1);
+        ComputationResultColumnFilterInfos info = infosPccMinColumn.getFirst();
         assertThat(info.id()).isEqualTo("subjectId");
         assertThat(info.columnFilterInfos().filterValue()).isEqualTo("10");
         assertThat(info.columnFilterInfos().filterType()).isEqualTo("greaterThan");
         assertThat(info.columnFilterInfos().filterDataType()).isEqualTo("number");
+
+        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow")).andExpect(status().isOk()).andReturn();
+        List<GlobalFilterInfos> globalFilterInfos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(globalFilterInfos).hasSize(2);
+        GlobalFilterInfos globalFilterInfo = globalFilterInfos.getFirst();
+        assertThat(globalFilterInfo.label()).isEqualTo("Filter 1");
+        assertThat(globalFilterInfo.filterType()).isEqualTo("country");
+        assertThat(globalFilterInfo.recent()).isFalse();
 
     }
 }
