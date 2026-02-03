@@ -25,7 +25,7 @@ public final class ComputationResultFiltersMapper {
 
     public static ComputationResultColumnFilterEntity toComputationColumnFilterEntity(ComputationResultColumnFilterInfos columnFilterInfos) {
         return ComputationResultColumnFilterEntity.builder()
-                .computationColumnId(columnFilterInfos.id())
+                .computationColumnId(columnFilterInfos.columnId())
                 .columnFilter(columnFilterInfos.columnFilterInfos() != null ? ColumnFilter.builder()
                         .filterDataType(columnFilterInfos.columnFilterInfos().filterDataType())
                         .filterType(columnFilterInfos.columnFilterInfos().filterType())

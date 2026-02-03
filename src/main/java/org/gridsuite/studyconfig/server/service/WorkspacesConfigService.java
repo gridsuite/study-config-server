@@ -36,8 +36,8 @@ public class WorkspacesConfigService {
     @Value("classpath:default-workspaces-config.json")
     private Resource defaultWorkspacesConfigResource;
 
-    private static final String WORKSPACES_CONFIG_NOT_FOUND = "WorkspacesConfig not found with id: ";
-    private static final String WORKSPACE_NOT_FOUND = "Workspace not found with id: ";
+    private static final String WORKSPACES_CONFIG_NOT_FOUND = "WorkspacesConfig not found with columnId: ";
+    private static final String WORKSPACE_NOT_FOUND = "Workspace not found with columnId: ";
     private static final String WORKSPACE_NAME_PREFIX = "Workspace ";
 
     @Transactional

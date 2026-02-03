@@ -238,7 +238,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, List.of(), null, List.of(), null);
         UUID configId = saveAndReturnId(config);
 
-        ColumnInfos columnToCreate = new ColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", true, null, null, null, null);
+        SpreadsheetColumnInfos columnToCreate = new SpreadsheetColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", true, null, null, null, null);
 
         MvcResult result = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
                 .content(mapper.writeValueAsString(columnToCreate))
@@ -248,14 +248,14 @@ class SpreadsheetConfigIntegrationTest {
 
         UUID columnId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
 
-        ColumnInfos createdColumn = getColumn(configId, columnId);
+        SpreadsheetColumnInfos createdColumn = getColumn(configId, columnId);
         assertThat(createdColumn)
                 .usingRecursiveComparison()
                 .ignoringFields("uuid")
                 .isEqualTo(columnToCreate);
 
         // Create a column with a filter
-        ColumnInfos columnWithFilter = new ColumnInfos(null, "new_column_with_filter", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", true,
+        SpreadsheetColumnInfos columnWithFilter = new SpreadsheetColumnInfos(null, "new_column_with_filter", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", true,
                 "text", "equals", "test-value", null);
 
         MvcResult resultWithFilter = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
@@ -265,7 +265,7 @@ class SpreadsheetConfigIntegrationTest {
                 .andReturn();
 
         UUID columnWithFilterId = mapper.readValue(resultWithFilter.getResponse().getContentAsString(), UUID.class);
-        ColumnInfos createdColumnWithFilter = getColumn(configId, columnWithFilterId);
+        SpreadsheetColumnInfos createdColumnWithFilter = getColumn(configId, columnWithFilterId);
         assertThat(createdColumnWithFilter)
                 .usingRecursiveComparison()
                 .ignoringFields("uuid")
@@ -280,7 +280,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
         UUID columnId = savedConfig.columns().get(0).uuid();
 
-        ColumnInfos columnUpdate = new ColumnInfos(columnId, "updated_column", ColumnType.TEXT, null, "new_formula", "[]", "updatedId", true,
+        SpreadsheetColumnInfos columnUpdate = new SpreadsheetColumnInfos(columnId, "updated_column", ColumnType.TEXT, null, "new_formula", "[]", "updatedId", true,
                 "text", "equals", "updated-value", null);
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId)
@@ -288,7 +288,7 @@ class SpreadsheetConfigIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        ColumnInfos updatedColumn = getColumn(configId, columnId);
+        SpreadsheetColumnInfos updatedColumn = getColumn(configId, columnId);
         assertThat(updatedColumn).isEqualTo(columnUpdate);
     }
 
@@ -305,7 +305,7 @@ class SpreadsheetConfigIntegrationTest {
 
         SpreadsheetConfigInfos configAfterDelete = getSpreadsheetConfig(configId);
         assertThat(configAfterDelete.columns())
-                .extracting(ColumnInfos::uuid)
+                .extracting(SpreadsheetColumnInfos::uuid)
                 .isNotEmpty()
                 .doesNotContain(columnId);
     }
@@ -324,8 +324,8 @@ class SpreadsheetConfigIntegrationTest {
 
         SpreadsheetConfigInfos configAfterDuplicate = getSpreadsheetConfig(configId);
         assertThat(configAfterDuplicate.columns()).hasSize(5);
-        ColumnInfos columnInfos = configAfterDuplicate.columns().get(0);
-        ColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
+        SpreadsheetColumnInfos columnInfos = configAfterDuplicate.columns().get(0);
+        SpreadsheetColumnInfos duplicatedColumnInfos = configAfterDuplicate.columns().get(1);
 
         assertThat(columnInfos.uuid()).isNotEqualTo(duplicatedColumnInfos.uuid());
         assertEquals(columnInfos.id() + "_1", duplicatedColumnInfos.id());
@@ -356,7 +356,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
         UUID columnId = savedConfig.columns().get(0).uuid();
 
-        ColumnInfos column = getColumn(configId, columnId);
+        SpreadsheetColumnInfos column = getColumn(configId, columnId);
         assertThat(column).isNotNull();
         assertThat(column.uuid()).isEqualTo(columnId);
     }
@@ -368,12 +368,12 @@ class SpreadsheetConfigIntegrationTest {
 
         // get the saved config to retrieve column UUIDs
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
-        List<ColumnInfos> originalColumns = savedConfig.columns();
+        List<SpreadsheetColumnInfos> originalColumns = savedConfig.columns();
         assertThat(originalColumns).hasSize(4);
 
         // reverse the original order
         List<UUID> reorderedColumnIds = originalColumns.stream()
-            .map(ColumnInfos::uuid)
+            .map(SpreadsheetColumnInfos::uuid)
             .collect(Collectors.toList());
         Collections.reverse(reorderedColumnIds);
 
@@ -384,7 +384,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // verify the new order
         SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
-        List<ColumnInfos> reorderedColumns = updatedConfig.columns();
+        List<SpreadsheetColumnInfos> reorderedColumns = updatedConfig.columns();
 
         assertThat(reorderedColumns).hasSize(originalColumns.size());
 
@@ -397,10 +397,10 @@ class SpreadsheetConfigIntegrationTest {
     @Test
     void testUpdateColumnStates() throws Exception {
         // Create config with multiple columns
-        List<ColumnInfos> columns = Arrays.asList(
-                new ColumnInfos(null, "col1", ColumnType.TEXT, null, "formula1", null, "id1", true, null, null, null, null),
-                new ColumnInfos(null, "col2", ColumnType.NUMBER, 2, "formula2", null, "id2", true, null, null, null, null),
-                new ColumnInfos(null, "col3", ColumnType.BOOLEAN, null, "formula3", null, "id3", false, null, null, null, null)
+        List<SpreadsheetColumnInfos> columns = Arrays.asList(
+                new SpreadsheetColumnInfos(null, "col1", ColumnType.TEXT, null, "formula1", null, "id1", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "col2", ColumnType.NUMBER, 2, "formula2", null, "id2", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "col3", ColumnType.BOOLEAN, null, "formula3", null, "id3", false, null, null, null, null)
         );
 
         SpreadsheetConfigInfos config = new SpreadsheetConfigInfos(null, "TestConfig", SheetType.BATTERY, columns, null, List.of(), null);
@@ -408,7 +408,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // Get the saved config to retrieve column UUIDs
         SpreadsheetConfigInfos savedConfig = getSpreadsheetConfig(configId);
-        List<ColumnInfos> savedColumns = savedConfig.columns();
+        List<SpreadsheetColumnInfos> savedColumns = savedConfig.columns();
         assertThat(savedColumns).hasSize(3);
 
         // Prepare column state updates: reorder and change visibility
@@ -426,15 +426,15 @@ class SpreadsheetConfigIntegrationTest {
 
         // Verify the updates
         SpreadsheetConfigInfos updatedConfig = getSpreadsheetConfig(configId);
-        List<ColumnInfos> updatedColumns = updatedConfig.columns();
+        List<SpreadsheetColumnInfos> updatedColumns = updatedConfig.columns();
 
         // Check visibility updates
-        ColumnInfos firstColumn = updatedColumns.stream()
+        SpreadsheetColumnInfos firstColumn = updatedColumns.stream()
                 .filter(col -> col.uuid().equals(savedColumns.get(0).uuid()))
                 .findFirst().orElseThrow();
         assertThat(firstColumn.visible()).isFalse();
 
-        ColumnInfos thirdColumn = updatedColumns.stream()
+        SpreadsheetColumnInfos thirdColumn = updatedColumns.stream()
                 .filter(col -> col.uuid().equals(savedColumns.get(2).uuid()))
                 .findFirst().orElseThrow();
         assertThat(thirdColumn.visible()).isTrue();
@@ -504,7 +504,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(renamedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("name", "columns.uuid", "id", "columns.id")
+                .ignoringFields("name", "columns.uuid", "id", "columns.columnId")
                 .isEqualTo(configToRename);
     }
 
@@ -623,43 +623,43 @@ class SpreadsheetConfigIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    private List<ColumnInfos> createColumns() {
+    private List<SpreadsheetColumnInfos> createColumns() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", true, null, null, null, null),
-                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB", true, null, null, null, null),
-                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC", true, null, null, null, null),
-                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD", true, null, null, null, null)
+                new SpreadsheetColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD", true, null, null, null, null)
         );
     }
 
-    private List<ColumnInfos> createColumnsWithFilters() {
+    private List<SpreadsheetColumnInfos> createColumnsWithFilters() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", true,
+                new SpreadsheetColumnInfos(null, "cust_a", ColumnType.BOOLEAN, null, "cust_b + cust_c", "[\"cust_b\", \"cust_c\"]", "idA", true,
                         "text", "equals", "test-value", null),
-                new ColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB", true,
+                new SpreadsheetColumnInfos(null, "cust_b", ColumnType.NUMBER, 0, "var_minP + 1", null, "idB", true,
                         "number", "greaterThan", "100", 0.5),
-                new ColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC", true,
+                new SpreadsheetColumnInfos(null, "cust_c", ColumnType.NUMBER, 2, "cust_b + 1", "[\"cust_b\"]", "idC", true,
                         "text", "startsWith", "prefix", null),
-                new ColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD", true,
+                new SpreadsheetColumnInfos(null, "cust_d", ColumnType.TEXT, null, "5 + 2", null, "idD", true,
                         null, null, null, null)
         );
     }
 
-    private List<ColumnInfos> createUpdatedColumns() {
+    private List<SpreadsheetColumnInfos> createUpdatedColumns() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX", true, null, null, null, null),
-                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY", true, null, null, null, null),
-                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ", true, null, null, null, null)
+                new SpreadsheetColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY", true, null, null, null, null),
+                new SpreadsheetColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ", true, null, null, null, null)
         );
     }
 
-    private List<ColumnInfos> createUpdatedColumnsWithFilters() {
+    private List<SpreadsheetColumnInfos> createUpdatedColumnsWithFilters() {
         return Arrays.asList(
-                new ColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX", true,
+                new SpreadsheetColumnInfos(null, "cust_x", ColumnType.BOOLEAN, null, "cust_y * 2", "[\"cust_y\"]", "idX", true,
                         "text", "contains", "updated-value", null),
-                new ColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY", true,
+                new SpreadsheetColumnInfos(null, "cust_y", ColumnType.NUMBER, 1, "var_maxP - 1", null, "idY", true,
                         "number", "lessThan", "50", 0.1),
-                new ColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ", true,
+                new SpreadsheetColumnInfos(null, "cust_z", ColumnType.NUMBER, 0, "cust_x / 2", "[\"cust_x\"]", "idZ", true,
                         null, null, null, null)  // No filter on this column
         );
     }
@@ -722,11 +722,11 @@ class SpreadsheetConfigIntegrationTest {
         return spreadsheetConfigService.createSpreadsheetConfig(config);
     }
 
-    private ColumnInfos getColumn(UUID configId, UUID columnId) throws Exception {
+    private SpreadsheetColumnInfos getColumn(UUID configId, UUID columnId) throws Exception {
         MvcResult result = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        return mapper.readValue(result.getResponse().getContentAsString(), ColumnInfos.class);
+        return mapper.readValue(result.getResponse().getContentAsString(), SpreadsheetColumnInfos.class);
     }
 }

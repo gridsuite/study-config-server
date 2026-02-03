@@ -90,7 +90,7 @@ class ComputationResultFiltersTest {
         List<ComputationResultColumnFilterInfos> infosPccMinColumn = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
         assertThat(infosPccMinColumn).hasSize(1);
         ComputationResultColumnFilterInfos info = infosPccMinColumn.getFirst();
-        assertThat(info.id()).isEqualTo("subjectId");
+        assertThat(info.columnId()).isEqualTo("subjectId");
         assertThat(info.columnFilterInfos().filterValue()).isEqualTo("10");
         assertThat(info.columnFilterInfos().filterType()).isEqualTo("greaterThan");
         assertThat(info.columnFilterInfos().filterDataType()).isEqualTo("number");

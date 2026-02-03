@@ -79,7 +79,7 @@ public class WorkspacesConfigController {
 
     @GetMapping("/{id}/workspaces")
     @Operation(summary = "Get workspaces metadata",
-            description = "Retrieves lightweight metadata for all workspaces (id, name, panel count)")
+            description = "Retrieves lightweight metadata for all workspaces (columnId, name, panel count)")
     @ApiResponse(responseCode = "200", description = "Workspaces metadata retrieved")
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
     public ResponseEntity<List<WorkspaceMetadata>> getWorkspaces(

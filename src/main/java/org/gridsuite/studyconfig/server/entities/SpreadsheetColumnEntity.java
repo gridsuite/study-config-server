@@ -22,7 +22,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ColumnEntity {
+public class SpreadsheetColumnEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,7 +48,7 @@ public class ColumnEntity {
     @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
     private String id;
 
-    @Column(name = "visible", nullable = false)
+    @Column(name = "visible", nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private boolean visible = true;
 
@@ -57,8 +57,8 @@ public class ColumnEntity {
             foreignKey = @ForeignKey(name = "columnEntity_columnFilter_fk"))
     private ColumnFilter columnFilter;
 
-    public ColumnEntity copy() {
-        return ColumnEntity.builder()
+    public SpreadsheetColumnEntity copy() {
+        return SpreadsheetColumnEntity.builder()
                 .name(getName())
                 .type(getType())
                 .precision(getPrecision())

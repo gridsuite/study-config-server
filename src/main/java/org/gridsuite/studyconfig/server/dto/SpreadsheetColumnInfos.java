@@ -16,8 +16,8 @@ import jakarta.validation.constraints.NotNull;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
-@Schema(name = "ColumnDto", description = "Column configuration")
-public record ColumnInfos(
+@Schema(name = "SpreadsheetColumnInfos", description = "Column configuration")
+public record SpreadsheetColumnInfos(
 
     @Schema(description = "Column UUID")
     UUID uuid,
@@ -38,7 +38,7 @@ public record ColumnInfos(
     @Schema(description = "Column dependencies")
     String dependencies,
 
-    @Schema(description = "Column id")
+    @Schema(description = "Column columnId")
     String id,
 
     @Schema(description = "Column visibility", defaultValue = "true")
@@ -47,13 +47,13 @@ public record ColumnInfos(
     @Schema(description = "column filter infos")
     ColumnFilterInfos columnFilterInfos
 ) {
-    public ColumnInfos {
+    public SpreadsheetColumnInfos {
         if (visible == null) {
             visible = true;
         }
     }
 
-    public ColumnInfos(
+    public SpreadsheetColumnInfos(
             UUID uuid,
             String name,
             ColumnType type,

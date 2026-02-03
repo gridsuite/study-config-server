@@ -9,10 +9,10 @@ package org.gridsuite.studyconfig.server;
 import org.assertj.core.api.WithAssertions;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
-import org.gridsuite.studyconfig.server.dto.ColumnInfos;
+import org.gridsuite.studyconfig.server.dto.SpreadsheetColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 import org.gridsuite.studyconfig.server.entities.ColumnFilter;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
@@ -39,7 +39,7 @@ public class DtoConverterTest implements WithAssertions {
                     .id(id)
                     .sheetType(SheetType.BATTERY)
                     .columns(Arrays.asList(
-                            ColumnEntity.builder()
+                            SpreadsheetColumnEntity.builder()
                                 .name("Column1")
                                 .formula("A+B")
                                 .id("id1")
@@ -50,7 +50,7 @@ public class DtoConverterTest implements WithAssertions {
                                         .filterValue("test")
                                         .build())
                                 .build(),
-                            ColumnEntity.builder().name("Column2").formula("C*D").id("id2").build()
+                            SpreadsheetColumnEntity.builder().name("Column2").formula("C*D").id("id2").build()
                     ))
                     .globalFilters(Arrays.asList(
                             GlobalFilterEntity.builder()
@@ -105,9 +105,9 @@ public class DtoConverterTest implements WithAssertions {
                     "TestSheet",
                     SheetType.BUS,
                     Arrays.asList(
-                            new ColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1", true,
+                            new SpreadsheetColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1", true,
                                     "number", "greaterThan", "100", 0.5),
-                            new ColumnInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2", true,
+                            new SpreadsheetColumnInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2", true,
                                     null, null, null, null)
                     ),
                     List.of(
@@ -159,7 +159,7 @@ public class DtoConverterTest implements WithAssertions {
     class ColumnConverterTest {
         @Test
         void testConversionToDtoOfColumnWithFilter() {
-            ColumnEntity entity = ColumnEntity.builder()
+            SpreadsheetColumnEntity entity = SpreadsheetColumnEntity.builder()
                     .name("TestColumn")
                     .formula("A+B+C")
                     .id("idTest")
@@ -170,7 +170,7 @@ public class DtoConverterTest implements WithAssertions {
                     .filterTolerance(null).build())
                     .build();
 
-            ColumnInfos dto = SpreadsheetConfigMapper.toColumnDto(entity);
+            SpreadsheetColumnInfos dto = SpreadsheetConfigMapper.toColumnDto(entity);
 
             assertThat(dto)
                     .as("DTO conversion result")
@@ -188,7 +188,7 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEntityOfColumnWithFilter() {
-            ColumnInfos dto = new ColumnInfos(
+            SpreadsheetColumnInfos dto = new SpreadsheetColumnInfos(
                     null,
                     "TestColumn",
                     ColumnType.NUMBER,
@@ -202,7 +202,7 @@ public class DtoConverterTest implements WithAssertions {
                     "50.5",
                     0.1);
 
-            ColumnEntity column = SpreadsheetConfigMapper.toColumnEntity(dto);
+            SpreadsheetColumnEntity column = SpreadsheetConfigMapper.toColumnEntity(dto);
 
             assertThat(column)
                     .as("Entity conversion result")
@@ -221,7 +221,7 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionOfColumnWithoutFilter() {
-            ColumnInfos dto = new ColumnInfos(
+            SpreadsheetColumnInfos dto = new SpreadsheetColumnInfos(
                     null,
                     "TestColumn",
                     ColumnType.TEXT,
@@ -235,8 +235,8 @@ public class DtoConverterTest implements WithAssertions {
                     null,
                     null);
 
-            ColumnEntity entity = SpreadsheetConfigMapper.toColumnEntity(dto);
-            ColumnInfos convertedDto = SpreadsheetConfigMapper.toColumnDto(entity);
+            SpreadsheetColumnEntity entity = SpreadsheetConfigMapper.toColumnEntity(dto);
+            SpreadsheetColumnInfos convertedDto = SpreadsheetConfigMapper.toColumnDto(entity);
 
             assertThat(convertedDto)
                     .as("Round-trip conversion result")

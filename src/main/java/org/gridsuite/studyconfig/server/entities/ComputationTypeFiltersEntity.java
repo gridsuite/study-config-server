@@ -29,7 +29,7 @@ public class ComputationTypeFiltersEntity {
     @Column(name = "uuid")
     private UUID uuid;
 
-    @Column(name = "computation_type", nullable = false, unique = true)
+    @Column(name = "computation_type", nullable = false)
     private String computationType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

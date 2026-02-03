@@ -68,12 +68,6 @@
     <changeSet author="rehiligha (generated)" id="1769696603827-14">
         <addUniqueConstraint columnNames="computation_result_column_filter_id" constraintName="UC_COMPUTATION_COLUMNCOMPUTATION_RESULT_COLUMN_FILTER_ID_COL" tableName="computation_column"/>
     </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769696603827-15">
-        <addUniqueConstraint columnNames="computation_sub_type" constraintName="UC_COMPUTATION_SUB_TYPE_FILTERSCOMPUTATION_SUB_TYPE_COL" tableName="computation_sub_type_filters"/>
-    </changeSet>
-    <changeSet author="rehiligha (generated)" id="1769696603827-16">
-        <addUniqueConstraint columnNames="computation_type" constraintName="UC_COMPUTATION_TYPE_FILTERSCOMPUTATION_TYPE_COL" tableName="computation_type_filters"/>
-    </changeSet>
     <changeSet author="rehiligha (generated)" id="1769696603827-17">
         <addUniqueConstraint columnNames="column_entity_column_filter_id" constraintName="UC_SPREADSHEET_COLUMNCOLUMN_ENTITY_COLUMN_FILTER_ID_COL" tableName="spreadsheet_column"/>
     </changeSet>

@@ -8,7 +8,7 @@ package org.gridsuite.studyconfig.server.mapper;
 
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 import org.gridsuite.studyconfig.server.entities.ColumnFilter;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
@@ -70,9 +70,9 @@ public final class SpreadsheetConfigMapper {
         return entity;
     }
 
-    public static ColumnInfos toColumnDto(ColumnEntity entity) {
+    public static SpreadsheetColumnInfos toColumnDto(SpreadsheetColumnEntity entity) {
         ColumnFilter filter = entity.getColumnFilter();
-        return new ColumnInfos(
+        return new SpreadsheetColumnInfos(
                 entity.getUuid(),
                 entity.getName(),
                 entity.getType(),
@@ -88,8 +88,8 @@ public final class SpreadsheetConfigMapper {
                 );
     }
 
-    public static ColumnEntity toColumnEntity(ColumnInfos dto) {
-        return ColumnEntity.builder()
+    public static SpreadsheetColumnEntity toColumnEntity(SpreadsheetColumnInfos dto) {
+        return SpreadsheetColumnEntity.builder()
                 .name(dto.name())
                 .type(dto.type())
                 .precision(dto.precision())

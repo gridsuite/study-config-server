@@ -40,7 +40,7 @@ public class GlobalFilterEntity {
     @Column(name = "label", nullable = false)
     private String label;
 
-    @Column(name = "recent")
+    @Column(name = "recent", nullable = false, columnDefinition = "boolean default false")
     private boolean recent;
 
     @Column(name = "uuid")

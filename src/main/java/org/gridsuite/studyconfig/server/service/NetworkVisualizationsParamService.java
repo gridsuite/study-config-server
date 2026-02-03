@@ -95,6 +95,6 @@ public class NetworkVisualizationsParamService {
     }
 
     private ResponseStatusException notFoundException(UUID id) {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "NetworkVisualizationParam not found with id: " + id);
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "NetworkVisualizationParam not found with columnId: " + id);
     }
 }
