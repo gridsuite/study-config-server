@@ -38,7 +38,7 @@ public record SpreadsheetColumnInfos(
     @Schema(description = "Column dependencies")
     String dependencies,
 
-    @Schema(description = "Column columnId")
+    @Schema(description = "Column id")
     String id,
 
     @Schema(description = "Column visibility", defaultValue = "true")

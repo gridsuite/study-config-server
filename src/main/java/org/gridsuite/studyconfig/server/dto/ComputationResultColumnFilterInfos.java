@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "ComputationResultColumnFilterInfos", description = "Computation Result Column filter infos")
 public record ComputationResultColumnFilterInfos(
 
-    @Schema(description = "Column columnId")
+    @Schema(description = "Column id")
     String columnId,
 
     @Schema(description = "column filter infos")

@@ -42,8 +42,8 @@ public class SpreadsheetConfigService {
     @Value("classpath:default-spreadsheet-config-collection.json")
     private Resource defaultSpreadsheetConfigCollectionResource;
 
-    private static final String SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND = "SpreadsheetConfigCollection not found with columnId: ";
-    private static final String COLUMN_NOT_FOUND = "Column not found with columnId: ";
+    private static final String SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND = "SpreadsheetConfigCollection not found with id: ";
+    private static final String COLUMN_NOT_FOUND = "Column not found with id: ";
 
     @Transactional
     public UUID createSpreadsheetConfig(SpreadsheetConfigInfos dto) {
@@ -153,7 +153,7 @@ public class SpreadsheetConfigService {
     }
 
     private ResponseStatusException notFoundException(UUID id) {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "SpreadsheetConfig not found with columnId: " + id);
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "SpreadsheetConfig not found with id: " + id);
     }
 
     public UUID createSpreadsheetConfigCollection(SpreadsheetConfigCollectionInfos dto) {

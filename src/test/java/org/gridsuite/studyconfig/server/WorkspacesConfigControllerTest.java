@@ -57,7 +57,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
     }
 
     private String getPanelsPath() {
-        return getWorkspacesConfigBasePath() + "/{columnId}/workspaces/{workspaceId}/panels";
+        return getWorkspacesConfigBasePath() + "/{id}/workspaces/{workspaceId}/panels";
     }
 
     private String getNadConfigPath() {

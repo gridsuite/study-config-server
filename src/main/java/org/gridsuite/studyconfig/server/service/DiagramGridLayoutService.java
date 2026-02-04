@@ -29,7 +29,7 @@ public class DiagramGridLayoutService {
     public DiagramGridLayout getByDiagramGridLayoutUuid(UUID diagramGridLayoutUuid) {
         DiagramGridLayoutEntity entity = diagramGridLayoutRepository
                 .findById(diagramGridLayoutUuid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with columnId: " + diagramGridLayoutUuid));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with id: " + diagramGridLayoutUuid));
 
         return DiagramGridLayoutMapper.toDto(entity);
     }
@@ -48,7 +48,7 @@ public class DiagramGridLayoutService {
 
     @Transactional
     public void updateDiagramGridLayout(UUID diagramGridLayoutUuid, DiagramGridLayout diagramGridLayout) {
-        DiagramGridLayoutEntity diagramGridLayoutEntity = diagramGridLayoutRepository.findById(diagramGridLayoutUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with columnId: " + diagramGridLayoutUuid));
+        DiagramGridLayoutEntity diagramGridLayoutEntity = diagramGridLayoutRepository.findById(diagramGridLayoutUuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Diagram grid layout not found with id: " + diagramGridLayoutUuid));
 
         diagramGridLayoutEntity.replaceAllDiagramLayouts(diagramGridLayout.getDiagramLayouts().stream()
                 .map(DiagramGridLayoutMapper::toDiagramLayoutEntity)

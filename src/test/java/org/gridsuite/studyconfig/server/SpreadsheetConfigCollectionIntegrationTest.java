@@ -62,7 +62,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(createdCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.columnId")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToCreate);
         assertThat(createdCollection.id()).isNotNull();
@@ -82,7 +82,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(createdCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.columnId", "spreadsheetConfigs.globalFilters.uuid")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
                 .ignoringExpectedNullFields()
                 .isEqualTo(collectionToCreate);
 
@@ -98,7 +98,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(createdCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.columnId")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToCreate);
         assertThat(createdCollection.id()).isNotNull();
@@ -114,7 +114,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(receivedCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.columnId")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToRead);
         assertThat(receivedCollection.id()).isEqualTo(collectionUuid);
@@ -139,7 +139,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(retrievedCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.columnId")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
             .ignoringExpectedNullFields()
             .isEqualTo(updatedCollection);
     }
@@ -224,7 +224,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         SpreadsheetConfigCollectionInfos duplicatedCollection = getSpreadsheetConfigCollection(duplicatedCollectionUuid);
         assertThat(duplicatedCollection)
             .usingRecursiveComparison()
-            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.columnId", "spreadsheetConfigs.globalFilters.uuid")
+            .ignoringFields("spreadsheetConfigs.columns.uuid", "id", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
             .ignoringExpectedNullFields()
             .isEqualTo(collectionToCreate);
         assertThat(duplicatedCollection.id()).isNotEqualTo(collectionUuid);
@@ -250,7 +250,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         // dont compare aliases, merged collection aliases are computed
         assertThat(mergedCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("id", "nodeAliases", "spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.columnId")
+                .ignoringFields("id", "nodeAliases", "spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id")
                 .ignoringExpectedNullFields()
                 .isEqualTo(sourceCollection);
 
@@ -441,7 +441,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     private List<SpreadsheetConfigInfos> createSpreadsheetConfigsWithFilters() {
         List<SpreadsheetColumnInfos> columnsConfig1 = Arrays.asList(
-                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"columnId\"]", "id", true,
+                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id", true,
                         "text", "equals", "test-value", null),
                 new SpreadsheetColumnInfos(null, "name", ColumnType.TEXT, null, "name", "[\"name\"]", "name", true,
                         "text", "contains", "name-value", null),
@@ -457,7 +457,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<SpreadsheetColumnInfos> columnsConfig2 = Arrays.asList(
-                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"columnId\"]", "id", true,
+                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id", true,
                         "text", "contains", "other-value", null),
                 new SpreadsheetColumnInfos(null, "type", ColumnType.ENUM, null, "type", "[\"type\"]", "type", true,
                         null, null, null, null),
@@ -492,7 +492,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     private List<SpreadsheetConfigInfos> createUpdatedSpreadsheetConfigsWithFilters() {
         List<SpreadsheetColumnInfos> columnsConfig1 = Arrays.asList(
-                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"columnId\"]", "id", true,
+                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id", true,
                         "text", "startsWith", "new-prefix", null),
                 new SpreadsheetColumnInfos(null, "updated", ColumnType.TEXT, null, "updated", "[\"updated\"]", "updated", true,
                         null, null, null, null)
@@ -505,7 +505,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<SpreadsheetColumnInfos> columnsConfig2 = Arrays.asList(
-                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"columnId\"]", "id", true,
+                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id", true,
                         "text", "endsWith", "suffix", null),
                 new SpreadsheetColumnInfos(null, "other", ColumnType.NUMBER, 2, "other", "[\"other\"]", "other", true,
                         "number", "between", "10,20", null)
@@ -516,7 +516,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         );
 
         List<SpreadsheetColumnInfos> columnsConfig3 = Arrays.asList(
-                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"columnId\"]", "id", true,
+                new SpreadsheetColumnInfos(null, "id", ColumnType.TEXT, null, "id", "[\"id\"]", "id", true,
                         "text", "contains", "middle", null),
                 new SpreadsheetColumnInfos(null, "third", ColumnType.BOOLEAN, null, "third", "[\"third\"]", "third", true,
                         "boolean", "equals", "true", null)

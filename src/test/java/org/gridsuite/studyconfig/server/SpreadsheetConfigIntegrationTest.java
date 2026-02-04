@@ -504,7 +504,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(renamedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("name", "columns.uuid", "id", "columns.columnId")
+                .ignoringFields("name", "columns.uuid", "id", "columns.id")
                 .isEqualTo(configToRename);
     }
 

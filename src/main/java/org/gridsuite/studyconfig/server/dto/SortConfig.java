@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Sort configuration")
 public record SortConfig(
-    @Schema(description = "column columnId")
+    @Schema(description = "column id")
     String colId,
 
     @Schema(description = "Sort direction")
