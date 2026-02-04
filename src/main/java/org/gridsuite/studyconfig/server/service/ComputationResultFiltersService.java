@@ -51,8 +51,8 @@ public class ComputationResultFiltersService {
                 .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
     }
 
-    private FilterTypeEntity findComputationType(FiltersEntity root, String type) {
-        return root.getComputationResultFilter().stream()
+    private FilterTypeEntity findComputationType(FiltersEntity filtersEntity, String type) {
+        return filtersEntity.getComputationResultFilter().stream()
                 .filter(t -> t.getComputationType().equals(type))
                 .findFirst()
                 .orElse(null);
@@ -66,8 +66,8 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional(readOnly = true)
-    public List<ComputationResultColumnFilterInfos> getComputingResultColumnFilters(UUID rootId, String computationType, String computationSubType) {
-        FiltersEntity rootEntity = getRootEntity(rootId);
+    public List<ComputationResultColumnFilterInfos> getComputingResultColumnFilters(UUID computationResultFiltersId, String computationType, String computationSubType) {
+        FiltersEntity rootEntity = getRootEntity(computationResultFiltersId);
         FilterTypeEntity typeEntity = findComputationType(rootEntity, computationType);
         if (typeEntity == null) {
             return List.of();
@@ -80,8 +80,8 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional(readOnly = true)
-    public List<GlobalFilterInfos> getComputingResultGlobalFilters(UUID rootId, String computationType) {
-        FiltersEntity rootEntity = getRootEntity(rootId);
+    public List<GlobalFilterInfos> getComputingResultGlobalFilters(UUID computationResultFiltersId, String computationType) {
+        FiltersEntity rootEntity = getRootEntity(computationResultFiltersId);
         FilterTypeEntity typeEntity = findComputationType(rootEntity, computationType);
         if (typeEntity == null) {
             return List.of();
@@ -90,9 +90,9 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void setGlobalFiltersForComputationResult(UUID rootId, String computationType, List<GlobalFilterInfos> globalFilters) {
-        FiltersEntity root = filtersRepository.findById(rootId)
-                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
+    public void setGlobalFiltersForComputationResult(UUID computationResultFiltersId, String computationType, List<GlobalFilterInfos> globalFilters) {
+        FiltersEntity root = filtersRepository.findById(computationResultFiltersId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + computationResultFiltersId));
         FilterTypeEntity typeEntity = root.getComputationResultFilter().stream()
                 .filter(type -> computationType.equals(type.getComputationType()))
                 .findFirst()
@@ -112,9 +112,9 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void updateColumn(UUID rootId, String computationType, String computationSubType, ComputationResultColumnFilterInfos columns) {
-        FiltersEntity root = filtersRepository.findById(rootId)
-                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + rootId));
+    public void updateColumn(UUID computationResultFiltersId, String computationType, String computationSubType, ComputationResultColumnFilterInfos columns) {
+        FiltersEntity root = filtersRepository.findById(computationResultFiltersId)
+                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + computationResultFiltersId));
         FilterTypeEntity typeEntity = findOrCreateComputationType(root, computationType);
         if (typeEntity.getUuid() == null) {
             filterTypeRepository.save(typeEntity);
@@ -129,14 +129,14 @@ public class ComputationResultFiltersService {
         filtersRepository.save(root);
     }
 
-    private FilterTypeEntity findOrCreateComputationType(FiltersEntity root, String computationType) {
-        return root.getComputationResultFilter().stream()
+    private FilterTypeEntity findOrCreateComputationType(FiltersEntity filtersEntity, String computationType) {
+        return filtersEntity.getComputationResultFilter().stream()
                 .filter(type -> type.getComputationType().equals(computationType))
                 .findFirst()
                 .orElseGet(() -> {
                     FilterTypeEntity newType = new FilterTypeEntity();
                     newType.setComputationType(computationType);
-                    root.getComputationResultFilter().add(newType);
+                    filtersEntity.getComputationResultFilter().add(newType);
                     return newType;
                 });
     }
