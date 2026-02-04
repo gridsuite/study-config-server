@@ -322,9 +322,9 @@ public class SpreadsheetConfigService {
         columnEntity.setId(dto.id());
         var infos = dto.columnFilterInfos();
         if (infos != null) {
-            ColumnFilter filter = columnEntity.getColumnFilter();
+            ColumnFilterEntity filter = columnEntity.getColumnFilter();
             if (filter == null) {
-                filter = new ColumnFilter();
+                filter = new ColumnFilterEntity();
                 columnEntity.setColumnFilter(filter);
             }
             filter.setFilterDataType(infos.filterDataType());

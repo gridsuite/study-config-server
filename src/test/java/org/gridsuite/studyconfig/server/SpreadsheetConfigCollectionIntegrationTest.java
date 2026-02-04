@@ -173,7 +173,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         assertThat(retrievedCollection)
                 .usingRecursiveComparison()
-                .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.columnId", "spreadsheetConfigs.globalFilters.uuid")
+                .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
                 .ignoringExpectedNullFields()
                 .isEqualTo(updatedCollection);
     }

@@ -21,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ColumnFilter {
+public class ColumnFilterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,8 +47,8 @@ public class ColumnFilter {
         this.filterValue = null;
     }
 
-    public ColumnFilter copy() {
-        return ColumnFilter.builder()
+    public ColumnFilterEntity copy() {
+        return ColumnFilterEntity.builder()
                 .filterDataType(this.getFilterDataType())
                 .filterType(this.getFilterType())
                 .filterValue(this.getFilterValue())

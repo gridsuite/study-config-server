@@ -4,10 +4,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.entities;
+package org.gridsuite.studyconfig.server.entities.computationresult;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ComputationResultColumnFilterEntity {
+public class ColumnEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +33,6 @@ public class ComputationResultColumnFilterEntity {
     private String computationColumnId;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "computationResult_columnFilter_id", referencedColumnName = "uuid",
-            foreignKey = @ForeignKey(name = "computationResult_columnFilter_fk"))
-    private ColumnFilter columnFilter;
+    @JoinColumn(name = "computationResult_columnFilter_id", referencedColumnName = "uuid", foreignKey = @ForeignKey(name = "computationResult_columnFilter_fk"))
+    private ColumnFilterEntity columnFilter;
 }

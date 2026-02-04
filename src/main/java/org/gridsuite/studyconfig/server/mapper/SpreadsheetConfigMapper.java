@@ -9,7 +9,7 @@ package org.gridsuite.studyconfig.server.mapper;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
-import org.gridsuite.studyconfig.server.entities.ColumnFilter;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
@@ -71,7 +71,7 @@ public final class SpreadsheetConfigMapper {
     }
 
     public static SpreadsheetColumnInfos toColumnDto(SpreadsheetColumnEntity entity) {
-        ColumnFilter filter = entity.getColumnFilter();
+        ColumnFilterEntity filter = entity.getColumnFilter();
         return new SpreadsheetColumnInfos(
                 entity.getUuid(),
                 entity.getName(),
@@ -97,7 +97,7 @@ public final class SpreadsheetConfigMapper {
                 .dependencies(dto.dependencies())
                 .id(dto.id())
                 .visible(dto.visible())
-                .columnFilter(dto.columnFilterInfos() != null ? ColumnFilter.builder()
+                .columnFilter(dto.columnFilterInfos() != null ? ColumnFilterEntity.builder()
                         .filterDataType(dto.columnFilterInfos().filterDataType())
                         .filterType(dto.columnFilterInfos().filterType())
                         .filterValue(dto.columnFilterInfos().filterValue())

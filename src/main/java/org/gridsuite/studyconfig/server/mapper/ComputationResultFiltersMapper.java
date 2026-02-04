@@ -7,7 +7,9 @@
 package org.gridsuite.studyconfig.server.mapper;
 
 import org.gridsuite.studyconfig.server.dto.*;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.entities.*;
+import org.gridsuite.studyconfig.server.entities.computationresult.ColumnEntity;
 
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
@@ -16,17 +18,17 @@ public final class ComputationResultFiltersMapper {
 
     private ComputationResultFiltersMapper() { }
 
-    public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ComputationResultColumnFilterEntity entity) {
-        ColumnFilter filter = entity.getColumnFilter();
+    public static ComputationResultColumnFilterInfos toComputationColumnFilterInfos(ColumnEntity entity) {
+        ColumnFilterEntity filter = entity.getColumnFilter();
         return new ComputationResultColumnFilterInfos(entity.getComputationColumnId(), filter != null ?
                 new ColumnFilterInfos(filter.getFilterDataType(), filter.getFilterType(), filter.getFilterValue(), filter.getFilterTolerance())
                 : null);
     }
 
-    public static ComputationResultColumnFilterEntity toComputationColumnFilterEntity(ComputationResultColumnFilterInfos columnFilterInfos) {
-        return ComputationResultColumnFilterEntity.builder()
+    public static ColumnEntity toComputationColumnFilterEntity(ComputationResultColumnFilterInfos columnFilterInfos) {
+        return ColumnEntity.builder()
                 .computationColumnId(columnFilterInfos.columnId())
-                .columnFilter(columnFilterInfos.columnFilterInfos() != null ? ColumnFilter.builder()
+                .columnFilter(columnFilterInfos.columnFilterInfos() != null ? ColumnFilterEntity.builder()
                         .filterDataType(columnFilterInfos.columnFilterInfos().filterDataType())
                         .filterType(columnFilterInfos.columnFilterInfos().filterType())
                         .filterValue(columnFilterInfos.columnFilterInfos().filterValue())

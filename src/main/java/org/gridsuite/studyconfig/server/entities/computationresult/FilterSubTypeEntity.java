@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package org.gridsuite.studyconfig.server.entities;
+package org.gridsuite.studyconfig.server.entities.computationresult;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,15 +20,18 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "computation_result_filters")
-public class ComputationResultFiltersEntity {
+@Table(name = "computation_sub_type_filters")
+public class FilterSubTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private UUID id;
+    @Column(name = "uuid")
+    private UUID uuid;
+
+    @Column(name = "computation_sub_type", nullable = false)
+    private String computationSubType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_filters_id", foreignKey = @ForeignKey(name = "fk_computation_result_filters_type"))
+    @JoinColumn(name = "computation_result_id", foreignKey = @ForeignKey(name = "fk_computation_result_column"))
     @Builder.Default
-    private List<ComputationTypeFiltersEntity> computationResultFilter = new ArrayList<>();
+    private List<ColumnEntity> columns = new ArrayList<>();
 }

@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.*;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

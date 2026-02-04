@@ -13,7 +13,7 @@ import org.gridsuite.studyconfig.server.dto.SpreadsheetColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
-import org.gridsuite.studyconfig.server.entities.ColumnFilter;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
@@ -44,7 +44,7 @@ public class DtoConverterTest implements WithAssertions {
                                 .formula("A+B")
                                 .id("id1")
                                 .visible(false)
-                                .columnFilter(ColumnFilter.builder()
+                                .columnFilter(ColumnFilterEntity.builder()
                                         .filterDataType("text")
                                         .filterType("contains")
                                         .filterValue("test")
@@ -163,7 +163,7 @@ public class DtoConverterTest implements WithAssertions {
                     .name("TestColumn")
                     .formula("A+B+C")
                     .id("idTest")
-                    .columnFilter(ColumnFilter.builder()
+                    .columnFilter(ColumnFilterEntity.builder()
                     .filterDataType("text")
                     .filterType("startsWith")
                     .filterValue("prefix")

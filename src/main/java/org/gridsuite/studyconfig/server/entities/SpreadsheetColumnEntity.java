@@ -55,7 +55,7 @@ public class SpreadsheetColumnEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "columnEntity_columnFilter_id", referencedColumnName = "uuid",
             foreignKey = @ForeignKey(name = "columnEntity_columnFilter_fk"))
-    private ColumnFilter columnFilter;
+    private ColumnFilterEntity columnFilter;
 
     public SpreadsheetColumnEntity copy() {
         return SpreadsheetColumnEntity.builder()

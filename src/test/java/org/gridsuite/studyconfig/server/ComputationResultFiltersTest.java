@@ -9,7 +9,8 @@ package org.gridsuite.studyconfig.server;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.repositories.ComputationResultFiltersRepository;
+import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
+import org.gridsuite.studyconfig.server.repositories.computationresult.FiltersRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ class ComputationResultFiltersTest {
     private ObjectMapper mapper;
 
     @Autowired
-    private ComputationResultFiltersRepository computationResultFiltersRepository;
+    private FiltersRepository computationResultFiltersRepository;
 
     @AfterEach
     void tearDown() {
