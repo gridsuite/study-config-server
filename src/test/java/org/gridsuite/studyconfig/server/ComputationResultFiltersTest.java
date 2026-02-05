@@ -64,30 +64,30 @@ class ComputationResultFiltersTest {
         MvcResult result = mockMvc.perform(post(BASE_URI + "/default"))
                 .andExpect(status().isCreated())
                 .andReturn();
-        UUID rootId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
-        assertThat(rootId).isNotNull();
-        assertThat(computationResultFiltersRepository.findById(rootId)).isPresent();
+        UUID computationResultFiltersId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
+        assertThat(computationResultFiltersId).isNotNull();
+        assertThat(computationResultFiltersRepository.findById(computationResultFiltersId)).isPresent();
     }
 
     @Test
     void testGetComputationResultFilters() throws Exception {
         MvcResult result = mockMvc.perform(post(BASE_URI + "/default")).andReturn();
-        UUID rootId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
-        mockMvc.perform(post(BASE_URI + "/" + rootId + "/" + "LoadFlow" + "/global-filters")
+        UUID computationResultFiltersId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
+        mockMvc.perform(post(BASE_URI + "/" + computationResultFiltersId + "/" + "LoadFlow" + "/global-filters")
                         .content(mapper.writeValueAsString(createGlobalFilters()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(put(BASE_URI + "/" + rootId + "/" + "PccMin" + "/" + "pccMinResults" + "/columns")
+        mockMvc.perform(put(BASE_URI + "/" + computationResultFiltersId + "/" + "PccMin" + "/" + "pccMinResults" + "/columns")
                         .content(mapper.writeValueAsString(createColumnFilter()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow/loadflowCurrentLimitViolation")).andExpect(status().isOk()).andReturn();
+        result = mockMvc.perform(get(BASE_URI + "/" + computationResultFiltersId + "/LoadFlow/loadflowCurrentLimitViolation")).andExpect(status().isOk()).andReturn();
         List<ComputationResultColumnFilterInfos> infosLoadFlowColumn = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
         assertThat(infosLoadFlowColumn).isEmpty();
 
-        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/PccMin/pccMinResults")).andExpect(status().isOk()).andReturn();
+        result = mockMvc.perform(get(BASE_URI + "/" + computationResultFiltersId + "/PccMin/pccMinResults")).andExpect(status().isOk()).andReturn();
         List<ComputationResultColumnFilterInfos> infosPccMinColumn = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
         assertThat(infosPccMinColumn).hasSize(1);
         ComputationResultColumnFilterInfos info = infosPccMinColumn.getFirst();
@@ -96,7 +96,7 @@ class ComputationResultFiltersTest {
         assertThat(info.columnFilterInfos().filterType()).isEqualTo("greaterThan");
         assertThat(info.columnFilterInfos().filterDataType()).isEqualTo("number");
 
-        result = mockMvc.perform(get(BASE_URI + "/" + rootId + "/LoadFlow")).andExpect(status().isOk()).andReturn();
+        result = mockMvc.perform(get(BASE_URI + "/" + computationResultFiltersId + "/LoadFlow")).andExpect(status().isOk()).andReturn();
         List<GlobalFilterInfos> globalFilterInfos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
         assertThat(globalFilterInfos).hasSize(2);
         GlobalFilterInfos globalFilterInfo = globalFilterInfos.getFirst();
