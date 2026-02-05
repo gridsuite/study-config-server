@@ -70,7 +70,7 @@ class ComputationResultFiltersTest {
     }
 
     @Test
-    void testGetComputationResultFilters() throws Exception {
+    void testComputationResultFilters() throws Exception {
         MvcResult result = mockMvc.perform(post(BASE_URI + "/default")).andReturn();
         UUID computationResultFiltersId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
         mockMvc.perform(post(BASE_URI + "/" + computationResultFiltersId + "/" + "LoadFlow" + "/global-filters")

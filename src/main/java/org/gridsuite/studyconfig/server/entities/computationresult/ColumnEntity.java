@@ -16,7 +16,7 @@ import java.util.UUID;
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @Entity
-@Table(name = "computation_column")
+@Table(name = "computation_column", indexes = @Index(name = "idx_computation_sub_type_filters_id", columnList = "computation_sub_type_filters_id"))
 @Getter
 @Setter
 @NoArgsConstructor

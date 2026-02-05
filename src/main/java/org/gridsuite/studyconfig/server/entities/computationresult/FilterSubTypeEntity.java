@@ -20,7 +20,7 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "computation_sub_type_filters")
+@Table(name = "computation_sub_type_filters", indexes = @Index(name = "idx_computation_type_computation_sub_type_id", columnList = "computation_type_computation_sub_type_id"))
 public class FilterSubTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +31,7 @@ public class FilterSubTypeEntity {
     private String computationSubType;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_result_id", foreignKey = @ForeignKey(name = "fk_computation_result_column"))
+    @JoinColumn(name = "computation_sub_type_filters_id", foreignKey = @ForeignKey(name = "fk_computation_sub_type_filters_id"))
     @Builder.Default
     private List<ColumnEntity> columns = new ArrayList<>();
 }

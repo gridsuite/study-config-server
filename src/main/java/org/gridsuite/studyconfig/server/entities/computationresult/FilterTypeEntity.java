@@ -39,7 +39,7 @@ public class FilterTypeEntity {
     private List<GlobalFilterEntity> globalFilters = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "computation_sub_type_filters_id", foreignKey = @ForeignKey(name = "fk_computation_sub_type_column_filters"))
+    @JoinColumn(name = "computation_type_computation_sub_type_id", foreignKey = @ForeignKey(name = "fk_computation_type_computation_sub_type_id"))
     @Builder.Default
     private List<FilterSubTypeEntity> computationSubTypes = new ArrayList<>();
 }
