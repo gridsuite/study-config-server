@@ -124,8 +124,7 @@ public class ComputationResultFiltersService {
 
         // DELETE case (columnFilter is null)
         var filterInfos = columns.columnFilterInfos();
-        if (filterInfos.filterValue() == null && filterInfos.filterTolerance() == null &&
-                filterInfos.filterType() == null && filterInfos.filterDataType() == null) {
+        if (filterInfos == null) {
             String columnId = columns.columnId();
             subTypeEntity.getColumns().removeIf(col -> columnId != null && columnId.equals(col.getComputationColumnId()));
             filtersRepository.save(filtersEntity);
