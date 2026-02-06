@@ -23,7 +23,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "computation_type_filters")
+@Table(name = "computation_type_filters", indexes = @Index(name = "idx_computation_result_filters_id", columnList = "computation_result_filters_id"))
 public class FilterTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
