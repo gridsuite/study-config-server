@@ -8,18 +8,18 @@ package org.gridsuite.studyconfig.server.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
+import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.computationresult.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.computationresult.FilterSubTypeEntity;
 import org.gridsuite.studyconfig.server.entities.computationresult.FilterTypeEntity;
 import org.gridsuite.studyconfig.server.entities.computationresult.FiltersEntity;
-import org.gridsuite.studyconfig.server.entities.computationresult.FilterSubTypeEntity;
 import org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
-import org.gridsuite.studyconfig.server.repositories.computationresult.FiltersRepository;
 import org.gridsuite.studyconfig.server.repositories.computationresult.FilterSubTypeRepository;
 import org.gridsuite.studyconfig.server.repositories.computationresult.FilterTypeRepository;
+import org.gridsuite.studyconfig.server.repositories.computationresult.FiltersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,8 +91,7 @@ public class ComputationResultFiltersService {
 
     @Transactional
     public void setGlobalFiltersForComputationResult(UUID computationResultFiltersId, String computationType, List<GlobalFilterInfos> globalFilters) {
-        FiltersEntity filtersEntity = filtersRepository.findById(computationResultFiltersId)
-                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + computationResultFiltersId));
+        FiltersEntity filtersEntity = getFiltersEntity(computationResultFiltersId);
         FilterTypeEntity typeEntity = filtersEntity.getComputationResultFilter().stream()
                 .filter(type -> computationType.equals(type.getComputationType()))
                 .findFirst()
@@ -113,8 +112,7 @@ public class ComputationResultFiltersService {
 
     @Transactional
     public void updateColumn(UUID computationResultFiltersId, String computationType, String computationSubType, ComputationResultColumnFilterInfos columns) {
-        FiltersEntity filtersEntity = filtersRepository.findById(computationResultFiltersId)
-                .orElseThrow(() -> new EntityNotFoundException(COMPUTATION_FILTERS_NOT_FOUND + computationResultFiltersId));
+        FiltersEntity filtersEntity = getFiltersEntity(computationResultFiltersId);
         FilterTypeEntity typeEntity = findOrCreateComputationType(filtersEntity, computationType);
         if (typeEntity.getUuid() == null) {
             filterTypeRepository.save(typeEntity);
@@ -123,8 +121,20 @@ public class ComputationResultFiltersService {
                 .filter(sub -> sub.getComputationSubType().equals(computationSubType))
                 .findFirst()
                 .orElseGet(() -> createAndAttachSubType(typeEntity, computationSubType));
+
+        // DELETE case (columnFilter is null)
+        var filterInfos = columns.columnFilterInfos();
+        if (filterInfos.filterValue() == null && filterInfos.filterTolerance() == null &&
+                filterInfos.filterType() == null && filterInfos.filterDataType() == null) {
+            String columnId = columns.columnId();
+            subTypeEntity.getColumns().removeIf(col -> columnId != null && columnId.equals(col.getComputationColumnId()));
+            filtersRepository.save(filtersEntity);
+            return;
+        }
+        // UPDATE/INSERT case
         ColumnEntity updatedColumn = toComputationColumnFilterEntity(columns);
-        subTypeEntity.getColumns().removeIf(col -> col.getComputationColumnId() != null && col.getComputationColumnId().equals(updatedColumn.getComputationColumnId()));
+        String updatedColumnId = updatedColumn.getComputationColumnId();
+        subTypeEntity.getColumns().removeIf(col -> updatedColumnId != null && updatedColumnId.equals(col.getComputationColumnId()));
         subTypeEntity.getColumns().add(updatedColumn);
         filtersRepository.save(filtersEntity);
     }
