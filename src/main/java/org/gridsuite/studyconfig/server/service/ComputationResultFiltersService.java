@@ -111,7 +111,7 @@ public class ComputationResultFiltersService {
     }
 
     @Transactional
-    public void updateColumn(UUID computationResultFiltersId, String computationType, String computationSubType, ComputationResultColumnFilterInfos columns) {
+    public void updateColumn(UUID computationResultFiltersId, String computationType, String computationSubType, ComputationResultColumnFilterInfos columnFilter) {
         FiltersEntity filtersEntity = getFiltersEntity(computationResultFiltersId);
         FilterTypeEntity typeEntity = findOrCreateComputationType(filtersEntity, computationType);
         if (typeEntity.getUuid() == null) {
@@ -123,15 +123,15 @@ public class ComputationResultFiltersService {
                 .orElseGet(() -> createAndAttachSubType(typeEntity, computationSubType));
 
         // DELETE case (columnFilter is null)
-        var filterInfos = columns.columnFilterInfos();
+        var filterInfos = columnFilter.columnFilterInfos();
         if (filterInfos == null) {
-            String columnId = columns.columnId();
-            subTypeEntity.getColumns().removeIf(col -> columnId != null && columnId.equals(col.getComputationColumnId()));
+            String columnId = columnFilter.columnId();
+            subTypeEntity.getColumns().removeIf(col -> columnId.equals(col.getComputationColumnId()));
             filtersRepository.save(filtersEntity);
             return;
         }
         // UPDATE/INSERT case
-        ColumnEntity updatedColumn = toComputationColumnFilterEntity(columns);
+        ColumnEntity updatedColumn = toComputationColumnFilterEntity(columnFilter);
         String updatedColumnId = updatedColumn.getComputationColumnId();
         subTypeEntity.getColumns().removeIf(col -> updatedColumnId != null && updatedColumnId.equals(col.getComputationColumnId()));
         subTypeEntity.getColumns().add(updatedColumn);
