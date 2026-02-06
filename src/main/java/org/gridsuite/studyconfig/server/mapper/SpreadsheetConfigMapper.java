@@ -8,7 +8,8 @@ package org.gridsuite.studyconfig.server.mapper;
 
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
-import org.gridsuite.studyconfig.server.entities.ColumnEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
+import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 
@@ -69,8 +70,9 @@ public final class SpreadsheetConfigMapper {
         return entity;
     }
 
-    public static ColumnInfos toColumnDto(ColumnEntity entity) {
-        return new ColumnInfos(
+    public static SpreadsheetColumnInfos toColumnDto(SpreadsheetColumnEntity entity) {
+        ColumnFilterEntity filter = entity.getColumnFilter();
+        return new SpreadsheetColumnInfos(
                 entity.getUuid(),
                 entity.getName(),
                 entity.getType(),
@@ -78,27 +80,29 @@ public final class SpreadsheetConfigMapper {
                 entity.getFormula(),
                 entity.getDependencies(),
                 entity.getId(),
-                entity.getFilterDataType(),
-                entity.getFilterType(),
-                entity.getFilterValue(),
-                entity.getFilterTolerance(),
-                entity.isVisible()
+                entity.isVisible(),
+                filter != null ? filter.getFilterDataType() : null,
+                filter != null ? filter.getFilterType() : null,
+                filter != null ? filter.getFilterValue() : null,
+                filter != null ? filter.getFilterTolerance() : null
                 );
     }
 
-    public static ColumnEntity toColumnEntity(ColumnInfos dto) {
-        return ColumnEntity.builder()
+    public static SpreadsheetColumnEntity toColumnEntity(SpreadsheetColumnInfos dto) {
+        return SpreadsheetColumnEntity.builder()
                 .name(dto.name())
                 .type(dto.type())
                 .precision(dto.precision())
                 .formula(dto.formula())
                 .dependencies(dto.dependencies())
                 .id(dto.id())
-                .filterDataType(dto.filterDataType())
-                .filterType(dto.filterType())
-                .filterValue(dto.filterValue())
-                .filterTolerance(dto.filterTolerance())
                 .visible(dto.visible())
+                .columnFilter(dto.columnFilterInfos() != null ? ColumnFilterEntity.builder()
+                        .filterDataType(dto.columnFilterInfos().filterDataType())
+                        .filterType(dto.columnFilterInfos().filterType())
+                        .filterValue(dto.columnFilterInfos().filterValue())
+                        .filterTolerance(dto.columnFilterInfos().filterTolerance())
+                        .build() : null)
                 .build();
     }
 

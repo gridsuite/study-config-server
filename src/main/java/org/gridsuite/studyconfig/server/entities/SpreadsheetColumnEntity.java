@@ -6,12 +6,11 @@
  */
 package org.gridsuite.studyconfig.server.entities;
 
-import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.constants.ColumnType;
-
 import jakarta.persistence.*;
 import lombok.*;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+
+import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
@@ -23,7 +22,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class ColumnEntity {
+public class SpreadsheetColumnEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,42 +48,25 @@ public class ColumnEntity {
     @Column(name = "columnId", nullable = false, columnDefinition = "varchar(255)")
     private String id;
 
-    @Column(name = "filter_data_type", columnDefinition = "varchar(255)")
-    private String filterDataType;
-
-    @Column(name = "filter_type", columnDefinition = "varchar(255)")
-    private String filterType;
-
-    @Column(name = "filter_value", columnDefinition = "CLOB")
-    private String filterValue;
-
-    @Column(name = "filter_tolerance")
-    private Double filterTolerance;
-
-    @Column(name = "visible", nullable = false)
+    @Column(name = "visible", nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private boolean visible = true;
 
-    public void resetFilter() {
-        this.filterDataType = null;
-        this.filterType = null;
-        this.filterTolerance = null;
-        this.filterValue = null;
-    }
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "columnEntity_columnFilter_id", referencedColumnName = "uuid",
+            foreignKey = @ForeignKey(name = "columnEntity_columnFilter_fk"))
+    private ColumnFilterEntity columnFilter;
 
-    public ColumnEntity copy() {
-        return ColumnEntity.builder()
-            .name(getName())
-            .type(getType())
-            .precision(getPrecision())
-            .formula(getFormula())
-            .dependencies(getDependencies())
-            .id(getId())
-            .filterDataType(getFilterDataType())
-            .filterType(getFilterType())
-            .filterValue(getFilterValue())
-            .filterTolerance(getFilterTolerance())
-            .visible(isVisible())
-            .build();
+    public SpreadsheetColumnEntity copy() {
+        return SpreadsheetColumnEntity.builder()
+                .name(getName())
+                .type(getType())
+                .precision(getPrecision())
+                .formula(getFormula())
+                .dependencies(getDependencies())
+                .id(getId())
+                .columnFilter(this.columnFilter != null ? this.columnFilter.copy() : null)
+                .visible(isVisible())
+                .build();
     }
 }

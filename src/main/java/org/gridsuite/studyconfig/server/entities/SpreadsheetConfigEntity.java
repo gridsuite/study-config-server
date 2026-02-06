@@ -43,7 +43,7 @@ public class SpreadsheetConfigEntity {
     @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_spreadsheet_config_column"))
     @OrderColumn(name = "column_order")
     @Builder.Default
-    private List<ColumnEntity> columns = new ArrayList<>();
+    private List<SpreadsheetColumnEntity> columns = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "spreadsheet_config_id", foreignKey = @ForeignKey(name = "fk_global_filter_spreadsheet_config"))
@@ -63,6 +63,10 @@ public class SpreadsheetConfigEntity {
 
     public void resetFilters() {
         this.globalFilters.clear();
-        getColumns().forEach(ColumnEntity::resetFilter);
+        this.columns.forEach(column -> {
+            if (column.getColumnFilter() != null) {
+                column.getColumnFilter().resetFilter();
+            }
+        });
     }
 }
