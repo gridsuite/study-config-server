@@ -7,8 +7,8 @@
             <where>formula LIKE '%RegulationTypeText%'</where>
         </update>
         <update tableName="spreadsheet_column">
-            <column name="columnId" value="regulationTypeText" />
-            <where>columnId = 'RegulationTypeText'</where>
+            <column name="column_id" value="regulationTypeText" />
+            <where>column_id = 'RegulationTypeText'</where>
         </update>
     </changeSet>
 </databaseChangeLog>
