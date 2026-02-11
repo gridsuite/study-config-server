@@ -1062,9 +1062,9 @@
           "name": "Regulation type",
           "type": "ENUM",
           "precision": null,
-          "formula": "RegulationTypeText",
+          "formula": "regulationType",
           "dependencies": null,
-          "id": "RegulationTypeText"
+          "id": "regulationType"
         },
         {
           "name": "Regulated terminal",
