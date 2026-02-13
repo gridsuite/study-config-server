@@ -6,6 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
@@ -19,8 +20,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -398,7 +397,7 @@ public class SpreadsheetConfigService {
                 .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + columnId));
         SpreadsheetColumnEntity columnCopy = columnEntity.toBuilder().build();
         columnCopy.setUuid(null);
-        columnCopy.setColumnFilter(columnEntity.getColumnFilter().copy());
+        columnCopy.setColumnFilter(Optional.ofNullable(columnCopy.getColumnFilter()).map(ColumnFilterEntity::copy).orElse(null));
         Pair<String, String> idAndName = getDuplicateIdAndNameCandidate(entity, columnCopy.getId(), columnCopy.getName());
         columnCopy.setId(idAndName.getLeft());
         columnCopy.setName(idAndName.getRight());
