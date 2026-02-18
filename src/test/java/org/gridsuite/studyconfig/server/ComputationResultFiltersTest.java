@@ -51,8 +51,8 @@ class ComputationResultFiltersTest {
     }
 
     private List<GlobalFilterInfos> createGlobalFilters() {
-        return List.of(GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Filter 1").recent(false).build(),
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Filter 2").recent(false).build());
+        return List.of(GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 1").recent(false).build(),
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 2").recent(false).build());
     }
 
     private ComputationResultColumnFilterInfos createColumnFilter() {

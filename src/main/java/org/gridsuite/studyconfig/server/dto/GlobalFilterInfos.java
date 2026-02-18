@@ -21,10 +21,6 @@ import java.util.UUID;
 public record GlobalFilterInfos(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(description = "Global filter UUID")
-    UUID id,
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter ID")
     UUID uuid,
 
