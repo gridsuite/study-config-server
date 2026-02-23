@@ -273,10 +273,8 @@ public class DtoConverterTest implements WithAssertions {
 
         @Test
         void testConversionToEntityOfGlobalFilter() {
-            UUID uuid = UUID.randomUUID();
             UUID filterId = UUID.randomUUID();
             GlobalFilterInfos dto = GlobalFilterInfos.builder()
-                .id(uuid)
                 .uuid(filterId)
                 .filterType("country")
                 .label("TestGlobalFilter")
