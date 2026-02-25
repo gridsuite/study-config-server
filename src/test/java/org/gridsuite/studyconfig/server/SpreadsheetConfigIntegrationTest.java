@@ -70,7 +70,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(createdConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToCreate);
         assertThat(createdConfig.id()).isNotNull();
     }
@@ -97,7 +97,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(receivedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToRead);
         assertThat(receivedConfig.id()).isEqualTo(configUuid);
     }
@@ -170,7 +170,7 @@ class SpreadsheetConfigIntegrationTest {
 
         assertThat(retrievedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "columns.id", "globalFilters.id", "id")
+                .ignoringFields("columns.uuid", "columns.id", "id")
                 .isEqualTo(updatedConfig);
     }
 
@@ -219,7 +219,7 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetConfigInfos duplicatedConfig = getSpreadsheetConfig(duplicatedConfigUuid);
         assertThat(duplicatedConfig)
                 .usingRecursiveComparison()
-                .ignoringFields("columns.uuid", "id", "columns.id", "globalFilters.id")
+                .ignoringFields("columns.uuid", "id", "columns.id")
                 .isEqualTo(configToCreate);
         assertThat(duplicatedConfig.id()).isNotEqualTo(configUuid);
     }
@@ -570,7 +570,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // Create new filters to set
         List<GlobalFilterInfos> filtersToSet = List.of(
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Replacement Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Replacement Filter").recent(false).build()
         );
 
         // Call the endpoint to set the filters
@@ -614,7 +614,7 @@ class SpreadsheetConfigIntegrationTest {
     void testSetGlobalFiltersToNonExistentConfig() throws Exception {
         UUID nonExistentConfigId = UUID.randomUUID();
         List<GlobalFilterInfos> filtersToAdd = List.of(
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Test Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Test Filter").recent(false).build()
         );
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
@@ -666,14 +666,14 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<GlobalFilterInfos> createGlobalFilters() {
         return Arrays.asList(
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Global Filter 1").recent(false).build(),
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Global Filter 2").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 1").recent(false).build(),
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 2").recent(false).build()
         );
     }
 
     private List<GlobalFilterInfos> createUpdatedGlobalFilters() {
         return List.of(
-                GlobalFilterInfos.builder().id(UUID.randomUUID()).filterType("country").label("Updated Global Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Updated Global Filter").recent(false).build()
         );
     }
 
