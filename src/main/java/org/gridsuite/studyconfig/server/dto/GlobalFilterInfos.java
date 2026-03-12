@@ -55,8 +55,8 @@ public record GlobalFilterInfos(
     @Schema(description = "Voltage level filter maximum range value")
     Integer maxValue,
 
-    @Schema(description = "filter is removed")
-    boolean removed
+    @Schema(description = "filter is deleted")
+    boolean deleted
 
 ) {
 }
