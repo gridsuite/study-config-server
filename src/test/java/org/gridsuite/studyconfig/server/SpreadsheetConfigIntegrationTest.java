@@ -570,7 +570,7 @@ class SpreadsheetConfigIntegrationTest {
 
         // Create new filters to set
         List<GlobalFilterInfos> filtersToSet = List.of(
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Replacement Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Replacement Filter").build()
         );
 
         // Call the endpoint to set the filters
@@ -614,7 +614,7 @@ class SpreadsheetConfigIntegrationTest {
     void testSetGlobalFiltersToNonExistentConfig() throws Exception {
         UUID nonExistentConfigId = UUID.randomUUID();
         List<GlobalFilterInfos> filtersToAdd = List.of(
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Test Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Test Filter").build()
         );
 
         mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentConfigId + "/global-filters")
@@ -666,14 +666,14 @@ class SpreadsheetConfigIntegrationTest {
 
     private List<GlobalFilterInfos> createGlobalFilters() {
         return Arrays.asList(
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 1").recent(false).build(),
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 2").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 1").build(),
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Global Filter 2").build()
         );
     }
 
     private List<GlobalFilterInfos> createUpdatedGlobalFilters() {
         return List.of(
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Updated Global Filter").recent(false).build()
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Updated Global Filter").build()
         );
     }
 

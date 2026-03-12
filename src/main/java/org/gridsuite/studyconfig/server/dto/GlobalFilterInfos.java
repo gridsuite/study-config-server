@@ -36,9 +36,6 @@ public record GlobalFilterInfos(
     @Schema(description = "Filter label")
     String label,
 
-    @Schema(description = "Was filter recently applied")
-    boolean recent,
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Generic filter related equipment type")
     String equipmentType,
