@@ -40,8 +40,8 @@ public class GlobalFilterEntity {
     @Column(name = "label", nullable = false)
     private String label;
 
-    @Column(name = "recent", nullable = false, columnDefinition = "boolean default false")
-    private boolean recent;
+    @Column(name = "unselected_date")
+    private Double unselectedDate;
 
     @Column(name = "uuid")
     private UUID uuid;
@@ -65,7 +65,7 @@ public class GlobalFilterEntity {
             .label(getLabel())
             .uuid(getUuid())
             .equipmentType(getEquipmentType())
-            .recent(isRecent())
+            .unselectedDate(getUnselectedDate())
             .path(getPath())
             .minValue(getMinValue())
             .maxValue(getMaxValue())

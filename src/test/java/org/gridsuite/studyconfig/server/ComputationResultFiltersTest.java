@@ -51,8 +51,8 @@ class ComputationResultFiltersTest {
     }
 
     private List<GlobalFilterInfos> createGlobalFilters() {
-        return List.of(GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 1").recent(false).build(),
-                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 2").recent(false).build());
+        return List.of(GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 1").unselectedDate(1710340000.0).build(),
+                GlobalFilterInfos.builder().uuid(UUID.randomUUID()).filterType("country").label("Filter 2").unselectedDate(null).build());
     }
 
     private ComputationResultColumnFilterInfos createColumnFilter() {
@@ -102,7 +102,7 @@ class ComputationResultFiltersTest {
         GlobalFilterInfos globalFilterInfo = globalFilterInfos.getFirst();
         assertThat(globalFilterInfo.label()).isEqualTo("Filter 1");
         assertThat(globalFilterInfo.filterType()).isEqualTo("country");
-        assertThat(globalFilterInfo.recent()).isFalse();
+        assertThat(globalFilterInfo.unselectedDate()).isEqualTo(1710340000.0);
 
     }
 }
