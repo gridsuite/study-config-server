@@ -153,7 +153,7 @@ public class SpreadsheetConfigCollectionController {
     @DeleteMapping("/{id}/spreadsheet-configs/{configId}")
     @Operation(summary = "Remove a spreadsheet configuration from a collection",
             description = "Removes an existing spreadsheet configuration from a collection")
-    @ApiResponse(responseCode = "204", description = "Configuration deleted")
+    @ApiResponse(responseCode = "204", description = "Configuration removed")
     @ApiResponse(responseCode = "404", description = "Configuration collection or configuration not found")
     public ResponseEntity<Void> removeSpreadsheetConfigFromCollection(
             @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
