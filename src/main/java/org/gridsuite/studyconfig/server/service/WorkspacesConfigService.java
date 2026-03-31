@@ -79,6 +79,7 @@ public class WorkspacesConfigService {
     public List<PanelInfos> getPanels(UUID configId, UUID workspaceId, Set<UUID> panelIds) {
         WorkspaceEntity workspace = findWorkspace(configId, workspaceId);
         return workspace.getPanels().stream()
+            .filter(Objects::nonNull)
             .filter(p -> panelIds == null || panelIds.contains(p.getId()))
             .map(PanelEntity::toDto)
             .toList();
@@ -118,7 +119,7 @@ public class WorkspacesConfigService {
         if (deleteAll) {
             workspace.getPanels().clear();
         } else {
-            workspace.getPanels().removeIf(p -> panelIds.contains(p.getId()));
+            workspace.getPanels().removeIf(p -> p != null && panelIds.contains(p.getId()));
         }
     }
 
