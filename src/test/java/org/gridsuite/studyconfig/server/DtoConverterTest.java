@@ -111,7 +111,7 @@ public class DtoConverterTest implements WithAssertions {
                                     null, null, null, null)
                     ),
                     List.of(
-                            GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").recent(false).build()
+                            GlobalFilterInfos.builder().uuid(filterId).filterType("country").label("GlobalFilter1").unselectedDate(1710340000.0).build()
                     ),
                     List.of(),
                     null
@@ -278,7 +278,7 @@ public class DtoConverterTest implements WithAssertions {
                 .uuid(filterId)
                 .filterType("country")
                 .label("TestGlobalFilter")
-                .recent(false)
+                .unselectedDate(1710340000.0)
                 .minValue(5)
                 .maxValue(15)
                 .build();
