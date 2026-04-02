@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,6 +60,7 @@ public class WorkspaceEntity {
             getId(),
             getName(),
             getPanels().stream()
+                .filter(Objects::nonNull)
                 .map(PanelEntity::toDto)
                 .toList()
         );
@@ -66,12 +68,14 @@ public class WorkspaceEntity {
 
     public Optional<PanelEntity> getPanel(UUID uuid) {
         return panels.stream()
+            .filter(Objects::nonNull)
             .filter(p -> p.getId().equals(uuid))
             .findFirst();
     }
 
     public List<NADPanelEntity> getNadPanels() {
         return panels.stream()
+            .filter(Objects::nonNull)
             .filter(PanelEntity::isNad)
             .map(NADPanelEntity.class::cast)
             .toList();
@@ -89,6 +93,7 @@ public class WorkspaceEntity {
 
         // duplicate all panels and track ID changes
         List<PanelEntity> copiedPanels = this.panels.stream()
+            .filter(Objects::nonNull)
             .map(panel -> {
                 UUID oldId = panel.getId();
                 PanelEntity newPanel = panel.duplicate();
