@@ -117,6 +117,7 @@ public final class SpreadsheetConfigMapper {
                 .path(entity.getPath())
                 .minValue(entity.getMinValue())
                 .maxValue(entity.getMaxValue())
+                .deleted(entity.isDeleted())
                 .build();
 
     }
@@ -132,6 +133,7 @@ public final class SpreadsheetConfigMapper {
                 .path(dto.path())
                 .minValue(dto.minValue())
                 .maxValue(dto.maxValue())
+                .deleted(dto.deleted())
                 .build();
     }
 }
