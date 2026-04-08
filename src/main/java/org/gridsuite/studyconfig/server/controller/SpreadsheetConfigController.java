@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, RTE (http://www.rte-france.com)
+ * Copyright (c) 2026, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -78,15 +78,6 @@ public class SpreadsheetConfigController {
             content = @Content(schema = @Schema(implementation = MetadataInfos.class)))
     public ResponseEntity<List<MetadataInfos>> getSpreadsheetConfigsMetadata(@RequestParam List<UUID> ids) {
         return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfigsMetadata(ids));
-    }
-
-    @GetMapping
-    @Operation(summary = "Get all spreadsheet configurations",
-            description = "Retrieves all spreadsheet configurations")
-    @ApiResponse(responseCode = "200", description = "List of configurations",
-            content = @Content(schema = @Schema(implementation = SpreadsheetConfigInfos.class)))
-    public ResponseEntity<List<SpreadsheetConfigInfos>> getAllSpreadsheetConfigs() {
-        return ResponseEntity.ok(spreadsheetConfigService.getAllSpreadsheetConfigs());
     }
 
     @PutMapping("/{id}")
