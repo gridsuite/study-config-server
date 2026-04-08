@@ -257,6 +257,7 @@ public class DtoConverterTest implements WithAssertions {
                     .label("TestGlobalFilter")
                 .minValue(10)
                 .maxValue(20)
+                .deleted(false)
                     .build();
 
             GlobalFilterInfos dto = SpreadsheetConfigMapper.toGlobalFilterDto(entity);
@@ -268,6 +269,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.label()).isEqualTo("TestGlobalFilter");
                         assertThat(d.minValue()).isEqualTo(10);
                         assertThat(d.maxValue()).isEqualTo(20);
+                        assertThat(d.deleted()).isFalse();
                     });
         }
 
@@ -281,6 +283,7 @@ public class DtoConverterTest implements WithAssertions {
                 .unselectedDate(1710340000.0)
                 .minValue(5)
                 .maxValue(15)
+                .deleted(false)
                 .build();
 
             GlobalFilterEntity entity = SpreadsheetConfigMapper.toGlobalFilterEntity(dto);
@@ -292,6 +295,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getLabel()).isEqualTo("TestGlobalFilter");
                         assertThat(e.getMinValue()).isEqualTo(5);
                         assertThat(e.getMaxValue()).isEqualTo(15);
+                        assertThat(e.isDeleted()).isFalse();
                     });
         }
     }
