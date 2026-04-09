@@ -132,6 +132,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid)
                         .content(updatedCollectionJson)
+                        .header("userId", "userId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -166,6 +167,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid)
                         .content(updatedCollectionJson)
+                        .header("userId", "userId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 

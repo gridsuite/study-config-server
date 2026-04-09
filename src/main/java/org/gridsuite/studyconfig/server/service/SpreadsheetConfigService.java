@@ -37,6 +37,7 @@ public class SpreadsheetConfigService {
     private final SpreadsheetConfigRepository spreadsheetConfigRepository;
     private final SpreadsheetConfigCollectionRepository spreadsheetConfigCollectionRepository;
     private final ObjectMapper objectMapper;
+    private final NotificationService notificationService;
 
     @Value("classpath:default-spreadsheet-config-collection.json")
     private Resource defaultSpreadsheetConfigCollectionResource;
@@ -200,7 +201,7 @@ public class SpreadsheetConfigService {
     }
 
     @Transactional
-    public void updateSpreadsheetConfigCollection(UUID id, SpreadsheetConfigCollectionInfos dto) {
+    public void updateSpreadsheetConfigCollection(UUID id, SpreadsheetConfigCollectionInfos dto, String userId) {
         SpreadsheetConfigCollectionEntity entity = spreadsheetConfigCollectionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, SPREADSHEET_CONFIG_COLLECTION_NOT_FOUND + id));
 
@@ -209,6 +210,7 @@ public class SpreadsheetConfigService {
                 .map(SpreadsheetConfigMapper::toEntity)
                 .toList());
         entity.setNodeAliases(dto.nodeAliases());
+        notificationService.emitElementUpdated(id, userId);
     }
 
     @Transactional

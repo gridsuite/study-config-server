@@ -1,6 +1,14 @@
 spring:
   application:
     name: study-config
+  cloud:
+    stream:
+      bindings:
+        publishElementUpdate-out-0:
+          destination:  ${powsybl-ws.rabbitmq.destination.prefix:}element.update
+      output-bindings: publishElementUpdate-out-0
+  main:
+    allow-circular-references: true
 
 powsybl-ws:
   database:

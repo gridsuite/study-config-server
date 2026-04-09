@@ -87,8 +87,9 @@ public class SpreadsheetConfigCollectionController {
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
     public ResponseEntity<Void> updateSpreadsheetConfigCollection(
             @Parameter(description = "ID of the configuration collection to update") @PathVariable UUID id,
-            @Valid @RequestBody SpreadsheetConfigCollectionInfos dto) {
-        spreadsheetConfigService.updateSpreadsheetConfigCollection(id, dto);
+            @Valid @RequestBody SpreadsheetConfigCollectionInfos dto,
+            @RequestHeader("userId") String userId) {
+        spreadsheetConfigService.updateSpreadsheetConfigCollection(id, dto, userId);
         return ResponseEntity.noContent().build();
     }
 
