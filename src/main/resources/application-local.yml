@@ -5,6 +5,10 @@ powsybl-ws:
   database:
     host: localhost
 
+spring:
+  rabbitmq:
+    addresses: localhost
+
 gridsuite:
   services:
     single-line-diagram-server:
