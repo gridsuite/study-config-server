@@ -58,6 +58,9 @@ public class GlobalFilterEntity {
     @Column(name = "max_value")
     private Integer maxValue;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean deleted;
+
     public GlobalFilterEntity copy() {
         return GlobalFilterEntity.builder()
             .filterType(getFilterType())
@@ -69,6 +72,7 @@ public class GlobalFilterEntity {
             .path(getPath())
             .minValue(getMinValue())
             .maxValue(getMaxValue())
+            .deleted(isDeleted())
             .build();
     }
 }

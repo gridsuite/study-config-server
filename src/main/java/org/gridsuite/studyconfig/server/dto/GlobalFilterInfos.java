@@ -54,7 +54,10 @@ public record GlobalFilterInfos(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Voltage level filter maximum range value")
-    Integer maxValue
+    Integer maxValue,
+
+    @Schema(description = "filter is deleted")
+    boolean deleted
 
 ) {
 }
