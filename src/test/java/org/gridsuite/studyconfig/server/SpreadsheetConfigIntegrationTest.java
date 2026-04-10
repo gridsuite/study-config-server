@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2024, RTE (http://www.rte-france.com)
+ * Copyright (c) 2026, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -183,7 +183,7 @@ class SpreadsheetConfigIntegrationTest {
         mockMvc.perform(delete(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid))
                 .andExpect(status().isNoContent());
 
-        List<SpreadsheetConfigInfos> storedConfigs = getAllSpreadsheetConfigs();
+        List<SpreadsheetConfigInfos> storedConfigs = spreadsheetConfigService.getAllSpreadsheetConfigs();
 
         assertThat(storedConfigs).isEmpty();
     }
@@ -197,14 +197,14 @@ class SpreadsheetConfigIntegrationTest {
     }
 
     @Test
-    void testGetAll() throws Exception {
+    void testGetAll() {
         SpreadsheetConfigInfos config1 = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of(), null);
         SpreadsheetConfigInfos config2 = new SpreadsheetConfigInfos(null, "Bus", SheetType.BUS, createUpdatedColumnsWithFilters(), createUpdatedGlobalFilters(), List.of(), null);
 
         saveAndReturnId(config1);
         saveAndReturnId(config2);
 
-        List<SpreadsheetConfigInfos> receivedConfigs = getAllSpreadsheetConfigs();
+        List<SpreadsheetConfigInfos> receivedConfigs = spreadsheetConfigService.getAllSpreadsheetConfigs();
 
         assertThat(receivedConfigs).hasSize(2);
     }
@@ -241,8 +241,8 @@ class SpreadsheetConfigIntegrationTest {
         SpreadsheetColumnInfos columnToCreate = new SpreadsheetColumnInfos(null, "new_column", ColumnType.NUMBER, 2, "x + 1", "[\"x\"]", "newId", true, null, null, null, null);
 
         MvcResult result = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
-                .content(mapper.writeValueAsString(columnToCreate))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(columnToCreate))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -259,8 +259,8 @@ class SpreadsheetConfigIntegrationTest {
                 "text", "equals", "test-value", null);
 
         MvcResult resultWithFilter = mockMvc.perform(post(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE)
-                .content(mapper.writeValueAsString(columnWithFilter))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(columnWithFilter))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -284,8 +284,8 @@ class SpreadsheetConfigIntegrationTest {
                 "text", "equals", "updated-value", null);
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/" + columnId)
-                .content(mapper.writeValueAsString(columnUpdate))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(columnUpdate))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
         SpreadsheetColumnInfos updatedColumn = getColumn(configId, columnId);
@@ -373,13 +373,13 @@ class SpreadsheetConfigIntegrationTest {
 
         // reverse the original order
         List<UUID> reorderedColumnIds = originalColumns.stream()
-            .map(SpreadsheetColumnInfos::uuid)
-            .collect(Collectors.toList());
+                .map(SpreadsheetColumnInfos::uuid)
+                .collect(Collectors.toList());
         Collections.reverse(reorderedColumnIds);
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configId + URI_COLUMN_BASE + "/reorder")
-                .content(mapper.writeValueAsString(reorderedColumnIds))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(reorderedColumnIds))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
         // verify the new order
@@ -390,7 +390,7 @@ class SpreadsheetConfigIntegrationTest {
 
         for (int i = 0; i < reorderedColumns.size(); i++) {
             assertThat(reorderedColumns.get(i).uuid())
-                .isEqualTo(originalColumns.get(originalColumns.size() - 1 - i).uuid());
+                    .isEqualTo(originalColumns.get(originalColumns.size() - 1 - i).uuid());
         }
     }
 
@@ -495,8 +495,8 @@ class SpreadsheetConfigIntegrationTest {
 
         String newName = "RenamedConfig";
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + configUuid + "/name")
-                .content(newName)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(newName)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
         SpreadsheetConfigInfos renamedConfig = getSpreadsheetConfig(configUuid);
@@ -512,8 +512,8 @@ class SpreadsheetConfigIntegrationTest {
     void testRenameNonExistentSpreadsheetConfig() throws Exception {
         UUID nonExistentUuid = UUID.randomUUID();
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_GET_PUT + nonExistentUuid + "/name")
-                .content("NewName")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content("NewName")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -706,16 +706,6 @@ class SpreadsheetConfigIntegrationTest {
                 .andReturn();
 
         return mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
-    }
-
-    private List<SpreadsheetConfigInfos> getAllSpreadsheetConfigs() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get(URI_SPREADSHEET_CONFIG_BASE))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        return mapper.readValue(
-                mvcResult.getResponse().getContentAsString(),
-                new TypeReference<>() { });
     }
 
     private UUID saveAndReturnId(SpreadsheetConfigInfos config) {
