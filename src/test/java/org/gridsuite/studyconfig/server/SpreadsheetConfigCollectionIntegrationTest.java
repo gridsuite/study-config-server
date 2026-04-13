@@ -13,13 +13,17 @@ import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.repositories.SpreadsheetConfigCollectionRepository;
+import org.gridsuite.studyconfig.server.service.NotificationService;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.stream.binder.test.OutputDestination;
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.Message;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -27,14 +31,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(classes = {StudyConfigApplication.class, TestChannelBinderConfiguration.class})
 @AutoConfigureMockMvc
 class SpreadsheetConfigCollectionIntegrationTest {
 
     private static final String URI_SPREADSHEET_CONFIG_COLLECTION_BASE = "/v1/spreadsheet-config-collections";
+    private final String elementUpdateDestination = "element.update";
+    private static final long TIMEOUT = 1000;
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,11 +55,25 @@ class SpreadsheetConfigCollectionIntegrationTest {
     @Autowired
     private SpreadsheetConfigCollectionRepository spreadsheetConfigCollectionRepository;
 
+    @Autowired
+    private OutputDestination output;
+
     @AfterEach
     void tearDown() {
         spreadsheetConfigCollectionRepository.deleteAll();
+        assertQueuesEmptyThenClear(List.of(elementUpdateDestination), output);  // ADD THIS
     }
-
+    private static void assertQueuesEmptyThenClear(List<String> destinations, OutputDestination output) {
+        try {
+            destinations.forEach(destination ->
+                    assertNull(output.receive(TIMEOUT, destination),
+                            "Should not be any messages in queue " + destination + " : "));
+        } catch (NullPointerException e) {
+            // Ignoring
+        } finally {
+            output.clear();
+        }
+    }
     @Test
     void testCreateCollection() throws Exception {
         SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
@@ -136,6 +157,11 @@ class SpreadsheetConfigCollectionIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
+        Message<byte[]> message = output.receive(TIMEOUT, elementUpdateDestination);
+        assertNotNull(message);
+        assertEquals(collectionUuid, message.getHeaders().get(NotificationService.HEADER_ELEMENT_UUID));
+        assertEquals("userId", message.getHeaders().get(NotificationService.HEADER_MODIFIED_BY));
+
         SpreadsheetConfigCollectionInfos retrievedCollection = getSpreadsheetConfigCollection(collectionUuid);
 
         assertThat(retrievedCollection)
@@ -147,22 +173,12 @@ class SpreadsheetConfigCollectionIntegrationTest {
 
     @Test
     void testUpdateCollectionWithFilteredConfigs() throws Exception {
-        // Create a collection with configs that have filters
         SpreadsheetConfigCollectionInfos collectionToUpdate = new SpreadsheetConfigCollectionInfos(
-                null,
-                createSpreadsheetConfigsWithFilters(),
-                null
-        );
-
+                null, createSpreadsheetConfigsWithFilters(), null);
         UUID collectionUuid = saveAndReturnId(collectionToUpdate);
 
-        // Update the collection with new configs that also have filters
         SpreadsheetConfigCollectionInfos updatedCollection = new SpreadsheetConfigCollectionInfos(
-                collectionUuid,
-                createUpdatedSpreadsheetConfigsWithFilters(),
-                null
-        );
-
+                collectionUuid, createUpdatedSpreadsheetConfigsWithFilters(), null);
         String updatedCollectionJson = mapper.writeValueAsString(updatedCollection);
 
         mockMvc.perform(put(URI_SPREADSHEET_CONFIG_COLLECTION_BASE + "/" + collectionUuid)
@@ -171,8 +187,12 @@ class SpreadsheetConfigCollectionIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        SpreadsheetConfigCollectionInfos retrievedCollection = getSpreadsheetConfigCollection(collectionUuid);
+        Message<byte[]> message = output.receive(TIMEOUT, elementUpdateDestination);
+        assertNotNull(message);
+        assertEquals(collectionUuid, message.getHeaders().get(NotificationService.HEADER_ELEMENT_UUID));
+        assertEquals("userId", message.getHeaders().get(NotificationService.HEADER_MODIFIED_BY));
 
+        SpreadsheetConfigCollectionInfos retrievedCollection = getSpreadsheetConfigCollection(collectionUuid);
         assertThat(retrievedCollection)
                 .usingRecursiveComparison()
                 .ignoringFields("spreadsheetConfigs.columns.uuid", "spreadsheetConfigs.id", "spreadsheetConfigs.globalFilters.uuid")
