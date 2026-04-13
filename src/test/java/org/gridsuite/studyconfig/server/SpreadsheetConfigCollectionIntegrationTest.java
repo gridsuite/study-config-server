@@ -63,6 +63,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
         spreadsheetConfigCollectionRepository.deleteAll();
         assertQueuesEmptyThenClear(List.of(elementUpdateDestination), output);  // ADD THIS
     }
+
     private static void assertQueuesEmptyThenClear(List<String> destinations, OutputDestination output) {
         try {
             destinations.forEach(destination ->
@@ -74,6 +75,7 @@ class SpreadsheetConfigCollectionIntegrationTest {
             output.clear();
         }
     }
+
     @Test
     void testCreateCollection() throws Exception {
         SpreadsheetConfigCollectionInfos collectionToCreate = new SpreadsheetConfigCollectionInfos(null, createSpreadsheetConfigs(), null);
