@@ -124,8 +124,6 @@
                 splitStatements="true"
                 stripComments="true"/>
     </changeSet>
-    <!-- These columns will be dropped after confirming the migration has been successfully completed -->
-    <!--
     <changeSet author="rehiligha (generated)" id="1770298209590-22">
         <dropColumn columnName="FILTER_DATA_TYPE" tableName="SPREADSHEET_COLUMN"/>
     </changeSet>
@@ -138,5 +136,4 @@
     <changeSet author="rehiligha (generated)" id="1770298209590-25">
         <dropColumn columnName="FILTER_VALUE" tableName="SPREADSHEET_COLUMN"/>
     </changeSet>
-    -->
 </databaseChangeLog>
