@@ -16,7 +16,7 @@ public enum SheetType {
     BRANCH,
     BUS,
     BUSBAR_SECTION,
-    DANGLING_LINE,
+    BOUNDARY_LINE,
     GENERATOR,
     HVDC_LINE,
     LCC_CONVERTER_STATION,
