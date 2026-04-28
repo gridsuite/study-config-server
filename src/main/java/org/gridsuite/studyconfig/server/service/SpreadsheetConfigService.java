@@ -330,6 +330,8 @@ public class SpreadsheetConfigService {
             filter.setFilterType(infos.filterType());
             filter.setFilterValue(infos.filterValue());
             filter.setFilterTolerance(infos.filterTolerance());
+        } else {
+            columnEntity.setColumnFilter(null);
         }
         columnEntity.setVisible(dto.visible());
 
