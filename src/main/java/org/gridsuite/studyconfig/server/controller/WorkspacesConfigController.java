@@ -15,14 +15,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
+import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
-import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
 import org.gridsuite.studyconfig.server.service.WorkspacesConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

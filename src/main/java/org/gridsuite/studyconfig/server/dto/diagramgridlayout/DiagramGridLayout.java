@@ -7,10 +7,8 @@
 package org.gridsuite.studyconfig.server.dto.diagramgridlayout;
 
 import lombok.*;
-
-import java.util.List;
-
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayout;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor

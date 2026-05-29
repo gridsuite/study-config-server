@@ -8,7 +8,6 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
@@ -24,10 +23,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -198,7 +195,8 @@ class SpreadsheetConfigIntegrationTest {
 
     @Test
     void testDuplicate() throws Exception {
-        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1,", "alias2"), new SortConfig("idB", SortDirection.DESC.name().toLowerCase()));
+        SpreadsheetConfigInfos configToCreate = new SpreadsheetConfigInfos(null, "Battery", SheetType.BATTERY, createColumnsWithFilters(), createGlobalFilters(), List.of("alias1,", "alias2"), new
+                SortConfig("idB", SortDirection.DESC.name().toLowerCase()));
         UUID configUuid = postSpreadsheetConfig(configToCreate);
 
         UUID duplicatedConfigUuid = duplicateSpreadsheetConfig(configUuid);

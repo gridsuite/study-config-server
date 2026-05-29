@@ -6,26 +6,25 @@
  */
 package org.gridsuite.studyconfig.server.mapper;
 
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.DiagramPosition;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.SubstationDiagramLayout;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.VoltageLevelDiagramLayout;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.AbstractDiagramLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.DiagramPositionEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.MapLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.SubstationDiagramLayoutEntity;
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.VoltageLevelLayoutEntity;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.AbstractDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.DiagramPosition;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.SubstationDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.VoltageLevelDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.AbstractDiagramLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.DiagramPositionEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.SubstationDiagramLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.VoltageLevelLayoutEntity;
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.MapLayoutEntity;
 
 public final class DiagramGridLayoutMapper {
 

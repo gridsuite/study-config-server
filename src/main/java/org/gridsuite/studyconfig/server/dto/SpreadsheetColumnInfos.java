@@ -6,12 +6,10 @@
  */
 package org.gridsuite.studyconfig.server.dto;
 
-import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.constants.ColumnType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.gridsuite.studyconfig.server.constants.ColumnType;
+import java.util.UUID;
 
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>

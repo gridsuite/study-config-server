@@ -177,7 +177,8 @@ public class SpreadsheetConfigService {
                     return clone;
                 })
                 .toList());
-        List<String> allConfigsUniqueAliases = entity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getNodeAliases).flatMap(Collection::stream).collect(Collectors.toSet()).stream().toList();
+        List<String> allConfigsUniqueAliases = entity.getSpreadsheetConfigs().stream().map(SpreadsheetConfigEntity::getNodeAliases).flatMap(Collection::stream).collect(Collectors.toSet()).stream(
+                ).toList();
         entity.setNodeAliases(new ArrayList<>(allConfigsUniqueAliases));
         return spreadsheetConfigCollectionRepository.save(entity).getId();
     }

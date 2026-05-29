@@ -7,13 +7,12 @@
 package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.DiagramGridLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.DiagramPosition;
+import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.NetworkAreaDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.SubstationDiagramLayout;
 import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.VoltageLevelDiagramLayout;
-import org.gridsuite.studyconfig.server.dto.diagramgridlayout.diagramlayout.MapLayout;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutEntity;
 import org.gridsuite.studyconfig.server.entities.diagramgridlayout.DiagramGridLayoutRepository;
 import org.gridsuite.studyconfig.server.mapper.DiagramGridLayoutMapper;
@@ -25,16 +24,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
