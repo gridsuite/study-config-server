@@ -9,17 +9,16 @@ package org.gridsuite.studyconfig.server;
 import org.assertj.core.api.WithAssertions;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
-import org.gridsuite.studyconfig.server.dto.SpreadsheetColumnInfos;
 import org.gridsuite.studyconfig.server.dto.GlobalFilterInfos;
+import org.gridsuite.studyconfig.server.dto.SpreadsheetColumnInfos;
 import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
-import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 import org.gridsuite.studyconfig.server.entities.ColumnFilterEntity;
 import org.gridsuite.studyconfig.server.entities.GlobalFilterEntity;
+import org.gridsuite.studyconfig.server.entities.SpreadsheetColumnEntity;
 import org.gridsuite.studyconfig.server.entities.SpreadsheetConfigEntity;
 import org.gridsuite.studyconfig.server.mapper.SpreadsheetConfigMapper;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +26,7 @@ import java.util.UUID;
 /**
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
+@SuppressWarnings("checkstyle:LambdaBodyLength")
 public class DtoConverterTest implements WithAssertions {
 
     @Nested

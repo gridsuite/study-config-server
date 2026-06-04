@@ -28,7 +28,6 @@ import java.util.UUID;
 
 import static org.gridsuite.studyconfig.server.mapper.ComputationResultFiltersMapper.toComputationColumnFilterEntity;
 
-
 /**
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */

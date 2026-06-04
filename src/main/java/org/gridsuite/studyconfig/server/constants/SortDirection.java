@@ -12,5 +12,5 @@ package org.gridsuite.studyconfig.server.constants;
 
 public enum SortDirection {
     ASC,
-    DESC;
+    DESC
 }

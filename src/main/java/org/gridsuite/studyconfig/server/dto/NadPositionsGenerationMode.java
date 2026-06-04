@@ -7,7 +7,7 @@
 package org.gridsuite.studyconfig.server.dto;
 
 /**
- * @author AJELLAL Ali <ali.ajellal@rte-france.com>
+ * @author AJELLAL Ali <ali.ajellal at rte-france.com>
  */
 public enum NadPositionsGenerationMode {
     GEOGRAPHICAL_COORDINATES,

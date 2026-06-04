@@ -8,11 +8,9 @@ package org.gridsuite.studyconfig.server.entities.diagramgridlayout;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.AbstractDiagramLayoutEntity;
 import java.util.List;
 import java.util.UUID;
-
-import org.gridsuite.studyconfig.server.entities.diagramgridlayout.diagramlayout.AbstractDiagramLayoutEntity;
 
 @Builder
 @AllArgsConstructor
