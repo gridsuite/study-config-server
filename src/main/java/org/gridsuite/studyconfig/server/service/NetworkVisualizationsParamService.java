@@ -64,6 +64,7 @@ public class NetworkVisualizationsParamService {
                 .centerLabel(entity.getCenterLabel())
                 .substationLayout(entity.getSubstationLayout())
                 .componentLibrary(entity.getComponentLibrary())
+                .stateEstimation(entity.getStateEstimation())
                 // NAD
                 .nadPositionsGenerationMode(entity.getNadPositionsGenerationMode())
                 .build();
