@@ -57,4 +57,7 @@ public class NetworkVisualizationParamEntity {
 
     @Column(name = "nad_positions_generation_mode")
     private String nadPositionsGenerationMode = null;
+
+    @Column(name = "state_estimation")
+    private Boolean stateEstimation = false;
 }
