@@ -24,5 +24,8 @@ public record SingleLineDiagramParamInfos(
     String substationLayout,
 
     @Schema(description = "Component library selection")
-    String componentLibrary
+    String componentLibrary,
+
+    @Schema(description = "Enable state estimation mode")
+    Boolean stateEstimation
 ) { }
