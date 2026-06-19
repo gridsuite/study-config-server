@@ -16,7 +16,8 @@ import java.util.UUID;
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Entity
-@Table(name = "spreadsheet_column")
+@Table(name = "spreadsheet_column",
+        indexes = @Index(name = "idx_spreadsheet_column_spreadsheet_config_id", columnList = "spreadsheet_config_id"))
 @Getter
 @Setter
 @NoArgsConstructor
