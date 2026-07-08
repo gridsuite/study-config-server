@@ -53,7 +53,7 @@ public class NetworkVisualizationParamEntity {
     private String substationLayout = "horizontal";
 
     @Column(name = "component_library")
-    private String componentLibrary = "";
+    private String componentLibrary = "GridSuiteAndConvergence";
 
     @Column(name = "nad_positions_generation_mode")
     private String nadPositionsGenerationMode = null;
