@@ -77,9 +77,8 @@ public class SingleLineDiagramService {
 
     public UUID duplicateNadConfig(UUID sourceConfigUuid) {
         String path = UriComponentsBuilder.newInstance()
-                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG)
-                .queryParam("duplicateFrom", sourceConfigUuid)
-                .toUriString();
+                .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG, "{uuid}", "duplicate")
+                .buildAndExpand(sourceConfigUuid).toUriString();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

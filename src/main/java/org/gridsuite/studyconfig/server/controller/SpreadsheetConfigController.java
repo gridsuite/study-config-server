@@ -37,8 +37,6 @@ public class SpreadsheetConfigController {
 
     private final SpreadsheetConfigService spreadsheetConfigService;
 
-    public static final String DUPLICATE_FROM = "duplicateFrom";
-
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new spreadsheet configuration",
             description = "Creates a new spreadsheet configuration and returns its ID")
@@ -49,13 +47,13 @@ public class SpreadsheetConfigController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @PostMapping(params = { DUPLICATE_FROM })
+    @PostMapping("/{id}/duplicate")
     @Operation(summary = "Duplicate a spreadsheet configuration",
             description = "Creates a copy of an existing spreadsheet configuration")
     @ApiResponse(responseCode = "201", description = "Configuration duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Configuration not found")
-    public ResponseEntity<UUID> duplicateSpreadsheetConfig(@Parameter(description = "UUID of the configuration to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
+    public ResponseEntity<UUID> duplicateSpreadsheetConfig(@Parameter(description = "UUID of the configuration to duplicate") @PathVariable("id") UUID id) {
         UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfig(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }

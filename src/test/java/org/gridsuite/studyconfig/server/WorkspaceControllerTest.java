@@ -72,8 +72,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
     @Test
     void testDuplicateWorkspace() throws Exception {
         MvcResult result = mockMvc.perform(
-                post(getWorkspacesBasePath())
-                    .param(DUPLICATE_FROM_PARAM, workspaceWithPanelsId.toString())
+                post(getWorkspacesBasePath() + "/{workspaceId}/duplicate", workspaceWithPanelsId)
             )
             .andExpect(status().isCreated())
             .andReturn();
@@ -100,8 +99,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
         when(singleLineDiagramService.duplicateNadConfig(originalNadConfigId)).thenReturn(duplicatedNadConfigId);
 
         MvcResult result = mockMvc.perform(
-                post(getWorkspacesBasePath())
-                    .param(DUPLICATE_FROM_PARAM, workspaceWithNadId.toString())
+                post(getWorkspacesBasePath() + "/{workspaceId}/duplicate", workspaceWithNadId)
             )
             .andExpect(status().isCreated())
             .andReturn();
@@ -122,8 +120,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
         UUID nonExistentId = UUID.randomUUID();
 
         mockMvc.perform(
-                post(getWorkspacesBasePath())
-                    .param(DUPLICATE_FROM_PARAM, nonExistentId.toString())
+                post(getWorkspacesBasePath() + "/{workspaceId}/duplicate", nonExistentId)
             )
             .andExpect(status().isNotFound());
     }

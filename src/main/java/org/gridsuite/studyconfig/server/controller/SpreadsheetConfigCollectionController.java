@@ -117,13 +117,13 @@ public class SpreadsheetConfigCollectionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(params = { "duplicateFrom" })
+    @PostMapping(value = "/{id}/duplicate")
     @Operation(summary = "Duplicate a spreadsheet configuration collection",
             description = "Creates a copy of an existing spreadsheet configuration collection")
     @ApiResponse(responseCode = "201", description = "Configuration collection duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
-    public ResponseEntity<UUID> duplicateSpreadsheetConfigCollection(@Parameter(description = "UUID of the configuration collection to duplicate") @RequestParam(name = "duplicateFrom") UUID id) {
+    public ResponseEntity<UUID> duplicateSpreadsheetConfigCollection(@Parameter(description = "UUID of the configuration collection to duplicate") @PathVariable("id") UUID id) {
         UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfigCollection(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }

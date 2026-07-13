@@ -52,13 +52,13 @@ public class WorkspaceController {
         );
     }
 
-    @PostMapping(params = { DUPLICATE_FROM })
+    @PostMapping("/{workspaceId}/duplicate")
     @Operation(summary = "Duplicate a standalone workspace",
             description = "Creates a standalone workspace by duplicating an existing workspace")
     @ApiResponse(responseCode = "201", description = "Workspace duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     public ResponseEntity<UUID> duplicateWorkspace(
-            @Parameter(description = "UUID of the workspace to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID sourceWorkspaceId) {
+            @Parameter(description = "UUID of the workspace to duplicate") @PathVariable("workspaceId") UUID sourceWorkspaceId) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(workspaceService.duplicateWorkspace(sourceWorkspaceId).getId());
     }
