@@ -38,7 +38,7 @@ class SingleLineDiagramServiceTest {
     }
 
     @Test
-    void createNadConfig_shouldPostAndReturnId() {
+    void createNadConfigShouldPostAndReturnId() {
         UUID id = UUID.randomUUID();
         Map<String, Object> nadConfigData = new HashMap<>();
         nadConfigData.put("name", "test-config");
@@ -53,7 +53,7 @@ class SingleLineDiagramServiceTest {
     }
 
     @Test
-    void updateNadConfig_shouldPut() {
+    void updateNadConfigShouldPut() {
         UUID id = UUID.randomUUID();
         Map<String, Object> nadConfigData = new HashMap<>();
         nadConfigData.put("id", id.toString());
@@ -69,7 +69,7 @@ class SingleLineDiagramServiceTest {
     }
 
     @Test
-    void deleteNadConfig_shouldDelete() {
+    void deleteNadConfigShouldDelete() {
         UUID id = UUID.randomUUID();
 
         server.expect(method(HttpMethod.DELETE))
@@ -80,7 +80,7 @@ class SingleLineDiagramServiceTest {
     }
 
     @Test
-    void deleteNadConfigs_shouldDeleteAll() {
+    void deleteNadConfigsShouldDeleteAll() {
         UUID id1 = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
         List<UUID> ids = Arrays.asList(id1, id2);
@@ -94,7 +94,7 @@ class SingleLineDiagramServiceTest {
     }
 
     @Test
-    void duplicateNadConfig_shouldPostDuplicate() {
+    void duplicateNadConfigShouldPostDuplicate() {
         UUID sourceId = UUID.randomUUID();
         UUID newId = UUID.randomUUID();
 
