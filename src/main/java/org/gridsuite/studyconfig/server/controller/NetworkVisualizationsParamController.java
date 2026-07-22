@@ -36,8 +36,6 @@ public class NetworkVisualizationsParamController {
 
     private final NetworkVisualizationsParamService service;
 
-    public static final String DUPLICATE_FROM = "duplicateFrom";
-
     @PostMapping(value = "/default")
     @Operation(summary = "Create new default parameters",
             description = "Creates default network visualizations parameters and returns new ID")
@@ -58,13 +56,13 @@ public class NetworkVisualizationsParamController {
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
-    @PostMapping(value = "", params = { DUPLICATE_FROM }, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{id}/duplicate", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Duplicate parameters",
             description = "Creates a copy of existing network visualizations parameters")
     @ApiResponse(responseCode = "201", description = "Parameters duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Parameters not found")
-    public ResponseEntity<UUID> duplicateParameters(@Parameter(description = "UUID of the parameters to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
+    public ResponseEntity<UUID> duplicateParameters(@Parameter(description = "UUID of the parameters to duplicate") @PathVariable("id") UUID id) {
         UUID newId = service.duplicateParameters(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
     }

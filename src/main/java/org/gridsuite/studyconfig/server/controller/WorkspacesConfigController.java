@@ -38,17 +38,16 @@ public class WorkspacesConfigController {
 
     private final WorkspacesConfigService workspacesConfigService;
 
-    public static final String DUPLICATE_FROM = "duplicateFrom";
     public static final String CREATE_FROM = "createFrom";
 
-    @PostMapping(params = { DUPLICATE_FROM })
+    @PostMapping("/{id}/duplicate")
     @Operation(summary = "Duplicate a workspaces config",
             description = "Creates a copy of an existing workspaces config")
     @ApiResponse(responseCode = "201", description = "Workspaces config duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
     public ResponseEntity<UUID> duplicateWorkspacesConfig(
-            @Parameter(description = "UUID of the workspaces config to duplicate") @RequestParam(name = DUPLICATE_FROM) UUID id) {
+            @Parameter(description = "UUID of the workspaces config to duplicate") @PathVariable("id") UUID id) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(workspacesConfigService.duplicateWorkspacesConfig(id));
     }

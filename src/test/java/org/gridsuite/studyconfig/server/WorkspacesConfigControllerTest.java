@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
-    private static final String DUPLICATE_FROM_PARAM = "duplicateFrom";
     private static final String PANEL_1 = "Panel 1";
     private static final String PANEL_2 = "Panel 2";
 
@@ -144,8 +143,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
         when(singleLineDiagramService.duplicateNadConfig(any())).thenReturn(nadConfigId);
 
-        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath())
-                .param(DUPLICATE_FROM_PARAM, configId.toString()))
+        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath() + "/{id}/duplicate", configId))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -200,8 +198,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
         when(singleLineDiagramService.duplicateNadConfig(any())).thenReturn(nadConfigId);
 
-        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath())
-                .param(DUPLICATE_FROM_PARAM, configId.toString()))
+        MvcResult result = mockMvc.perform(post(getWorkspacesConfigBasePath() + "/{id}/duplicate", configId))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -358,8 +355,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
     void testDuplicateWorkspacesConfigNotFound() throws Exception {
         UUID nonExistentId = UUID.randomUUID();
 
-        mockMvc.perform(post(getWorkspacesConfigBasePath())
-                .param(DUPLICATE_FROM_PARAM, nonExistentId.toString()))
+        mockMvc.perform(post(getWorkspacesConfigBasePath() + "/{id}/duplicate", nonExistentId))
             .andExpect(status().isNotFound());
     }
 
