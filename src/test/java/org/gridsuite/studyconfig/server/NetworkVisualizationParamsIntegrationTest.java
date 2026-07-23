@@ -116,8 +116,7 @@ class NetworkVisualizationParamsIntegrationTest {
         NetworkVisualizationParamInfos paramsToCreate = createDto();
         UUID paramsUuid = postCreateParams(paramsToCreate);
 
-        MvcResult mvcPostResult = mockMvc.perform(post(URI_NETWORK_VISUALIZATION_PARAM_BASE)
-                        .queryParam("duplicateFrom", paramsUuid.toString()))
+        MvcResult mvcPostResult = mockMvc.perform(post(URI_NETWORK_VISUALIZATION_PARAM_BASE + "/{id}/duplicate", paramsUuid))
                 .andExpect(status().isCreated())
                 .andReturn();
         UUID duplicatedParamsUuid = mapper.readValue(mvcPostResult.getResponse().getContentAsString(), UUID.class);
