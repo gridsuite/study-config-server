@@ -1555,6 +1555,38 @@
           "id": "targetQ"
         },
         {
+          "name": "Voltage regulation",
+          "type": "BOOLEAN",
+          "precision": null,
+          "formula": "voltageRegulatorOn",
+          "dependencies": null,
+          "id": "voltageRegulatorOn"
+        },
+        {
+          "name": "Target V (kV)",
+          "type": "NUMBER",
+          "precision": 1,
+          "formula": "targetV",
+          "dependencies": null,
+          "id": "targetV"
+        },
+        {
+          "name": "Regulation type",
+          "type": "ENUM",
+          "precision": null,
+          "formula": "regulationType",
+          "dependencies": null,
+          "id": "regulationType"
+        },
+        {
+          "name": "Regulated terminal",
+          "type": "TEXT",
+          "precision": null,
+          "formula": "regulatingTerminalConnectableId",
+          "dependencies": null,
+          "id": "regulatingTerminalConnectableId"
+        },
+        {
           "name": "Active power control",
           "type": "BOOLEAN",
           "precision": null,
