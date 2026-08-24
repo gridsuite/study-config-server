@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
-import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
 import org.gridsuite.studyconfig.server.service.WorkspaceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,12 +43,7 @@ public class WorkspaceController {
     @ApiResponse(responseCode = "404", description = "Workspace not found")
     public ResponseEntity<WorkspaceInfos> getWorkspace(
             @Parameter(description = "ID of the workspace to retrieve") @PathVariable UUID workspaceId) {
-        return ResponseEntity.ok(
-            workspaceService.getWorkspace(workspaceId)
-                .map(WorkspaceEntity::toDto)
-                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Workspace not found: " + workspaceId))
-        );
+        return ResponseEntity.ok(workspaceService.getWorkspace(workspaceId));
     }
 
     @PostMapping("/{workspaceId}/duplicate")
@@ -60,7 +54,7 @@ public class WorkspaceController {
     public ResponseEntity<UUID> duplicateWorkspace(
             @Parameter(description = "UUID of the workspace to duplicate") @PathVariable("workspaceId") UUID sourceWorkspaceId) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(workspaceService.duplicateWorkspace(sourceWorkspaceId).getId());
+            .body(workspaceService.duplicateWorkspace(sourceWorkspaceId));
     }
 
     @PutMapping("/{workspaceId}/replace")

@@ -8,7 +8,6 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
-import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
 import org.gridsuite.studyconfig.server.service.SingleLineDiagramService;
 import org.gridsuite.studyconfig.server.service.WorkspaceService;
 import org.junit.jupiter.api.Test;
@@ -80,18 +79,14 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
         UUID newWorkspaceId = objectMapper.readValue(result.getResponse().getContentAsString(), UUID.class);
         assertThat(newWorkspaceId).isNotNull().isNotEqualTo(workspaceWithPanelsId);
 
-        WorkspaceInfos newWorkspace = workspaceService.getWorkspace(newWorkspaceId)
-            .map(WorkspaceEntity::toDto)
-            .orElseThrow();
+        WorkspaceInfos newWorkspace = workspaceService.getWorkspace(newWorkspaceId);
         assertThat(newWorkspace.name()).isEqualTo(WORKSPACE_WITH_PANELS);
         assertThat(newWorkspace.panels()).hasSize(2);
     }
 
     @Test
     void testDuplicateWorkspaceWithNadConfig() throws Exception {
-        WorkspaceInfos sourceWorkspace = workspaceService.getWorkspace(workspaceWithNadId)
-            .map(WorkspaceEntity::toDto)
-            .orElseThrow();
+        WorkspaceInfos sourceWorkspace = workspaceService.getWorkspace(workspaceWithNadId);
         UUID originalNadConfigId = ((org.gridsuite.studyconfig.server.dto.workspace.NADPanelInfos)
             sourceWorkspace.panels().get(0)).getCurrentNadConfigUuid();
 
@@ -107,9 +102,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
         UUID newWorkspaceId = objectMapper.readValue(result.getResponse().getContentAsString(), UUID.class);
         verify(singleLineDiagramService, times(1)).duplicateNadConfig(originalNadConfigId);
 
-        WorkspaceInfos newWorkspace = workspaceService.getWorkspace(newWorkspaceId)
-            .map(WorkspaceEntity::toDto)
-            .orElseThrow();
+        WorkspaceInfos newWorkspace = workspaceService.getWorkspace(newWorkspaceId);
         assertThat(newWorkspace.panels()).hasSize(2);
         assertThat(((org.gridsuite.studyconfig.server.dto.workspace.NADPanelInfos) newWorkspace.panels().get(0))
             .getCurrentNadConfigUuid()).isEqualTo(duplicatedNadConfigId);
@@ -133,9 +126,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
             )
             .andExpect(status().isNoContent());
 
-        WorkspaceInfos replacedWorkspace = workspaceService.getWorkspace(emptyWorkspaceId)
-            .map(WorkspaceEntity::toDto)
-            .orElseThrow();
+        WorkspaceInfos replacedWorkspace = workspaceService.getWorkspace(emptyWorkspaceId);
         assertThat(replacedWorkspace.name()).isEqualTo(WORKSPACE_WITH_PANELS);
         assertThat(replacedWorkspace.panels()).hasSize(2);
     }
@@ -155,9 +146,7 @@ class WorkspaceControllerTest extends AbstractWorkspaceTestBase {
         verify(singleLineDiagramService, never()).deleteNadConfigs(any()); // Empty workspace has no NAD to delete
         verify(singleLineDiagramService, atLeastOnce()).duplicateNadConfig(any());
 
-        WorkspaceInfos replacedWorkspace = workspaceService.getWorkspace(emptyWorkspaceId)
-            .map(WorkspaceEntity::toDto)
-            .orElseThrow();
+        WorkspaceInfos replacedWorkspace = workspaceService.getWorkspace(emptyWorkspaceId);
         assertThat(replacedWorkspace.panels()).hasSize(2);
     }
 

@@ -99,9 +99,9 @@ public class NADPanelEntity extends PanelEntity {
         dto.setFilterUuid(getFilterUuid());
         dto.setCurrentFilterUuid(getCurrentFilterUuid());
         dto.setCurrentNadConfigUuid(getCurrentNadConfigUuid());
-        dto.setVoltageLevelToOmitIds(getVoltageLevelToOmitIds());
-        dto.setInitialVoltageLevelIds(getInitialVoltageLevelIds());
-        dto.setNavigationHistory(getNavigationHistory());
+        dto.setVoltageLevelToOmitIds(getVoltageLevelToOmitIds().stream().toList());
+        dto.setInitialVoltageLevelIds(getInitialVoltageLevelIds().stream().toList());
+        dto.setNavigationHistory(getNavigationHistory().stream().toList());
         return dto;
     }
 
