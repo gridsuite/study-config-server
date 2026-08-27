@@ -12,6 +12,7 @@ import org.gridsuite.studyconfig.server.entities.workspace.PanelType;
 import org.gridsuite.studyconfig.server.service.SingleLineDiagramService;
 import org.gridsuite.studyconfig.server.service.WorkspacesConfigService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -277,18 +279,23 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
     void testSaveNadConfig() throws Exception {
         List<PanelInfos> panels = workspacesConfigService.getPanels(configId, workspaceWithNadId, null);
 
-        UUID nadPanelId = panels.stream()
+        NADPanelInfos nadPanel = (NADPanelInfos) panels.stream()
             .filter(p -> p.getType() == PanelType.NAD)
-            .findFirst().orElseThrow()
-            .getId();
+            .findFirst().orElseThrow();
+        UUID nadPanelId = nadPanel.getId();
+        UUID initialNadConfigId = nadPanel.getCurrentNadConfigUuid();
 
         UUID newNadConfigId = UUID.randomUUID();
         when(singleLineDiagramService.createOrUpdateNadConfig(any())).thenReturn(newNadConfigId);
 
+        UUID sourceNadConfigId = UUID.randomUUID();
+        UUID sourceFilterId = UUID.randomUUID();
+        UUID currentFilterId = UUID.randomUUID();
         MvcResult result = mockMvc.perform(post(getNadConfigPath(),
                 configId, workspaceWithNadId, nadPanelId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"someKey\":\"someValue\"}"))
+                .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
+                    "Replaced Nad", Map.of("someKey", "someValue"), sourceNadConfigId, sourceFilterId, currentFilterId, List.of("vlToOmit")))))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -296,25 +303,92 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         assertThat(returnedId).isEqualTo(newNadConfigId);
 
         NADPanelInfos updatedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanelId)).get(0);
+        assertThat(updatedPanel.getTitle()).isEqualTo("Replaced Nad");
         assertThat(updatedPanel.getCurrentNadConfigUuid()).isEqualTo(newNadConfigId);
+        assertThat(updatedPanel.getNadConfigUuid()).isEqualTo(sourceNadConfigId);
+        assertThat(updatedPanel.getFilterUuid()).isEqualTo(sourceFilterId);
+        assertThat(updatedPanel.getCurrentFilterUuid()).isEqualTo(currentFilterId);
+        assertThat(updatedPanel.getVoltageLevelToOmitIds()).containsExactly("vlToOmit");
+
+        // The panel has a config now, saving again updates it instead of creating a second one
+        mockMvc.perform(post(getNadConfigPath(),
+                configId, workspaceWithNadId, nadPanelId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
+                    "Resaved Nad", Map.of("someKey", "someOtherValue"), null, null, null, List.of()))))
+            .andExpect(status().isCreated());
+
+        ArgumentCaptor<Map<String, Object>> nadConfigCaptor = ArgumentCaptor.captor();
+        verify(singleLineDiagramService, times(2)).createOrUpdateNadConfig(nadConfigCaptor.capture());
+        assertThat(nadConfigCaptor.getAllValues().get(0)).containsEntry("id", initialNadConfigId);
+        assertThat(nadConfigCaptor.getAllValues().get(1)).containsEntry("id", newNadConfigId);
+
+        NADPanelInfos resavedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanelId)).get(0);
+        assertThat(resavedPanel.getCurrentFilterUuid()).isNull();
+        assertThat(resavedPanel.getVoltageLevelToOmitIds()).isEmpty();
     }
 
     @Test
-    void testDeleteNadConfig() throws Exception {
-        List<PanelInfos> panels = workspacesConfigService.getPanels(configId, workspaceWithNadId, null);
+    void testUpdatePanelKeepsNadConfigFields() throws Exception {
+        NADPanelInfos nadPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, null)
+            .stream().filter(p -> p.getType() == PanelType.NAD).findFirst().orElseThrow();
 
-        NADPanelInfos nadPanel = (NADPanelInfos) panels.stream()
-            .filter(p -> p.getType() == PanelType.NAD)
-            .findFirst().orElseThrow();
+        nadPanel.setTitle("Updated Title");
+        nadPanel.setNadConfigUuid(UUID.randomUUID());
+        nadPanel.setFilterUuid(UUID.randomUUID());
+        nadPanel.setCurrentNadConfigUuid(UUID.randomUUID());
+        nadPanel.setCurrentFilterUuid(UUID.randomUUID());
+        nadPanel.setVoltageLevelToOmitIds(List.of("vlToOmit"));
 
-        mockMvc.perform(delete(getNadConfigPath(),
-                configId, workspaceWithNadId, nadPanel.getId()))
-            .andExpect(status().isNoContent());
-
-        verify(singleLineDiagramService).deleteNadConfig(any());
+        mockMvc.perform(post(getPanelsPath(), configId, workspaceWithNadId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(nadPanel))))
+            .andExpect(status().isOk());
 
         NADPanelInfos updatedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanel.getId())).get(0);
+        assertThat(updatedPanel.getTitle()).isEqualTo("Updated Title");
+        assertThat(updatedPanel.getNadConfigUuid()).isNotEqualTo(nadPanel.getNadConfigUuid());
+        assertThat(updatedPanel.getFilterUuid()).isNotEqualTo(nadPanel.getFilterUuid());
+        assertThat(updatedPanel.getCurrentNadConfigUuid()).isNotEqualTo(nadPanel.getCurrentNadConfigUuid());
+        assertThat(updatedPanel.getCurrentFilterUuid()).isNull();
+        assertThat(updatedPanel.getVoltageLevelToOmitIds()).isEmpty();
+    }
+
+    @Test
+    void testSaveNadConfigWithoutLayoutReplacesTheNad() throws Exception {
+        NADPanelInfos nadPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, null)
+            .stream().filter(p -> p.getType() == PanelType.NAD).findFirst().orElseThrow();
+        UUID initialNadConfigId = nadPanel.getCurrentNadConfigUuid();
+
+        UUID sourceNadConfigId = UUID.randomUUID();
+        mockMvc.perform(post(getNadConfigPath(), configId, workspaceWithNadId, nadPanel.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
+                    "Another Nad", null, sourceNadConfigId, null, null, List.of()))))
+            .andExpect(status().isCreated());
+
+        // The config of the NAD being left is dropped, no new one is created until the next diagram
+        verify(singleLineDiagramService).deleteNadConfig(initialNadConfigId);
+        verify(singleLineDiagramService, never()).createOrUpdateNadConfig(any());
+
+        NADPanelInfos updatedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanel.getId())).get(0);
+        assertThat(updatedPanel.getTitle()).isEqualTo("Another Nad");
+        assertThat(updatedPanel.getNadConfigUuid()).isEqualTo(sourceNadConfigId);
         assertThat(updatedPanel.getCurrentNadConfigUuid()).isNull();
+        assertThat(updatedPanel.getCurrentFilterUuid()).isNull();
+        assertThat(updatedPanel.getVoltageLevelToOmitIds()).isEmpty();
+
+        // Saving again on a panel that has no config of its own must not fail
+        UUID newNadConfigId = UUID.randomUUID();
+        when(singleLineDiagramService.createOrUpdateNadConfig(any())).thenReturn(newNadConfigId);
+        mockMvc.perform(post(getNadConfigPath(), configId, workspaceWithNadId, nadPanel.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
+                    "Another Nad", Map.of("someKey", "someValue"), sourceNadConfigId, null, null, List.of()))))
+            .andExpect(status().isCreated());
+
+        assertThat(((NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanel.getId())).get(0))
+            .getCurrentNadConfigUuid()).isEqualTo(newNadConfigId);
     }
 
     @Test
@@ -372,7 +446,27 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
     }
 
     @Test
-    void testDeleteNadConfigWhenNoneExists() throws Exception {
+    void testPanelKeepsInitialVoltageLevels() throws Exception {
+        NADPanelInfos nadPanel = new NADPanelInfos();
+        nadPanel.setId(UUID.randomUUID());
+        nadPanel.setType(PanelType.NAD);
+        nadPanel.setTitle("NAD from a voltage level search");
+        nadPanel.setPosition(new PanelPositionInfos(0.0, 0.0));
+        nadPanel.setSize(new PanelSizeInfos(1.0, 1.0));
+        nadPanel.setInitialVoltageLevelIds(List.of("vl1", "vl2"));
+
+        mockMvc.perform(post(getPanelsPath(), configId, emptyWorkspaceId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(nadPanel))))
+            .andExpect(status().isOk());
+
+        // A panel carries them until it has saved a config built from them
+        NADPanelInfos saved = (NADPanelInfos) workspacesConfigService.getPanels(configId, emptyWorkspaceId, Set.of(nadPanel.getId())).get(0);
+        assertThat(saved.getInitialVoltageLevelIds()).containsExactly("vl1", "vl2");
+    }
+
+    @Test
+    void testSaveNadConfigOnPanelWithoutOne() throws Exception {
         NADPanelInfos nadPanel = new NADPanelInfos();
         nadPanel.setId(UUID.randomUUID());
         nadPanel.setType(PanelType.NAD);
@@ -382,9 +476,19 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
         workspacesConfigService.createOrUpdatePanels(configId, emptyWorkspaceId, List.of(nadPanel));
 
-        mockMvc.perform(delete(getNadConfigPath(),
-                configId, emptyWorkspaceId, nadPanel.getId()))
-            .andExpect(status().isNotFound());
+        UUID newNadConfigId = UUID.randomUUID();
+        when(singleLineDiagramService.createOrUpdateNadConfig(any())).thenReturn(newNadConfigId);
+
+        // A panel that never had a config gets one, nothing is deleted
+        mockMvc.perform(post(getNadConfigPath(), configId, emptyWorkspaceId, nadPanel.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
+                    "First Nad", Map.of("someKey", "someValue"), null, null, null, List.of()))))
+            .andExpect(status().isCreated());
+
+        verify(singleLineDiagramService, never()).deleteNadConfig(any());
+        assertThat(((NADPanelInfos) workspacesConfigService.getPanels(configId, emptyWorkspaceId, Set.of(nadPanel.getId())).get(0))
+            .getCurrentNadConfigUuid()).isEqualTo(newNadConfigId);
     }
 
     @Test
