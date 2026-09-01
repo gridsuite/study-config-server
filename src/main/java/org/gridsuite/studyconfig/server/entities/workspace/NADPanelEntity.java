@@ -48,7 +48,7 @@ public class NADPanelEntity extends PanelEntity {
     @Column(name = "voltage_level_id")
     private List<String> voltageLevelToOmitIds = new ArrayList<>();
 
-    // Kept until every panel that only has these has saved a config from them, then dropped
+    // @deprecated Kept until every panel that only has these has saved a config from them, then dropped
     @Deprecated(since = "2026-08")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
