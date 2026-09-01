@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -30,13 +30,13 @@ public class SingleLineDiagramService {
     private static final String CONFIGS = "configs";
     private static final String CONFIG = "config";
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
     private String singleLineDiagramServerBaseUri;
 
     public SingleLineDiagramService(@Value("${gridsuite.services.single-line-diagram-server.base-uri:http://single-line-diagram-server/}") String singleLineDiagramServerBaseUri,
-                                    RestTemplate restTemplate) {
+                                    RestClient restClient) {
         this.singleLineDiagramServerBaseUri = singleLineDiagramServerBaseUri;
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
     }
 
     public UUID createOrUpdateNadConfig(Map<String, Object> nadConfigData) {
@@ -46,13 +46,13 @@ public class SingleLineDiagramService {
             String path = UriComponentsBuilder.newInstance()
                     .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG, id.toString())
                     .toUriString();
-            restTemplate.put(singleLineDiagramServerBaseUri + path, nadConfigData);
+            restClient.put().uri(singleLineDiagramServerBaseUri + path).body(nadConfigData).retrieve().toBodilessEntity();
             return id;
         } else {
             String path = UriComponentsBuilder.newInstance()
                     .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG)
                     .toUriString();
-            return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, nadConfigData, UUID.class);
+            return restClient.post().uri(singleLineDiagramServerBaseUri + path).body(nadConfigData).retrieve().body(UUID.class);
         }
     }
 
@@ -60,7 +60,7 @@ public class SingleLineDiagramService {
         String path = UriComponentsBuilder.newInstance()
                 .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIG, configUuid.toString())
                 .toUriString();
-        restTemplate.delete(singleLineDiagramServerBaseUri + path);
+        restClient.delete().uri(singleLineDiagramServerBaseUri + path).retrieve().toBodilessEntity();
     }
 
     public void deleteNadConfigs(List<UUID> configUuids) {
@@ -72,7 +72,11 @@ public class SingleLineDiagramService {
                 .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
                 .toUriString();
         HttpEntity<List<UUID>> requestEntity = new HttpEntity<>(configUuids);
-        restTemplate.exchange(singleLineDiagramServerBaseUri + path, HttpMethod.DELETE, requestEntity, Void.class);
+        restClient.method(HttpMethod.DELETE)
+                .uri(singleLineDiagramServerBaseUri + path)
+                .body(requestEntity.getBody())
+                .retrieve()
+                .toBodilessEntity();
     }
 
     public UUID duplicateNadConfig(UUID sourceConfigUuid) {
@@ -84,6 +88,10 @@ public class SingleLineDiagramService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
-        return restTemplate.postForObject(singleLineDiagramServerBaseUri + path, requestEntity, UUID.class);
+        return restClient.post()
+                .uri(singleLineDiagramServerBaseUri + path)
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .body(UUID.class);
     }
 }
