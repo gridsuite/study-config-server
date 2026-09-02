@@ -136,22 +136,33 @@ public class WorkspacesConfigService {
     }
 
     @Transactional
-    public UUID saveNadConfig(UUID configId, UUID workspaceId, UUID panelId, Map<String, Object> nadConfigData) {
-        UUID nadConfigUuid = workspaceNADConfigService.saveNadConfig(nadConfigData);
+    public UUID saveNadConfig(UUID configId, UUID workspaceId, UUID panelId, SaveNadConfigRequest request) {
         NADPanelEntity nadPanel = findNadPanel(configId, workspaceId, panelId);
+        UUID nadConfigUuid = saveOrDeleteNadConfig(nadPanel, request.nadConfig());
+
+        nadPanel.setTitle(request.title());
         nadPanel.setCurrentNadConfigUuid(nadConfigUuid);
+        nadPanel.setNadConfigUuid(request.nadConfigUuid());
+        nadPanel.setFilterUuid(request.filterUuid());
+        nadPanel.setCurrentFilterUuid(request.currentFilterUuid());
+        nadPanel.getVoltageLevelToOmitIds().clear();
+        if (request.voltageLevelToOmitIds() != null) {
+            nadPanel.getVoltageLevelToOmitIds().addAll(request.voltageLevelToOmitIds());
+        }
         return nadConfigUuid;
     }
 
-    @Transactional
-    public void deleteNadConfig(UUID configId, UUID workspaceId, UUID panelId) {
-        NADPanelEntity nadPanel = findNadPanel(configId, workspaceId, panelId);
-        UUID nadConfigUuid = nadPanel.getCurrentNadConfigUuid();
-        if (nadConfigUuid == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No NAD config found for panel: " + panelId);
+    private UUID saveOrDeleteNadConfig(NADPanelEntity nadPanel, Map<String, Object> nadConfigData) {
+        UUID currentNadConfigUuid = nadPanel.getCurrentNadConfigUuid();
+        if (nadConfigData == null) {
+            if (currentNadConfigUuid != null) {
+                workspaceNADConfigService.deleteNadConfig(currentNadConfigUuid);
+            }
+            return null;
         }
-        workspaceNADConfigService.deleteNadConfig(nadConfigUuid);
-        nadPanel.setCurrentNadConfigUuid(null);
+        Map<String, Object> nadConfig = new HashMap<>(nadConfigData);
+        nadConfig.put("id", currentNadConfigUuid);
+        return workspaceNADConfigService.saveNadConfig(nadConfig);
     }
 
     private WorkspacesConfigEntity findWorkspacesConfig(UUID configId) {

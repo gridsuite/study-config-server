@@ -48,6 +48,10 @@ public class NADPanelEntity extends PanelEntity {
     @Column(name = "voltage_level_id")
     private List<String> voltageLevelToOmitIds = new ArrayList<>();
 
+    /**
+     * @deprecated Kept until every panel that only has these has saved a config from them, then dropped
+     */
+    @Deprecated(since = "2026-08")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "nad_panel_initial_voltage_levels",
@@ -70,24 +74,30 @@ public class NADPanelEntity extends PanelEntity {
     public NADPanelEntity(NADPanelInfos dto) {
         super(dto);
         initEntity(dto);
+        initCurrentNadConfig(dto);
     }
 
     @Override
     protected void initEntity(PanelInfos dto) {
         super.initEntity(dto);
         NADPanelInfos nadDto = (NADPanelInfos) dto;
-        nadConfigUuid = nadDto.getNadConfigUuid();
-        filterUuid = nadDto.getFilterUuid();
-        currentFilterUuid = nadDto.getCurrentFilterUuid();
-        currentNadConfigUuid = nadDto.getCurrentNadConfigUuid();
-        if (nadDto.getVoltageLevelToOmitIds() != null) {
-            voltageLevelToOmitIds = new ArrayList<>(nadDto.getVoltageLevelToOmitIds());
-        }
         if (nadDto.getInitialVoltageLevelIds() != null) {
             initialVoltageLevelIds = new ArrayList<>(nadDto.getInitialVoltageLevelIds());
         }
         if (nadDto.getNavigationHistory() != null) {
             navigationHistory = new ArrayList<>(nadDto.getNavigationHistory());
+        }
+    }
+
+    // Saving a NAD config is the only way to write these, so a panel update carrying older values
+    // cannot undo it
+    private void initCurrentNadConfig(NADPanelInfos dto) {
+        nadConfigUuid = dto.getNadConfigUuid();
+        filterUuid = dto.getFilterUuid();
+        currentNadConfigUuid = dto.getCurrentNadConfigUuid();
+        currentFilterUuid = dto.getCurrentFilterUuid();
+        if (dto.getVoltageLevelToOmitIds() != null) {
+            voltageLevelToOmitIds = new ArrayList<>(dto.getVoltageLevelToOmitIds());
         }
     }
 
