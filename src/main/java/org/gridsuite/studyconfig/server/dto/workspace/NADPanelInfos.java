@@ -38,7 +38,9 @@ public class NADPanelInfos extends PanelInfos {
     @Schema(description = "Voltage level IDs to omit")
     private List<String> voltageLevelToOmitIds;
 
-    // @deprecated Kept until every panel that only has these has saved a config from them, then dropped
+    /**
+     * @deprecated Kept until every panel that only has these has saved a config from them, then dropped
+     */
     @Deprecated(since = "2026-08")
     @Schema(description = "Initial voltage level IDs for diagram creation")
     private List<String> initialVoltageLevelIds;
