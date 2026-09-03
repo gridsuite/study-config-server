@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="marutkam (generated)" id="1788435645355-1">
+        <addColumn tableName="network_visualization_params">
+            <column name="measurements" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="marutkam (generated)" id="1788435645355-2">
+        <addColumn tableName="network_visualization_params">
+            <column name="observability" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1788436448096-3" author="marutkam">
+        <update tableName="network_visualization_params">
+            <column name="measurements" valueComputed="STATE_ESTIMATION"/>
+        </update>
+        <update tableName="network_visualization_params">
+            <column name="observability" valueBoolean="false"/>
+        </update>
+    </changeSet>
+    <changeSet author="marutkam (generated)" id="1788435645355-4">
+        <dropColumn columnName="STATE_ESTIMATION" tableName="NETWORK_VISUALIZATION_PARAMS"/>
+    </changeSet>
+</databaseChangeLog>

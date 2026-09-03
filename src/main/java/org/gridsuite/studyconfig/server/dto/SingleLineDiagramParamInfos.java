@@ -26,6 +26,9 @@ public record SingleLineDiagramParamInfos(
     @Schema(description = "Component library selection")
     String componentLibrary,
 
-    @Schema(description = "Enable state estimation mode")
-    Boolean stateEstimation
+    @Schema(description = "Enable measurements mode")
+    Boolean measurements,
+
+    @Schema(description = "Enable observability mode")
+    Boolean observability
 ) { }
