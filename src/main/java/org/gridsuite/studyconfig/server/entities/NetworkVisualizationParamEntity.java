@@ -58,6 +58,9 @@ public class NetworkVisualizationParamEntity {
     @Column(name = "nad_positions_generation_mode")
     private String nadPositionsGenerationMode = null;
 
-    @Column(name = "state_estimation")
-    private Boolean stateEstimation = false;
+    @Column(name = "measurements")
+    private Boolean measurements = false;
+
+    @Column(name = "observability")
+    private Boolean observability = false;
 }
