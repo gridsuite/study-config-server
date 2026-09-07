@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gridsuite.studyconfig.server.StudyConfigApi;
 import org.gridsuite.studyconfig.server.dto.workspace.PanelInfos;
+import org.gridsuite.studyconfig.server.dto.workspace.SaveNadConfigRequest;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
 import org.gridsuite.studyconfig.server.service.WorkspacesConfigService;
@@ -23,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -143,7 +143,7 @@ public class WorkspacesConfigController {
 
     @PostMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/current-nad-config")
     @Operation(summary = "Save a NAD configuration",
-            description = "Creates or updates a NAD configuration and updates the panel reference")
+            description = "Creates or updates a NAD configuration and the panel fields applied on top of it")
     @ApiResponse(responseCode = "201", description = "NAD config saved",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspace or panel not found")
@@ -151,22 +151,9 @@ public class WorkspacesConfigController {
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
             @Parameter(description = "ID of the panel") @PathVariable UUID panelId,
-            @Parameter(description = "NAD config data") @RequestBody Map<String, Object> nadConfigData) {
+            @Parameter(description = "NAD config data") @RequestBody SaveNadConfigRequest saveNadConfigRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(workspacesConfigService.saveNadConfig(id, workspaceId, panelId, nadConfigData));
-    }
-
-    @DeleteMapping("/{id}/workspaces/{workspaceId}/panels/{panelId}/current-nad-config")
-    @Operation(summary = "Delete a NAD configuration",
-            description = "Deletes a NAD configuration and clears panel reference")
-    @ApiResponse(responseCode = "204", description = "NAD config deleted")
-    @ApiResponse(responseCode = "404", description = "Panel not found or no NAD config to delete")
-    public ResponseEntity<Void> deleteNadConfig(
-            @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
-            @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
-            @Parameter(description = "ID of the panel") @PathVariable UUID panelId) {
-        workspacesConfigService.deleteNadConfig(id, workspaceId, panelId);
-        return ResponseEntity.noContent().build();
+            .body(workspacesConfigService.saveNadConfig(id, workspaceId, panelId, saveNadConfigRequest));
     }
 
 }

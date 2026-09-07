@@ -65,7 +65,7 @@ public class SLDPanelEntity extends PanelEntity {
         iniDto(dto);
         dto.setEquipmentId(getEquipmentId());
         dto.setParentNadPanelId(getParentNadPanelId());
-        dto.setNavigationHistory(getNavigationHistory());
+        dto.setNavigationHistory(getNavigationHistory().stream().toList());
         return dto;
     }
 }

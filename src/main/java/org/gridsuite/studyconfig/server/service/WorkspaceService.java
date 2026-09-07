@@ -6,7 +6,7 @@
  */
 package org.gridsuite.studyconfig.server.service;
 
-import lombok.RequiredArgsConstructor;
+import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 import org.gridsuite.studyconfig.server.entities.workspace.WorkspaceEntity;
 import org.gridsuite.studyconfig.server.repositories.WorkspaceRepository;
 import org.springframework.http.HttpStatus;
@@ -14,40 +14,42 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceNADConfigService workspaceNADConfigService;
 
+    public WorkspaceService(WorkspaceNADConfigService workspaceNADConfigService,
+                            WorkspaceRepository workspaceRepository) {
+        this.workspaceNADConfigService = workspaceNADConfigService;
+        this.workspaceRepository = workspaceRepository;
+    }
+
     @Transactional(readOnly = true)
-    public Optional<WorkspaceEntity> getWorkspace(UUID workspaceId) {
-        return workspaceRepository.findById(workspaceId);
+    public WorkspaceInfos getWorkspace(UUID workspaceId) {
+        return getWorkspaceEntity(workspaceId).toDto();
+    }
+
+    private WorkspaceEntity getWorkspaceEntity(UUID workspaceId) {
+        return workspaceRepository.findById(workspaceId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace not found: " + workspaceId));
     }
 
     @Transactional
-    public WorkspaceEntity duplicateWorkspace(UUID sourceWorkspaceId) {
-        Optional<WorkspaceEntity> sourceWorkspace = workspaceRepository.findById(sourceWorkspaceId);
-        if (sourceWorkspace.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace not found: " + sourceWorkspaceId);
-        }
-
-        WorkspaceEntity workspace = sourceWorkspace.get().duplicate();
+    public UUID duplicateWorkspace(UUID sourceWorkspaceId) {
+        WorkspaceEntity workspace = getWorkspaceEntity(sourceWorkspaceId).duplicate();
         workspaceNADConfigService.duplicateNadConfigs(workspace);
 
-        return workspaceRepository.save(workspace);
+        return workspaceRepository.save(workspace).getId();
     }
 
     @Transactional
     public void replaceWorkspace(UUID workspaceId, UUID sourceWorkspaceId) {
-        WorkspaceEntity existingWorkspace = workspaceRepository.findById(workspaceId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace not found: " + workspaceId));
-        WorkspaceEntity sourceWorkspace = workspaceRepository.findById(sourceWorkspaceId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Source workspace not found: " + sourceWorkspaceId));
+        WorkspaceEntity existingWorkspace = getWorkspaceEntity(workspaceId);
+        WorkspaceEntity sourceWorkspace = getWorkspaceEntity(sourceWorkspaceId);
 
         // Delete old NAD configs
         workspaceNADConfigService.deleteNadConfigs(existingWorkspace.getNadPanels().stream());
@@ -66,12 +68,7 @@ public class WorkspaceService {
 
     @Transactional
     public void deleteWorkspace(UUID workspaceId) {
-        Optional<WorkspaceEntity> workspace = workspaceRepository.findById(workspaceId);
-        if (workspace.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace not found: " + workspaceId);
-        }
-
-        workspaceNADConfigService.deleteNadConfigs(workspace.get().getNadPanels().stream());
+        workspaceNADConfigService.deleteNadConfigs(getWorkspaceEntity(workspaceId).getNadPanels().stream());
         workspaceRepository.deleteById(workspaceId);
     }
 }
