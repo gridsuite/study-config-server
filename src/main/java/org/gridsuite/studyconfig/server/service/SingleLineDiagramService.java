@@ -7,7 +7,6 @@
 package org.gridsuite.studyconfig.server.service;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -71,10 +70,9 @@ public class SingleLineDiagramService {
         String path = UriComponentsBuilder.newInstance()
                 .pathSegment(API_VERSION, NETWORK_AREA_DIAGRAM, CONFIGS)
                 .toUriString();
-        HttpEntity<List<UUID>> requestEntity = new HttpEntity<>(configUuids);
         restClient.method(HttpMethod.DELETE)
                 .uri(singleLineDiagramServerBaseUri + path)
-                .body(requestEntity.getBody())
+                .body(configUuids)
                 .retrieve()
                 .toBodilessEntity();
     }
@@ -86,7 +84,6 @@ public class SingleLineDiagramService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
 
         return restClient.post()
                 .uri(singleLineDiagramServerBaseUri + path)
