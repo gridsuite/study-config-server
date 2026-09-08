@@ -27,7 +27,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * @author Caroline Jeandat {@literal <caroline.jeandat at rte-france.com>}
  */
 @RestClientTest(SingleLineDiagramService.class)
-@ContextConfiguration(classes = { RestTemplateConfig.class, SingleLineDiagramService.class })
+@ContextConfiguration(classes = { RestClientConfig.class, SingleLineDiagramService.class })
 @TestPropertySource(properties = "gridsuite.services.single-line-diagram-server.base-uri=http://single-line-diagram-server/")
 class SingleLineDiagramServiceTest {
     private static final String BASE_URI = "http://single-line-diagram-server/";
