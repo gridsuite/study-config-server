@@ -32,7 +32,8 @@ class NetworkVisualizationParamEntityTest {
                     assertThat(e.getSubstationLayout()).isEqualTo("horizontal");
                     assertThat(e.getComponentLibrary()).isEqualTo("GridSuiteAndConvergence");
                     assertThat(e.getNadPositionsGenerationMode()).isNull();
-                    assertThat(e.getStateEstimation()).isFalse();
+                    assertThat(e.getMeasurements()).isFalse();
+                    assertThat(e.getObservability()).isFalse();
                 });
     }
 }

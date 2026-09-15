@@ -167,14 +167,14 @@ class NetworkVisualizationParamsIntegrationTest {
     private NetworkVisualizationParamInfos createDto() {
         return new NetworkVisualizationParamInfos(null,
                 new MapParamInfos(true, false, "flow", true, "base"),
-                new SingleLineDiagramParamInfos(false, false, "layout", "lib", false),
+                new SingleLineDiagramParamInfos(false, false, "layout", "lib", false, false),
                 new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES));
     }
 
     private NetworkVisualizationParamInfos createDtoForUpdate(UUID id) {
         return new NetworkVisualizationParamInfos(id,
                 new MapParamInfos(false, true, "flow2", false, "base2"),
-                new SingleLineDiagramParamInfos(true, true, "layout2", "lib2", true),
+                new SingleLineDiagramParamInfos(true, true, "layout2", "lib2", true, true),
                 new NetworkAreaDiagramParamInfos(GEOGRAPHICAL_COORDINATES));
     }
 
