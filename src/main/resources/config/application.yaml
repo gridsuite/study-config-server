@@ -1,6 +1,9 @@
 spring:
   application:
     name: study-config
+  http:
+    converters:
+      preferred-json-mapper: jackson2
 
 powsybl-ws:
   database:
