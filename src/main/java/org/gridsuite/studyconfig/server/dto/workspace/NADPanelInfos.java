@@ -29,8 +29,8 @@ public class NADPanelInfos extends PanelInfos {
     @Schema(description = "Filter UUID")
     private UUID filterUuid;
 
-    @Schema(description = "Current filter UUID")
-    private UUID currentFilterUuid;
+    @Schema(description = "Filter name, kept to be shown once the filter is deleted")
+    private String filterName;
 
     @Schema(description = "Current NAD configuration UUID")
     private UUID currentNadConfigUuid;
