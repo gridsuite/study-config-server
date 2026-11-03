@@ -42,12 +42,18 @@ public record SpreadsheetColumnInfos(
     @Schema(description = "Column visibility", defaultValue = "true")
     Boolean visible,
 
+    @Schema(description = "Column locked (pinned to the left)", defaultValue = "false")
+    Boolean locked,
+
     @Schema(description = "column filter infos")
     ColumnFilterInfos columnFilterInfos
 ) {
     public SpreadsheetColumnInfos {
         if (visible == null) {
             visible = true;
+        }
+        if (locked == null) {
+            locked = false;
         }
     }
 
@@ -60,11 +66,12 @@ public record SpreadsheetColumnInfos(
             String dependencies,
             String id,
             boolean visible,
+            boolean locked,
             String filterDataType,
             String filterType,
             String filterValue,
             Double filterTolerance) {
-        this(uuid, name, type, precision, formula, dependencies, id, visible,
+        this(uuid, name, type, precision, formula, dependencies, id, visible, locked,
                 new ColumnFilterInfos(filterDataType, filterType, filterValue, filterTolerance));
     }
 }
