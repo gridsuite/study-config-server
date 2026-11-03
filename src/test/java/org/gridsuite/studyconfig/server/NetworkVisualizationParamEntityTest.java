@@ -34,7 +34,7 @@ class NetworkVisualizationParamEntityTest {
                     assertThat(e.getNadPositionsGenerationMode()).isNull();
                     assertThat(e.getMeasurements()).isFalse();
                     assertThat(e.getObservability()).isFalse();
-                    assertThat(e.getAutoRefresh()).isTrue();
+                    assertThat(e.getAutoRefresh()).isFalse();
                 });
     }
 }

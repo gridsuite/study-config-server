@@ -65,5 +65,5 @@ public class NetworkVisualizationParamEntity {
     private Boolean observability = false;
 
     @Column(name = "auto_refresh")
-    private Boolean autoRefresh = true;
+    private Boolean autoRefresh = false;
 }
