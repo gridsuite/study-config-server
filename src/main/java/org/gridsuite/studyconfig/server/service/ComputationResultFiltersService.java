@@ -137,6 +137,21 @@ public class ComputationResultFiltersService {
         filtersRepository.save(filtersEntity);
     }
 
+    @Transactional
+    public void resetFilters(UUID computationResultFiltersId, String computationType, String computationSubType) {
+        FiltersEntity filtersEntity = getFiltersEntity(computationResultFiltersId);
+        FilterTypeEntity typeEntity = findComputationType(filtersEntity, computationType);
+        if (typeEntity == null) {
+            return;
+        }
+        typeEntity.getGlobalFilters().clear();
+        FilterSubTypeEntity subTypeEntity = findComputationSubType(typeEntity, computationSubType);
+        if (subTypeEntity != null) {
+            subTypeEntity.getColumns().clear();
+        }
+        filtersRepository.save(filtersEntity);
+    }
+
     private FilterTypeEntity findOrCreateComputationType(FiltersEntity filtersEntity, String computationType) {
         return filtersEntity.getComputationResultFilter().stream()
                 .filter(type -> type.getComputationType().equals(computationType))
