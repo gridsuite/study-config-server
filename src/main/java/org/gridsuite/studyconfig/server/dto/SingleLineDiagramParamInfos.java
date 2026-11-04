@@ -32,6 +32,6 @@ public record SingleLineDiagramParamInfos(
     @Schema(description = "Enable observability mode")
     Boolean observability,
 
-    @Schema(description = "Automatic update")
+    @Schema(description = "Auto refresh")
     Boolean autoRefresh
 ) { }
