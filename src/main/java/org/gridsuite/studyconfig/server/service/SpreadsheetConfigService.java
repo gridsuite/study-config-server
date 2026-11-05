@@ -335,6 +335,7 @@ public class SpreadsheetConfigService {
             columnEntity.setColumnFilter(null);
         }
         columnEntity.setVisible(dto.visible());
+        columnEntity.setLocked(dto.locked());
 
         spreadsheetConfigRepository.save(entity);
     }
@@ -424,6 +425,7 @@ public class SpreadsheetConfigService {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, COLUMN_NOT_FOUND + state.columnId());
             }
             column.setVisible(state.visible());
+            column.setLocked(state.locked());
         }
 
         // Reorder columns based on the provided states

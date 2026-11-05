@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * DTO for updating column state (visibility and order)
+ * DTO for updating column state (visibility, lock and order)
  * @author Achour BERRAHMA <achour.berrahma at rte-france.com>
  */
 @Schema(name = "ColumnStateUpdateDto", description = "Column state update information")
@@ -25,6 +25,10 @@ public record ColumnStateUpdateInfos(
         @NotNull(message = "Visible state is mandatory")
         @Schema(description = "Column visibility state")
         Boolean visible,
+
+        @NotNull(message = "Locked state is mandatory")
+        @Schema(description = "Column locked (pinned to the left)")
+        Boolean locked,
 
         @NotNull(message = "Order is mandatory")
         @Schema(description = "New position in the column order (0-based index)")
