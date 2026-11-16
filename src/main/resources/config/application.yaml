@@ -3,6 +3,9 @@ spring:
     name: study-config
 
 powsybl-ws:
+  autoconfigure:
+    authorization-system:
+      enable: true
   database:
     name: studyconfig
 

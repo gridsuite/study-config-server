@@ -19,6 +19,7 @@ import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.service.ComputationResultFiltersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class ComputationResultFiltersController {
             description = "Creates a default computation result filters")
     @ApiResponse(responseCode = "201", description = "Default computation result filters created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createDefaultComputationResultFilters() {
         UUID id = computationGlobalFiltersService.createDefaultComputingResultFilters();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -49,6 +51,7 @@ public class ComputationResultFiltersController {
     @ApiResponse(responseCode = "200", description = "Computation result global filters found",
             content = @Content(schema = @Schema(implementation = GlobalFilterInfos.class)))
     @ApiResponse(responseCode = "404", description = "Computation result global filters not found")
+    @PreAuthorize("@authorizationService.canRead(#computationResultFiltersId)")
     public ResponseEntity<List<GlobalFilterInfos>> getComputingResultGlobalFilters(
             @Parameter(description = "Computation result filters Id") @PathVariable UUID computationResultFiltersId,
             @Parameter(description = "Computation type") @PathVariable String computationType) {
@@ -61,6 +64,7 @@ public class ComputationResultFiltersController {
     @ApiResponse(responseCode = "200", description = "Computation result column filters found",
             content = @Content(schema = @Schema(implementation = ComputationResultColumnFilterInfos.class)))
     @ApiResponse(responseCode = "404", description = "Computation result column filters not found")
+    @PreAuthorize("@authorizationService.canRead(#computationResultFiltersId)")
     public ResponseEntity<List<ComputationResultColumnFilterInfos>> getComputingResultColumnFilters(
             @Parameter(description = "Computation result filters Id") @PathVariable UUID computationResultFiltersId,
             @Parameter(description = "Computation type") @PathVariable String computationType,
@@ -73,6 +77,7 @@ public class ComputationResultFiltersController {
             description = "Replaces all existing global filters with the provided list for a computation result")
     @ApiResponse(responseCode = "204", description = "Global filters set successfully")
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
+    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
     public ResponseEntity<Void> setGlobalFiltersForComputingResult(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,
@@ -84,6 +89,7 @@ public class ComputationResultFiltersController {
     @PutMapping("/{computationResultFiltersId}/{computationType}/{computationSubType}/columns")
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
+    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
     public ResponseEntity<Void> updateColumn(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,
@@ -98,6 +104,7 @@ public class ComputationResultFiltersController {
             description = "Resets the global filters of a computation type and the column filters of one of its subtypes")
     @ApiResponse(responseCode = "204", description = "Filters reset successfully")
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
+    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
     public ResponseEntity<Void> resetFilters(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,

@@ -6,11 +6,13 @@
  */
 package org.gridsuite.studyconfig.server;
 
+import com.powsybl.ws.commons.security.AllowAllAuthorizationTestConfiguration;
 import org.gridsuite.studyconfig.server.service.SingleLineDiagramService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +29,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * @author Caroline Jeandat {@literal <caroline.jeandat at rte-france.com>}
  */
 @RestClientTest(SingleLineDiagramService.class)
+@Import(AllowAllAuthorizationTestConfiguration.class)
 @ContextConfiguration(classes = { RestClientConfig.class, SingleLineDiagramService.class })
 @TestPropertySource(properties = "gridsuite.services.single-line-diagram-server.base-uri=http://single-line-diagram-server/")
 class SingleLineDiagramServiceTest {

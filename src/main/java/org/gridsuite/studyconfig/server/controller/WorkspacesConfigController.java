@@ -22,6 +22,7 @@ import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceMetadata;
 import org.gridsuite.studyconfig.server.service.WorkspacesConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,7 @@ public class WorkspacesConfigController {
     @ApiResponse(responseCode = "201", description = "Workspaces config duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<UUID> duplicateWorkspacesConfig(
             @Parameter(description = "UUID of the workspaces config to duplicate") @PathVariable("id") UUID id) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -57,6 +59,7 @@ public class WorkspacesConfigController {
             description = "Creates a workspaces config from workspace UUIDs (duplicating valid ones, creating empty for nulls/invalids). Empty list creates default config")
     @ApiResponse(responseCode = "201", description = "Workspaces config created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("#workspaceIds != null ? @authorizationService.canRead(#workspaceIds) : true")
     public ResponseEntity<UUID> createWorkspacesConfig(
             @Parameter(description = "Optional comma-separated list of workspace UUIDs. Null entries create empty workspaces. Empty/null list creates default config")
             @RequestParam(name = CREATE_FROM, required = false) List<UUID> workspaceIds) {
@@ -69,6 +72,7 @@ public class WorkspacesConfigController {
             description = "Deletes an existing workspaces config")
     @ApiResponse(responseCode = "204", description = "Workspaces config deleted")
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
+    @PreAuthorize("@authorizationService.canDelete(#id)")
     public ResponseEntity<Void> deleteWorkspacesConfig(
             @Parameter(description = "ID of the workspaces config to delete") @PathVariable UUID id) {
         workspacesConfigService.deleteWorkspacesConfig(id);
@@ -80,6 +84,7 @@ public class WorkspacesConfigController {
             description = "Retrieves lightweight metadata for all workspaces (id, name, panel count)")
     @ApiResponse(responseCode = "200", description = "Workspaces metadata retrieved")
     @ApiResponse(responseCode = "404", description = "Workspaces config not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<List<WorkspaceMetadata>> getWorkspaces(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id) {
         return ResponseEntity.ok(workspacesConfigService.getWorkspacesMetadata(id));
@@ -89,6 +94,7 @@ public class WorkspacesConfigController {
     @Operation(summary = "Rename a workspace", description = "Updates the name of a workspace")
     @ApiResponse(responseCode = "204", description = "Workspace renamed")
     @ApiResponse(responseCode = "404", description = "Workspace not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> renameWorkspace(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
@@ -101,6 +107,7 @@ public class WorkspacesConfigController {
     @Operation(summary = "Get a workspace", description = "Retrieves a workspace by its ID")
     @ApiResponse(responseCode = "200", description = "Workspace found")
     @ApiResponse(responseCode = "404", description = "Workspace not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<WorkspaceInfos> getWorkspace(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId) {
@@ -110,6 +117,7 @@ public class WorkspacesConfigController {
     @GetMapping("/{id}/workspaces/{workspaceId}/panels")
     @Operation(summary = "Get panels", description = "Retrieves all panels or specific panels by IDs")
     @ApiResponse(responseCode = "200", description = "Panels found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<List<PanelInfos>> getPanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
@@ -121,6 +129,7 @@ public class WorkspacesConfigController {
     @Operation(summary = "Create or update panels",
             description = "Creates new panels or updates existing ones based on panel ID presence")
     @ApiResponse(responseCode = "200", description = "Panels created or updated, returns list of panel IDs")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<List<UUID>> createOrUpdatePanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
@@ -133,6 +142,7 @@ public class WorkspacesConfigController {
     @Operation(summary = "Delete panels", description = "Deletes panels by their IDs, or all panels if no IDs provided")
     @ApiResponse(responseCode = "204", description = "Panels deleted")
     @ApiResponse(responseCode = "404", description = "Panels not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> deletePanels(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
@@ -147,6 +157,7 @@ public class WorkspacesConfigController {
     @ApiResponse(responseCode = "201", description = "NAD config saved",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Workspace or panel not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<UUID> saveNadConfig(
             @Parameter(description = "ID of the workspaces config") @PathVariable UUID id,
             @Parameter(description = "ID of the workspace") @PathVariable UUID workspaceId,
@@ -155,5 +166,4 @@ public class WorkspacesConfigController {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(workspacesConfigService.saveNadConfig(id, workspaceId, panelId, saveNadConfigRequest));
     }
-
 }

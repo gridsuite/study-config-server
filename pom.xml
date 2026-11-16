@@ -52,6 +52,8 @@
         <liquibase-hibernate-package>org.gridsuite.studyconfig.server</liquibase-hibernate-package>
         <sonar.organization>gridsuite</sonar.organization>
         <sonar.projectKey>org.gridsuite:study-config-server</sonar.projectKey>
+
+        <powsybl-ws-commons.version>1.42.0-SNAPSHOT</powsybl-ws-commons.version>
     </properties>
 
     <build>
@@ -74,6 +76,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- overrides of imports -->
+            <dependency>
+               <groupId>com.powsybl</groupId>
+               <artifactId>powsybl-ws-commons</artifactId>
+               <version>${powsybl-ws-commons.version}</version>
+            </dependency>
 
             <!-- imports -->
             <dependency>
@@ -111,6 +118,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -153,6 +164,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-ws-commons</artifactId>
+            <version>${powsybl-ws-commons.version}</version>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

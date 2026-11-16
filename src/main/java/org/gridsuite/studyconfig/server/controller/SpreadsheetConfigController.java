@@ -19,6 +19,7 @@ import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class SpreadsheetConfigController {
             description = "Creates a new spreadsheet configuration and returns its ID")
     @ApiResponse(responseCode = "201", description = "Configuration created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createSpreadsheetConfig(@Parameter(description = "Configuration to save") @Valid @RequestBody SpreadsheetConfigInfos dto) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfig(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -53,6 +55,7 @@ public class SpreadsheetConfigController {
     @ApiResponse(responseCode = "201", description = "Configuration duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<UUID> duplicateSpreadsheetConfig(@Parameter(description = "UUID of the configuration to duplicate") @PathVariable("id") UUID id) {
         UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfig(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
@@ -64,6 +67,7 @@ public class SpreadsheetConfigController {
     @ApiResponse(responseCode = "200", description = "Configuration found",
             content = @Content(schema = @Schema(implementation = SpreadsheetConfigInfos.class)))
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<SpreadsheetConfigInfos> getSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to retrieve") @PathVariable UUID id) {
         return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfig(id));
@@ -74,6 +78,7 @@ public class SpreadsheetConfigController {
             description = "Retrieves metadata of spreadsheet configurations by their IDs")
     @ApiResponse(responseCode = "200", description = "Metadata found",
             content = @Content(schema = @Schema(implementation = MetadataInfos.class)))
+    @PreAuthorize("@authorizationService.canRead(#ids)")
     public ResponseEntity<List<MetadataInfos>> getSpreadsheetConfigsMetadata(@RequestParam List<UUID> ids) {
         return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfigsMetadata(ids));
     }
@@ -83,6 +88,7 @@ public class SpreadsheetConfigController {
             description = "Updates an existing spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Configuration updated")
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to update") @PathVariable UUID id,
             @Valid @RequestBody SpreadsheetConfigInfos dto) {
@@ -95,6 +101,7 @@ public class SpreadsheetConfigController {
             description = "Updates an existing spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Configuration updated")
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateSpreadsheetConfigSort(
             @Parameter(description = "ID of the configuration to update") @PathVariable UUID id,
             @Valid @RequestBody SortConfig dto) {
@@ -107,6 +114,7 @@ public class SpreadsheetConfigController {
             description = "Updates the name of an existing spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Configuration renamed")
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> renameSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to rename") @PathVariable UUID id,
             @Parameter(description = "New name for the configuration") @RequestBody String name) {
@@ -119,6 +127,7 @@ public class SpreadsheetConfigController {
             description = "Deletes an existing spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Configuration deleted")
     @ApiResponse(responseCode = "404", description = "Configuration not found")
+    @PreAuthorize("@authorizationService.canDelete(#id)")
     public ResponseEntity<Void> deleteSpreadsheetConfig(
             @Parameter(description = "ID of the configuration to delete") @PathVariable UUID id) {
         spreadsheetConfigService.deleteSpreadsheetConfig(id);
@@ -129,6 +138,7 @@ public class SpreadsheetConfigController {
     @Operation(summary = "Get a column", description = "Retrieves a column by its ID")
     @ApiResponse(responseCode = "200", description = "Column found")
     @ApiResponse(responseCode = "404", description = "Column not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<SpreadsheetColumnInfos> getColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "ID of the column to retrieve") @PathVariable UUID columnId) {
@@ -138,6 +148,7 @@ public class SpreadsheetConfigController {
     @PostMapping("/{id}/columns")
     @Operation(summary = "Create a column", description = "Creates a new column")
     @ApiResponse(responseCode = "201", description = "Column created")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<UUID> createColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Valid @RequestBody SpreadsheetColumnInfos dto) {
@@ -148,6 +159,7 @@ public class SpreadsheetConfigController {
     @PutMapping("/{id}/columns/{columnId}")
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "ID of the column to update") @PathVariable UUID columnId,
@@ -160,6 +172,7 @@ public class SpreadsheetConfigController {
     @Operation(summary = "Delete a column", description = "Deletes an existing column")
     @ApiResponse(responseCode = "204", description = "Column deleted")
     @ApiResponse(responseCode = "404", description = "Column not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> deleteColumn(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "ID of the column to delete") @PathVariable UUID columnId) {
@@ -171,6 +184,7 @@ public class SpreadsheetConfigController {
     @Operation(summary = "Duplicate a column", description = "Duplicate a column and place it after the source column")
     @ApiResponse(responseCode = "204", description = "Column duplicated")
     @ApiResponse(responseCode = "404", description = "Column not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> duplicateColumn(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Parameter(description = "ID of the column to duplicate") @PathVariable UUID columnId) {
@@ -181,6 +195,7 @@ public class SpreadsheetConfigController {
     @PutMapping("/{id}/columns/reorder")
     @Operation(summary = "Reorder columns", description = "Reorders the columns of a spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Columns reordered")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> reorderColumns(
                     @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
                     @Parameter(description = "New order of column IDs") @RequestBody List<UUID> columnOrder) {
@@ -194,6 +209,7 @@ public class SpreadsheetConfigController {
     @ApiResponse(responseCode = "204", description = "Column states updated successfully")
     @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
     @ApiResponse(responseCode = "400", description = "Invalid column state data")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateColumnStates(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Parameter(description = "List of column state updates")
@@ -207,6 +223,7 @@ public class SpreadsheetConfigController {
             description = "Replaces all existing global filters with the provided list for a spreadsheet configuration")
     @ApiResponse(responseCode = "204", description = "Global filters set successfully")
     @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> setGlobalFiltersForSpreadsheetConfig(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id,
             @Valid @RequestBody List<GlobalFilterInfos> filters) {
@@ -219,10 +236,10 @@ public class SpreadsheetConfigController {
             description = "Reset all columns filters in a spreadsheet configuration as well as the global filter")
     @ApiResponse(responseCode = "204", description = "Filters reset successfully")
     @ApiResponse(responseCode = "404", description = "Spreadsheet configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> resetFilters(
             @Parameter(description = "ID of the spreadsheet config") @PathVariable UUID id) {
         spreadsheetConfigService.resetSpreadsheetConfigFilters(id);
         return ResponseEntity.noContent().build();
     }
-
 }
