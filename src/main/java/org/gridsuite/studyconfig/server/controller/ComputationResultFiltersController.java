@@ -92,4 +92,17 @@ public class ComputationResultFiltersController {
         computationGlobalFiltersService.updateColumn(computationResultFiltersId, computationType, computationSubType, dto);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{computationResultFiltersId}/{computationType}/{computationSubType}/reset-filters")
+    @Operation(summary = "Reset global and column filters",
+            description = "Resets the global filters of a computation type and the column filters of one of its subtypes")
+    @ApiResponse(responseCode = "204", description = "Filters reset successfully")
+    @ApiResponse(responseCode = "404", description = "Computation result filters not found")
+    public ResponseEntity<Void> resetFilters(
+            @PathVariable UUID computationResultFiltersId,
+            @PathVariable String computationType,
+            @PathVariable String computationSubType) {
+        computationGlobalFiltersService.resetFilters(computationResultFiltersId, computationType, computationSubType);
+        return ResponseEntity.noContent().build();
+    }
 }

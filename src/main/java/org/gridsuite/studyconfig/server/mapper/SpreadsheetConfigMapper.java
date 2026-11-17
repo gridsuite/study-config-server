@@ -80,6 +80,7 @@ public final class SpreadsheetConfigMapper {
                 entity.getDependencies(),
                 entity.getId(),
                 entity.isVisible(),
+                entity.isLocked(),
                 filter != null ? filter.getFilterDataType() : null,
                 filter != null ? filter.getFilterType() : null,
                 filter != null ? filter.getFilterValue() : null,
@@ -96,6 +97,7 @@ public final class SpreadsheetConfigMapper {
                 .dependencies(dto.dependencies())
                 .id(dto.id())
                 .visible(dto.visible())
+                .locked(dto.locked())
                 .columnFilter(dto.columnFilterInfos() != null ? ColumnFilterEntity.builder()
                         .filterDataType(dto.columnFilterInfos().filterDataType())
                         .filterType(dto.columnFilterInfos().filterType())

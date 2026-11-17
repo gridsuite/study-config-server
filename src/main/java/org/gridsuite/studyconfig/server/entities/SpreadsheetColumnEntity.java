@@ -53,6 +53,10 @@ public class SpreadsheetColumnEntity {
     @Builder.Default
     private boolean visible = true;
 
+    @Column(name = "locked", nullable = false, columnDefinition = "boolean default false")
+    @Builder.Default
+    private boolean locked = false;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "columnEntity_columnFilter_id", referencedColumnName = "uuid",
             foreignKey = @ForeignKey(name = "columnEntity_columnFilter_fk"))
@@ -68,6 +72,7 @@ public class SpreadsheetColumnEntity {
                 .id(getId())
                 .columnFilter(this.columnFilter != null ? this.columnFilter.copy() : null)
                 .visible(isVisible())
+                .locked(isLocked())
                 .build();
     }
 }

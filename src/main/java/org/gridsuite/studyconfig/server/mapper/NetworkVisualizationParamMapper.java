@@ -33,7 +33,8 @@ public final class NetworkVisualizationParamMapper {
                         entity.getSubstationLayout(),
                         entity.getComponentLibrary(),
                         entity.getMeasurements(),
-                        entity.getObservability()
+                        entity.getObservability(),
+                        entity.getAutoRefresh()
                 ),
                 new NetworkAreaDiagramParamInfos(getNadPositionsGenerationMode(entity.getNadPositionsGenerationMode(), nadPositionsGenerationDefaultMode))
         );
@@ -65,6 +66,7 @@ public final class NetworkVisualizationParamMapper {
         entity.setComponentLibrary(dto.singleLineDiagramParameters().componentLibrary());
         entity.setMeasurements(dto.singleLineDiagramParameters().measurements());
         entity.setObservability(dto.singleLineDiagramParameters().observability());
+        entity.setAutoRefresh(dto.singleLineDiagramParameters().autoRefresh());
         // NAD
         entity.setNadPositionsGenerationMode(dto.networkAreaDiagramParameters().nadPositionsGenerationMode().name());
     }
