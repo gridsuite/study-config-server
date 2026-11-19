@@ -7,7 +7,7 @@
 package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.powsybl.ws.commons.security.AllowAllAuthorizationTestConfiguration;
+import com.powsybl.ws.commons.security.AllowAllAuthTestConfiguration;
 import org.gridsuite.studyconfig.server.constants.ColumnType;
 import org.gridsuite.studyconfig.server.constants.SheetType;
 import org.gridsuite.studyconfig.server.constants.SortDirection;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@Import(AllowAllAuthorizationTestConfiguration.class)
+@Import(AllowAllAuthTestConfiguration.class)
 @AutoConfigureMockMvc
 class SpreadsheetConfigCollectionIntegrationTest {
 

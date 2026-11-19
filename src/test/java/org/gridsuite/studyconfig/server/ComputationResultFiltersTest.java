@@ -8,7 +8,7 @@ package org.gridsuite.studyconfig.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.powsybl.ws.commons.security.AllowAllAuthorizationTestConfiguration;
+import com.powsybl.ws.commons.security.AllowAllAuthTestConfiguration;
 import org.gridsuite.studyconfig.server.dto.*;
 import org.gridsuite.studyconfig.server.dto.ComputationResultColumnFilterInfos;
 import org.gridsuite.studyconfig.server.repositories.computationresult.FiltersRepository;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Rehili Ghazwa <ghazwa.rehili at rte-france.com>
  */
 @SpringBootTest
-@Import(AllowAllAuthorizationTestConfiguration.class)
+@Import(AllowAllAuthTestConfiguration.class)
 @AutoConfigureMockMvc
 class ComputationResultFiltersTest {
 

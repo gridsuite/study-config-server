@@ -6,7 +6,7 @@
  */
 package org.gridsuite.studyconfig.server;
 
-import com.powsybl.ws.commons.security.AllowAllAuthorizationTestConfiguration;
+import com.powsybl.ws.commons.security.AllowAllAuthTestConfiguration;
 import org.gridsuite.studyconfig.server.service.SingleLineDiagramService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * @author Caroline Jeandat {@literal <caroline.jeandat at rte-france.com>}
  */
 @RestClientTest(SingleLineDiagramService.class)
-@Import(AllowAllAuthorizationTestConfiguration.class)
+@Import(AllowAllAuthTestConfiguration.class)
 @ContextConfiguration(classes = { RestClientConfig.class, SingleLineDiagramService.class })
 @TestPropertySource(properties = "gridsuite.services.single-line-diagram-server.base-uri=http://single-line-diagram-server/")
 class SingleLineDiagramServiceTest {
