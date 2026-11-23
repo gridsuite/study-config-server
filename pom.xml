@@ -52,7 +52,7 @@
         <liquibase-hibernate-package>org.gridsuite.studyconfig.server</liquibase-hibernate-package>
         <sonar.organization>gridsuite</sonar.organization>
         <sonar.projectKey>org.gridsuite:study-config-server</sonar.projectKey>
-
+        <!-- FIXME remove this in the next gridsuite-dependencies update -->
         <powsybl-ws-commons.version>1.42.0</powsybl-ws-commons.version>
     </properties>
 
