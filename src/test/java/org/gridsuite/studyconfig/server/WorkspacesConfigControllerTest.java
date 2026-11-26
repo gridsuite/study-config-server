@@ -290,12 +290,11 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
 
         UUID sourceNadConfigId = UUID.randomUUID();
         UUID sourceFilterId = UUID.randomUUID();
-        UUID currentFilterId = UUID.randomUUID();
         MvcResult result = mockMvc.perform(post(getNadConfigPath(),
                 configId, workspaceWithNadId, nadPanelId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new SaveNadConfigRequest(
-                    "Replaced Nad", Map.of("someKey", "someValue"), sourceNadConfigId, sourceFilterId, currentFilterId, List.of("vlToOmit")))))
+                    "Replaced Nad", Map.of("someKey", "someValue"), sourceNadConfigId, sourceFilterId, "Source filter", List.of("vlToOmit")))))
             .andExpect(status().isCreated())
             .andReturn();
 
@@ -307,7 +306,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         assertThat(updatedPanel.getCurrentNadConfigUuid()).isEqualTo(newNadConfigId);
         assertThat(updatedPanel.getNadConfigUuid()).isEqualTo(sourceNadConfigId);
         assertThat(updatedPanel.getFilterUuid()).isEqualTo(sourceFilterId);
-        assertThat(updatedPanel.getCurrentFilterUuid()).isEqualTo(currentFilterId);
+        assertThat(updatedPanel.getFilterName()).isEqualTo("Source filter");
         assertThat(updatedPanel.getVoltageLevelToOmitIds()).containsExactly("vlToOmit");
 
         // The panel has a config now, saving again updates it instead of creating a second one
@@ -324,7 +323,8 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         assertThat(nadConfigCaptor.getAllValues().get(1)).containsEntry("id", newNadConfigId);
 
         NADPanelInfos resavedPanel = (NADPanelInfos) workspacesConfigService.getPanels(configId, workspaceWithNadId, Set.of(nadPanelId)).get(0);
-        assertThat(resavedPanel.getCurrentFilterUuid()).isNull();
+        assertThat(resavedPanel.getFilterUuid()).isNull();
+        assertThat(resavedPanel.getFilterName()).isNull();
         assertThat(resavedPanel.getVoltageLevelToOmitIds()).isEmpty();
     }
 
@@ -336,8 +336,8 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         nadPanel.setTitle("Updated Title");
         nadPanel.setNadConfigUuid(UUID.randomUUID());
         nadPanel.setFilterUuid(UUID.randomUUID());
+        nadPanel.setFilterName("Updated filter");
         nadPanel.setCurrentNadConfigUuid(UUID.randomUUID());
-        nadPanel.setCurrentFilterUuid(UUID.randomUUID());
         nadPanel.setVoltageLevelToOmitIds(List.of("vlToOmit"));
 
         mockMvc.perform(post(getPanelsPath(), configId, workspaceWithNadId)
@@ -349,8 +349,8 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         assertThat(updatedPanel.getTitle()).isEqualTo("Updated Title");
         assertThat(updatedPanel.getNadConfigUuid()).isNotEqualTo(nadPanel.getNadConfigUuid());
         assertThat(updatedPanel.getFilterUuid()).isNotEqualTo(nadPanel.getFilterUuid());
+        assertThat(updatedPanel.getFilterName()).isNotEqualTo(nadPanel.getFilterName());
         assertThat(updatedPanel.getCurrentNadConfigUuid()).isNotEqualTo(nadPanel.getCurrentNadConfigUuid());
-        assertThat(updatedPanel.getCurrentFilterUuid()).isNull();
         assertThat(updatedPanel.getVoltageLevelToOmitIds()).isEmpty();
     }
 
@@ -375,7 +375,7 @@ class WorkspacesConfigControllerTest extends AbstractWorkspaceTestBase {
         assertThat(updatedPanel.getTitle()).isEqualTo("Another Nad");
         assertThat(updatedPanel.getNadConfigUuid()).isEqualTo(sourceNadConfigId);
         assertThat(updatedPanel.getCurrentNadConfigUuid()).isNull();
-        assertThat(updatedPanel.getCurrentFilterUuid()).isNull();
+        assertThat(updatedPanel.getFilterUuid()).isNull();
         assertThat(updatedPanel.getVoltageLevelToOmitIds()).isEmpty();
 
         // Saving again on a panel that has no config of its own must not fail

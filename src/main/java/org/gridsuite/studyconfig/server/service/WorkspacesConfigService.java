@@ -144,7 +144,7 @@ public class WorkspacesConfigService {
         nadPanel.setCurrentNadConfigUuid(nadConfigUuid);
         nadPanel.setNadConfigUuid(request.nadConfigUuid());
         nadPanel.setFilterUuid(request.filterUuid());
-        nadPanel.setCurrentFilterUuid(request.currentFilterUuid());
+        nadPanel.setFilterName(request.filterName());
         nadPanel.getVoltageLevelToOmitIds().clear();
         if (request.voltageLevelToOmitIds() != null) {
             nadPanel.getVoltageLevelToOmitIds().addAll(request.voltageLevelToOmitIds());

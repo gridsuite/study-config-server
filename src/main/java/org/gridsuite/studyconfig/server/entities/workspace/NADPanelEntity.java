@@ -33,8 +33,8 @@ public class NADPanelEntity extends PanelEntity {
     @Column(name = "filter_uuid")
     private UUID filterUuid;
 
-    @Column(name = "current_filter_uuid")
-    private UUID currentFilterUuid;
+    @Column(name = "filter_name")
+    private String filterName;
 
     @Column(name = "current_nad_config_uuid")
     private UUID currentNadConfigUuid;
@@ -94,8 +94,8 @@ public class NADPanelEntity extends PanelEntity {
     private void initCurrentNadConfig(NADPanelInfos dto) {
         nadConfigUuid = dto.getNadConfigUuid();
         filterUuid = dto.getFilterUuid();
+        filterName = dto.getFilterName();
         currentNadConfigUuid = dto.getCurrentNadConfigUuid();
-        currentFilterUuid = dto.getCurrentFilterUuid();
         if (dto.getVoltageLevelToOmitIds() != null) {
             voltageLevelToOmitIds = new ArrayList<>(dto.getVoltageLevelToOmitIds());
         }
@@ -107,7 +107,7 @@ public class NADPanelEntity extends PanelEntity {
         iniDto(dto);
         dto.setNadConfigUuid(getNadConfigUuid());
         dto.setFilterUuid(getFilterUuid());
-        dto.setCurrentFilterUuid(getCurrentFilterUuid());
+        dto.setFilterName(getFilterName());
         dto.setCurrentNadConfigUuid(getCurrentNadConfigUuid());
         dto.setVoltageLevelToOmitIds(getVoltageLevelToOmitIds().stream().toList());
         dto.setInitialVoltageLevelIds(getInitialVoltageLevelIds().stream().toList());

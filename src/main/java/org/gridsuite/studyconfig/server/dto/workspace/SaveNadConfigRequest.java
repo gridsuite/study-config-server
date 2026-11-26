@@ -26,11 +26,11 @@ public record SaveNadConfigRequest(
     @Schema(description = "Source NAD config")
     UUID nadConfigUuid,
 
-    @Schema(description = "Source filter")
+    @Schema(description = "Filter the NAD shows, what it matches on each node")
     UUID filterUuid,
 
-    @Schema(description = "Filter currently applied")
-    UUID currentFilterUuid,
+    @Schema(description = "Filter name, kept to be shown once the filter is deleted")
+    String filterName,
 
     @Schema(description = "Hidden voltage levels")
     List<String> voltageLevelToOmitIds

@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!-- A filter NAD only got a config of its own once edited, which saved everything it drew: it becomes a list of
+         those voltage levels, a NAD with a filter now shows only what the filter matches -->
+    <changeSet author="labidiayo" id="1791298027770-0">
+        <update tableName="nad_panel">
+            <column name="filter_uuid" valueComputed="NULL"/>
+            <where>filter_uuid IS NOT NULL AND current_nad_config_uuid IS NOT NULL</where>
+        </update>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1791298027770-1">
+        <dropColumn columnName="CURRENT_FILTER_UUID" tableName="NAD_PANEL"/>
+    </changeSet>
+    <changeSet author="labidiayo (generated)" id="1791298027770-2">
+        <addColumn tableName="NAD_PANEL">
+            <column name="FILTER_NAME" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

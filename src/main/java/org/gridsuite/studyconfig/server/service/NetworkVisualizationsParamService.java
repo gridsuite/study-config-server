@@ -66,6 +66,7 @@ public class NetworkVisualizationsParamService {
                 .componentLibrary(entity.getComponentLibrary())
                 .measurements(entity.getMeasurements())
                 .observability(entity.getObservability())
+                .autoRefresh(entity.getAutoRefresh())
                 // NAD
                 .nadPositionsGenerationMode(entity.getNadPositionsGenerationMode())
                 .build();

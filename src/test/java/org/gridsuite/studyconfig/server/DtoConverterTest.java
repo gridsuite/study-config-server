@@ -105,9 +105,9 @@ public class DtoConverterTest implements WithAssertions {
                     "TestSheet",
                     SheetType.BUS,
                     Arrays.asList(
-                            new SpreadsheetColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1", true,
+                            new SpreadsheetColumnInfos(null, "Column1", ColumnType.NUMBER, 1, "X+Y", "[\"col1\", \"col2\"]", "id1", true, false,
                                     "number", "greaterThan", "100", 0.5),
-                            new SpreadsheetColumnInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2", true,
+                            new SpreadsheetColumnInfos(null, "Column2", ColumnType.NUMBER, 2, "Z*W", "[\"col1\"]", "id2", true, false,
                                     null, null, null, null)
                     ),
                     List.of(
@@ -163,6 +163,7 @@ public class DtoConverterTest implements WithAssertions {
                     .name("TestColumn")
                     .formula("A+B+C")
                     .id("idTest")
+                    .locked(true)
                     .columnFilter(ColumnFilterEntity.builder()
                     .filterDataType("text")
                     .filterType("startsWith")
@@ -183,6 +184,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(d.columnFilterInfos().filterValue()).isEqualTo("prefix");
                         assertThat(d.columnFilterInfos().filterTolerance()).isNull();
                         assertThat(d.visible()).isTrue();
+                        assertThat(d.locked()).isTrue();
                     });
         }
 
@@ -196,6 +198,7 @@ public class DtoConverterTest implements WithAssertions {
                     "X*Y*Z",
                     "[\"col1\", \"col2\"]",
                     "idTest",
+                    true,
                     true,
                     "number",
                     "lessThan",
@@ -216,6 +219,7 @@ public class DtoConverterTest implements WithAssertions {
                         assertThat(e.getColumnFilter().getFilterValue()).isEqualTo("50.5");
                         assertThat(e.getColumnFilter().getFilterTolerance()).isEqualTo(0.1);
                         assertThat(e.isVisible()).isTrue();
+                        assertThat(e.isLocked()).isTrue();
                     });
         }
 
@@ -230,6 +234,7 @@ public class DtoConverterTest implements WithAssertions {
                     "[\"col1\", \"col2\"]",
                     "idTest",
                     true,
+                    false,
                     null,
                     null,
                     null,

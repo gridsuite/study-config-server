@@ -103,4 +103,36 @@ class ComputationResultFiltersTest {
         assertThat(globalFilterInfo.unselectedDate()).isEqualTo(1710340000.0);
 
     }
+
+    @Test
+    void testResetFilters() throws Exception {
+        MvcResult result = mockMvc.perform(post(BASE_URI + "/default")).andReturn();
+        UUID computationResultFiltersId = mapper.readValue(result.getResponse().getContentAsString(), UUID.class);
+        String typeUri = BASE_URI + "/" + computationResultFiltersId + "/StateEstimation";
+
+        mockMvc.perform(put(typeUri + "/stateEstimationMeasurements/reset-filters")).andExpect(status().isNoContent());
+
+        mockMvc.perform(post(typeUri + "/global-filters")
+                        .content(mapper.writeValueAsString(createGlobalFilters()))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        for (String subType : List.of("stateEstimationMeasurements", "stateEstimationQualityCriterion")) {
+            mockMvc.perform(put(typeUri + "/" + subType + "/columns")
+                            .content(mapper.writeValueAsString(createColumnFilter()))
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent());
+        }
+
+        mockMvc.perform(put(typeUri + "/stateEstimationMeasurements/reset-filters")).andExpect(status().isNoContent());
+
+        result = mockMvc.perform(get(typeUri)).andExpect(status().isOk()).andReturn();
+        List<GlobalFilterInfos> globalFilterInfos = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(globalFilterInfos).isEmpty();
+        result = mockMvc.perform(get(typeUri + "/stateEstimationMeasurements")).andExpect(status().isOk()).andReturn();
+        List<ComputationResultColumnFilterInfos> resetColumns = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(resetColumns).isEmpty();
+        result = mockMvc.perform(get(typeUri + "/stateEstimationQualityCriterion")).andExpect(status().isOk()).andReturn();
+        List<ComputationResultColumnFilterInfos> otherColumns = mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() { });
+        assertThat(otherColumns).hasSize(1);
+    }
 }
