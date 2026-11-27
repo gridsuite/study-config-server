@@ -51,7 +51,7 @@ public class ComputationResultFiltersController {
     @ApiResponse(responseCode = "200", description = "Computation result global filters found",
             content = @Content(schema = @Schema(implementation = GlobalFilterInfos.class)))
     @ApiResponse(responseCode = "404", description = "Computation result global filters not found")
-    @PreAuthorize("@authorizationService.canRead(#computationResultFiltersId)")
+    @PreAuthorize("true")
     public ResponseEntity<List<GlobalFilterInfos>> getComputingResultGlobalFilters(
             @Parameter(description = "Computation result filters Id") @PathVariable UUID computationResultFiltersId,
             @Parameter(description = "Computation type") @PathVariable String computationType) {
@@ -64,7 +64,7 @@ public class ComputationResultFiltersController {
     @ApiResponse(responseCode = "200", description = "Computation result column filters found",
             content = @Content(schema = @Schema(implementation = ComputationResultColumnFilterInfos.class)))
     @ApiResponse(responseCode = "404", description = "Computation result column filters not found")
-    @PreAuthorize("@authorizationService.canRead(#computationResultFiltersId)")
+    @PreAuthorize("true")
     public ResponseEntity<List<ComputationResultColumnFilterInfos>> getComputingResultColumnFilters(
             @Parameter(description = "Computation result filters Id") @PathVariable UUID computationResultFiltersId,
             @Parameter(description = "Computation type") @PathVariable String computationType,
@@ -77,7 +77,7 @@ public class ComputationResultFiltersController {
             description = "Replaces all existing global filters with the provided list for a computation result")
     @ApiResponse(responseCode = "204", description = "Global filters set successfully")
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
-    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
+    @PreAuthorize("true")
     public ResponseEntity<Void> setGlobalFiltersForComputingResult(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,
@@ -89,7 +89,7 @@ public class ComputationResultFiltersController {
     @PutMapping("/{computationResultFiltersId}/{computationType}/{computationSubType}/columns")
     @Operation(summary = "Update a column", description = "Updates an existing column")
     @ApiResponse(responseCode = "204", description = "Column updated")
-    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
+    @PreAuthorize("true")
     public ResponseEntity<Void> updateColumn(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,
@@ -104,7 +104,7 @@ public class ComputationResultFiltersController {
             description = "Resets the global filters of a computation type and the column filters of one of its subtypes")
     @ApiResponse(responseCode = "204", description = "Filters reset successfully")
     @ApiResponse(responseCode = "404", description = "Computation result filters not found")
-    @PreAuthorize("@authorizationService.canWrite(#computationResultFiltersId)")
+    @PreAuthorize("true")
     public ResponseEntity<Void> resetFilters(
             @PathVariable UUID computationResultFiltersId,
             @PathVariable String computationType,

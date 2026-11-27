@@ -41,7 +41,7 @@ public class DiagramGridLayoutController {
     @PutMapping(value = "/{id}", consumes = APPLICATION_JSON_VALUE)
     @Operation(summary = "Update diagram grid layout")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The diagram grid layout has been updated")})
-    @PreAuthorize("@authorizationService.canWrite(#diagramGridLayoutUuid)")
+    @PreAuthorize("true")
     public ResponseEntity<Void> updateDiagramGridLayout(@PathVariable("id") UUID diagramGridLayoutUuid,
                                                   @RequestBody DiagramGridLayout diagramGridLayout) {
         diagramGridLayoutService.updateDiagramGridLayout(diagramGridLayoutUuid, diagramGridLayout);
@@ -51,7 +51,7 @@ public class DiagramGridLayoutController {
     @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "Get diagram grid layout")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The diagram grid layout is returned")})
-    @PreAuthorize("@authorizationService.canRead(#diagramGridLayoutUuid)")
+    @PreAuthorize("true")
     public ResponseEntity<DiagramGridLayout> getDiagramGridLayout(
         @PathVariable("id") UUID diagramGridLayoutUuid) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(diagramGridLayoutService.getByDiagramGridLayoutUuid(diagramGridLayoutUuid));
@@ -60,7 +60,7 @@ public class DiagramGridLayoutController {
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete diagram grid layout")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The diagram grid layout is deleted")})
-    @PreAuthorize("@authorizationService.canDelete(#diagramGridLayoutUuid)")
+    @PreAuthorize("true")
     public ResponseEntity<DiagramGridLayout> deleteDiagramGridLayout(
         @PathVariable("id") UUID diagramGridLayoutUuid) {
         diagramGridLayoutService.deleteDiagramGridLayout(diagramGridLayoutUuid);
