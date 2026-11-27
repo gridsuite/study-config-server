@@ -20,6 +20,7 @@ import org.gridsuite.studyconfig.server.dto.SpreadsheetConfigInfos;
 import org.gridsuite.studyconfig.server.service.SpreadsheetConfigService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Creates a new spreadsheet configuration collection and returns its ID")
     @ApiResponse(responseCode = "201", description = "Configuration collection created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createSpreadsheetConfigCollection(@Parameter(description = "Configuration collection to save") @Valid @RequestBody SpreadsheetConfigCollectionInfos dto) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfigCollection(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -53,6 +55,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Creates a new spreadsheet configuration collection and returns its ID")
     @ApiResponse(responseCode = "201", description = "Configuration collection created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("@authorizationService.canRead(#configUuids)")
     public ResponseEntity<UUID> createSpreadsheetConfigCollectionFromConfigs(@Parameter(description = "Configurations to duplicate and merge") @Valid @RequestBody List<UUID> configUuids) {
         UUID id = spreadsheetConfigService.createSpreadsheetConfigCollectionFromConfigs(configUuids);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -64,6 +67,7 @@ public class SpreadsheetConfigCollectionController {
     @ApiResponse(responseCode = "200", description = "Configuration collection found",
             content = @Content(schema = @Schema(implementation = SpreadsheetConfigCollectionInfos.class)))
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<SpreadsheetConfigCollectionInfos> getSpreadsheetConfigCollection(
             @Parameter(description = "ID of the configuration collection to retrieve") @PathVariable UUID id) {
         return ResponseEntity.ok(spreadsheetConfigService.getSpreadsheetConfigCollection(id));
@@ -74,6 +78,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Deletes an existing spreadsheet configuration collection")
     @ApiResponse(responseCode = "204", description = "Configuration collection deleted")
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    @PreAuthorize("@authorizationService.canDelete(#id)")
     public ResponseEntity<Void> deleteSpreadsheetConfigCollection(
             @Parameter(description = "ID of the configuration collection to delete") @PathVariable UUID id) {
         spreadsheetConfigService.deleteSpreadsheetConfigCollection(id);
@@ -85,6 +90,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Updates an existing spreadsheet configuration collection")
     @ApiResponse(responseCode = "204", description = "Configuration collection updated")
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateSpreadsheetConfigCollection(
             @Parameter(description = "ID of the configuration collection to update") @PathVariable UUID id,
             @Valid @RequestBody SpreadsheetConfigCollectionInfos dto) {
@@ -97,6 +103,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Updates a collection with a list of existing spreadsheet configs, replacing any previous configs")
     @ApiResponse(responseCode = "204", description = "Collection updated with configs")
     @ApiResponse(responseCode = "404", description = "Collection or one of the configs not found")
+    @PreAuthorize("@authorizationService.canWrite(#id) and @authorizationService.canRead(#configIds)")
     public ResponseEntity<Void> updateSpreadsheetConfigCollectionWithConfigs(
             @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
             @Parameter(description = "List of spreadsheet config UUIDs to replace the collection's configs")
@@ -110,6 +117,7 @@ public class SpreadsheetConfigCollectionController {
             description = "")
     @ApiResponse(responseCode = "204", description = "Collection updated")
     @ApiResponse(responseCode = "404", description = "One of the collections not found")
+    @PreAuthorize("@authorizationService.canWrite(#id) and @authorizationService.canRead(#sourceCollectionId)")
     public ResponseEntity<Void> appendSpreadsheetConfigCollection(
             @Parameter(description = "ID of the configuration collection to update") @PathVariable UUID id,
             @Parameter(description = "ID of the configuration collection to be appended") @RequestParam(name = "sourceCollection") UUID sourceCollectionId) {
@@ -123,6 +131,7 @@ public class SpreadsheetConfigCollectionController {
     @ApiResponse(responseCode = "201", description = "Configuration collection duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<UUID> duplicateSpreadsheetConfigCollection(@Parameter(description = "UUID of the configuration collection to duplicate") @PathVariable("id") UUID id) {
         UUID newId = spreadsheetConfigService.duplicateSpreadsheetConfigCollection(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
@@ -133,6 +142,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Creates a default spreadsheet configuration collection")
     @ApiResponse(responseCode = "201", description = "Default configuration collection created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createDefaultSpreadsheetConfigCollection() {
         UUID id = spreadsheetConfigService.createDefaultSpreadsheetConfigCollection();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -144,6 +154,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Adds a new spreadsheet configuration to a collection")
     @ApiResponse(responseCode = "204", description = "Configuration added")
     @ApiResponse(responseCode = "404", description = "Configuration collection not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<UUID> addSpreadsheetConfigToCollection(
             @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
             @Parameter(description = "Configuration to add") @Valid @RequestBody SpreadsheetConfigInfos dto) {
@@ -155,6 +166,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Removes an existing spreadsheet configuration from a collection")
     @ApiResponse(responseCode = "204", description = "Configuration removed")
     @ApiResponse(responseCode = "404", description = "Configuration collection or configuration not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> removeSpreadsheetConfigFromCollection(
             @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
             @Parameter(description = "ID of the configuration to remove") @PathVariable UUID configId) {
@@ -167,6 +179,7 @@ public class SpreadsheetConfigCollectionController {
             description = "Updates the order of spreadsheet configs within a collection")
     @ApiResponse(responseCode = "204", description = "Order updated")
     @ApiResponse(responseCode = "404", description = "Collection not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> reorderSpreadsheetConfigs(
             @Parameter(description = "ID of the configuration collection") @PathVariable UUID id,
             @Valid @RequestBody List<UUID> newOrder) {

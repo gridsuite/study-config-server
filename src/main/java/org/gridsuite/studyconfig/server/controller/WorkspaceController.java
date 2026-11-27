@@ -18,6 +18,7 @@ import org.gridsuite.studyconfig.server.dto.workspace.WorkspaceInfos;
 import org.gridsuite.studyconfig.server.service.WorkspaceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -41,6 +42,7 @@ public class WorkspaceController {
     @ApiResponse(responseCode = "200", description = "Workspace found",
             content = @Content(schema = @Schema(implementation = WorkspaceInfos.class)))
     @ApiResponse(responseCode = "404", description = "Workspace not found")
+    @PreAuthorize("@authorizationService.canRead(#workspaceId)")
     public ResponseEntity<WorkspaceInfos> getWorkspace(
             @Parameter(description = "ID of the workspace to retrieve") @PathVariable UUID workspaceId) {
         return ResponseEntity.ok(workspaceService.getWorkspace(workspaceId));
@@ -51,6 +53,7 @@ public class WorkspaceController {
             description = "Creates a standalone workspace by duplicating an existing workspace")
     @ApiResponse(responseCode = "201", description = "Workspace duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("@authorizationService.canRead(#sourceWorkspaceId)")
     public ResponseEntity<UUID> duplicateWorkspace(
             @Parameter(description = "UUID of the workspace to duplicate") @PathVariable("workspaceId") UUID sourceWorkspaceId) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -61,6 +64,7 @@ public class WorkspaceController {
     @Operation(summary = "Replace a standalone workspace",
             description = "Replaces a standalone workspace with a copy of another workspace")
     @ApiResponse(responseCode = "204", description = "Workspace replaced")
+    @PreAuthorize("@authorizationService.canWrite(#workspaceId) and @authorizationService.canRead(#sourceWorkspaceId)")
     public ResponseEntity<Void> replaceWorkspace(
             @Parameter(description = "ID of the workspace to replace") @PathVariable UUID workspaceId,
             @Parameter(description = "UUID of the source workspace") @RequestParam(name = DUPLICATE_FROM) UUID sourceWorkspaceId) {
@@ -71,6 +75,7 @@ public class WorkspaceController {
     @DeleteMapping("/{workspaceId}")
     @Operation(summary = "Delete a standalone workspace")
     @ApiResponse(responseCode = "204", description = "Workspace deleted")
+    @PreAuthorize("@authorizationService.canDelete(#workspaceId)")
     public ResponseEntity<Void> deleteWorkspace(
             @Parameter(description = "ID of the workspace to delete") @PathVariable UUID workspaceId) {
         workspaceService.deleteWorkspace(workspaceId);

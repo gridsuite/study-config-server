@@ -19,6 +19,7 @@ import org.gridsuite.studyconfig.server.dto.NetworkVisualizationParamInfos;
 import org.gridsuite.studyconfig.server.service.NetworkVisualizationsParamService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -41,6 +42,7 @@ public class NetworkVisualizationsParamController {
             description = "Creates default network visualizations parameters and returns new ID")
     @ApiResponse(responseCode = "201", description = "Default parameters created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createDefaultParameters() {
         UUID id = service.createDefaultParameters();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -51,6 +53,7 @@ public class NetworkVisualizationsParamController {
             description = "Creates new network visualizations parameters and returns new ID")
     @ApiResponse(responseCode = "201", description = "Parameters created",
             content = @Content(schema = @Schema(implementation = UUID.class)))
+    @PreAuthorize("true")
     public ResponseEntity<UUID> createParameters(@Parameter(description = "Parameters to save") @Valid @RequestBody NetworkVisualizationParamInfos dto) {
         UUID id = service.createParameters(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
@@ -62,6 +65,7 @@ public class NetworkVisualizationsParamController {
     @ApiResponse(responseCode = "201", description = "Parameters duplicated",
             content = @Content(schema = @Schema(implementation = UUID.class)))
     @ApiResponse(responseCode = "404", description = "Parameters not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<UUID> duplicateParameters(@Parameter(description = "UUID of the parameters to duplicate") @PathVariable("id") UUID id) {
         UUID newId = service.duplicateParameters(id);
         return ResponseEntity.status(HttpStatus.CREATED).body(newId);
@@ -73,6 +77,7 @@ public class NetworkVisualizationsParamController {
     @ApiResponse(responseCode = "200", description = "Parameters found",
             content = @Content(schema = @Schema(implementation = NetworkVisualizationParamInfos.class)))
     @ApiResponse(responseCode = "404", description = "Parameters not found")
+    @PreAuthorize("@authorizationService.canRead(#id)")
     public ResponseEntity<NetworkVisualizationParamInfos> getParameters(
             @Parameter(description = "ID of parameters to retrieve") @PathVariable UUID id) {
         return ResponseEntity.ok(service.getParameters(id));
@@ -83,6 +88,7 @@ public class NetworkVisualizationsParamController {
             description = "Updates existing network visualizations parameters")
     @ApiResponse(responseCode = "204", description = "Parameters updated")
     @ApiResponse(responseCode = "404", description = "Parameters not found")
+    @PreAuthorize("@authorizationService.canWrite(#id)")
     public ResponseEntity<Void> updateParameters(
             @Parameter(description = "ID of the parameters to update") @PathVariable UUID id,
             @Valid @RequestBody NetworkVisualizationParamInfos dto) {
@@ -95,6 +101,7 @@ public class NetworkVisualizationsParamController {
             description = "Deletes existing network visualizations parameters")
     @ApiResponse(responseCode = "204", description = "Parameters deleted")
     @ApiResponse(responseCode = "404", description = "Parameters not found")
+    @PreAuthorize("@authorizationService.canDelete(#id)")
     public ResponseEntity<Void> deleteParameters(
             @Parameter(description = "ID of the parameters to delete") @PathVariable UUID id) {
         service.deleteParameters(id);
